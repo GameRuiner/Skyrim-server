@@ -6,8 +6,8 @@
 	"scripts": {
 		"start": ".\\skymp5-server.exe",
 		"launch": "..\\SkyMPLauncher.exe",
-		"serve": "parcel serve src/gamemode.ts --out-dir ./ --no-source-maps",
-		"build": "parcel build src/gamemode.ts --out-dir ./ --no-source-maps --no-minify",
+		"serve": "parcel serve src/gamemode.ts --out-dir ./ --no-source-maps --no-cache --target node",
+		"build": "parcel build src/gamemode.ts --out-dir ./ --no-source-maps --no-minify --no-cache --target node",
 		"postbuild1": "node fix.js",
 		"prebuild:html": "rimraf ./html/www",
 		"serve:html": "npm run prebuild:html && parcel ./html/*.html --out-dir ./html/www --no-source-maps",

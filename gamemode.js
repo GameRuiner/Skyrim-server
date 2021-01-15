@@ -118,19 +118,12 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"utils.ts":[function(require,module,exports) {
-var global = arguments[3];
 "use strict";
 
 var __spreadArrays = this && this.__spreadArrays || function () {
-  for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
-    s += arguments[i].length;
-  }
+  for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
 
-  for (var r = Array(s), k = 0, i = 0; i < il; i++) {
-    for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
-      r[k] = a[j];
-    }
-  }
+  for (var r = Array(s), k = 0, i = 0; i < il; i++) for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) r[k] = a[j];
 
   return r;
 };
@@ -140,7 +133,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = exports.utils = void 0;
 exports.utils = {
-  log: function log() {
+  log: function () {
     var _a;
 
     var args = [];
@@ -151,10 +144,10 @@ exports.utils = {
 
     (_a = console.log).call.apply(_a, __spreadArrays([console, '[GM]'], args));
   },
-  isActor: function isActor(formId) {
+  isActor: function (formId) {
     return mp.get(formId, 'type') === 'MpActor';
   },
-  hook: function hook(eventName, callback) {
+  hook: function (eventName, callback) {
     if (!global.knownEvents.includes(eventName)) {
       global.knownEvents.push(eventName);
     }
@@ -185,7 +178,7 @@ exports.utils = {
   }
 };
 
-var init = function init() {
+var init = function () {
   exports.utils.log('Gamemode init');
 
   if (!Array.isArray(global.knownEvents)) {
@@ -209,7 +202,7 @@ exports.init = void 0;
 
 var utils_1 = require("../utils");
 
-var init = function init() {
+var init = function () {
   mp.makeEventSource('_onHit', "\n    ctx.sp.on(\"hit\", (e) => {\n      if (!ctx.sp.Actor.from(e.target)) return;\n      if (e.source && ctx.sp.Spell.from(e.source)) return;\n\n      const target = ctx.getFormIdInServerFormat(e.target.getFormId());\n      const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());\n      ctx.sendEvent({\n        isPowerAttack: e.isPowerAttack,\n        isSneakAttack: e.isSneakAttack,\n        isBashAttack: e.isBashAttack,\n        isHitBlocked: e.isHitBlocked,\n        target: target,\n        agressor: agressor,\n        source: e.source ? e.source.getFormId() : 0,\n      });\n    });\n  ");
   utils_1.utils.hook('_onHit', function (pcFormId, eventData) {
     if (eventData.target === 0x14) {
@@ -223,28 +216,24 @@ var init = function init() {
 };
 
 exports.init = init;
-},{"../utils":"utils.ts"}],"../node_modules/parcel/src/builtins/_empty.js":[function(require,module,exports) {
-
-},{}],"typeCheck.ts":[function(require,module,exports) {
+},{"../utils":"utils.ts"}],"typeCheck.ts":[function(require,module,exports) {
 "use strict";
-
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.typeCheck = void 0;
 exports.typeCheck = {
-  number: function number(name, value) {
-    if (_typeof(value) !== _typeof(0)) {
-      throw new TypeError("Expected '" + name + "' to be a number, but got " + JSON.stringify(value) + " (" + _typeof(value) + ")");
+  number: function (name, value) {
+    if (typeof value !== typeof 0) {
+      throw new TypeError("Expected '" + name + "' to be a number, but got " + JSON.stringify(value) + " (" + typeof value + ")");
     }
   },
-  avModifier: function avModifier(name, value) {
+  avModifier: function (name, value) {
     var modifiers = ['base', 'permanent', 'temporary', 'damage'];
 
     if (!modifiers.includes(value)) {
-      throw new TypeError("Expected '" + name + "' to be a modifier, but got " + JSON.stringify(value) + " (" + _typeof(value) + ")");
+      throw new TypeError("Expected '" + name + "' to be a modifier, but got " + JSON.stringify(value) + " (" + typeof value + ")");
     }
   }
 };
@@ -252,15 +241,9 @@ exports.typeCheck = {
 "use strict";
 
 var __spreadArrays = this && this.__spreadArrays || function () {
-  for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
-    s += arguments[i].length;
-  }
+  for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
 
-  for (var r = Array(s), k = 0, i = 0; i < il; i++) {
-    for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
-      r[k] = a[j];
-    }
-  }
+  for (var r = Array(s), k = 0, i = 0; i < il; i++) for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) r[k] = a[j];
 
   return r;
 };
@@ -270,7 +253,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = exports.consoleOutput = void 0;
 
-var genericPrint = function genericPrint(propName, formId) {
+var genericPrint = function (propName, formId) {
   var printConsoleArgs = [];
 
   for (var _i = 2; _i < arguments.length; _i++) {
@@ -287,7 +270,7 @@ var genericPrint = function genericPrint(propName, formId) {
 };
 
 exports.consoleOutput = {
-  print: function print(formId) {
+  print: function (formId) {
     var args = [];
 
     for (var _i = 1; _i < arguments.length; _i++) {
@@ -296,7 +279,7 @@ exports.consoleOutput = {
 
     return genericPrint.apply(void 0, __spreadArrays(['consoleOutput', formId], args));
   },
-  printNote: function printNote(formId) {
+  printNote: function (formId) {
     var args = [];
 
     for (var _i = 1; _i < arguments.length; _i++) {
@@ -307,15 +290,15 @@ exports.consoleOutput = {
   }
 };
 
-var init = function init() {
+var init = function () {
   var printTargets = {
     consoleOutput: 'ctx.sp.printConsole(...ctx.value.args)',
     notification: 'ctx.sp.Debug.notification(...ctx.value.args)'
   };
   var props = ['consoleOutput', 'notification'];
 
-  var _loop_1 = function _loop_1(propName) {
-    var updateOwner = function updateOwner() {
+  var _loop_1 = function (propName) {
+    var updateOwner = function () {
       return "\n      if (ctx.state.n" + propName + " === ctx.value.n) return;\n      ctx.state.n" + propName + " = ctx.value.n;\n      if (ctx.value.date) {\n        if (Math.abs(ctx.value.date - +Date.now()) > 2000) return;\n      }\n      " + printTargets[propName] + "\n    ";
     };
 
@@ -357,34 +340,34 @@ var typeCheck_1 = require("../typeCheck");
 
 var consoleOutput_1 = require("../property/consoleOutput");
 
-var rate = function rate(attr) {
+var rate = function (attr) {
   return attr === 'health' ? 'av_healrate' : "av_" + attr + "rate";
 };
 
-var mult = function mult(attr) {
+var mult = function (attr) {
   return attr === 'health' ? 'av_healratemult' : "av_" + attr + "ratemult";
 };
 
-var drain = function drain(attr) {
+var drain = function (attr) {
   return "av_mp_" + attr + "drain";
 };
 
-var updateAttributeCommon = function updateAttributeCommon(attr) {
+var updateAttributeCommon = function (attr) {
   return "\n\tconst av = \"" + attr + "\";\n\tconst ac = ctx.sp.Actor.from(ctx.refr);\n\tif (!ac) return;\n\n\tconst base = ctx.value.base || 0;\n\tconst perm = ctx.value.permanent || 0;\n\tconst temp = ctx.value.temporary || 0;\n\tconst targetMax = base + perm + temp;\n\n\tconst numChangesKey = \"" + attr + "NumChanges\";\n\tconst numChanges = ctx.get(numChangesKey);\n\tif (ctx.state[numChangesKey] !== numChanges) {\n\t\tctx.state[numChangesKey] = numChanges;\n\t\tctx.state." + attr + "RegenStart = +Date.now();\n\t}\n\n\tconst realTargetDmg = ctx.value.damage || 0;\n\tlet targetDmg = realTargetDmg;\n\n\tif (av === \"health\" || ac.getFormId() == 0x14) {\n\t\tconst multName = \"" + mult(attr) + "\";\n\t\tconst rateName = \"" + rate(attr) + "\";\n\t\tconst drainName = \"" + drain(attr) + "\";\n\n\t\tconst additionalRegenMult = 1.0;\n\t\tconst regenDuration = (+Date.now() - (ctx.state." + attr + "RegenStart || 0)) / 1000;\n\t\tconst healRateMult = ctx.get(multName);\n\t\tconst healRateMultCurrent = (healRateMult.base || 0)\n\t\t\t+ (healRateMult.permanent || 0)\n\t\t\t+ (healRateMult.temporary || 0)\n\t\t\t+ (healRateMult.damage || 0);\n\t\tconst healRate = ctx.get(rateName);\n\t\tconst healRateCurrent = (healRate.base || 0)\n\t\t\t+ (healRate.permanent || 0)\n\t\t\t+ (healRate.temporary || 0)\n\t\t\t+ (healRate.damage || 0);\n\n\t\tconst drain = ctx.get(drainName);\n\t\tconst drainCurrent = (drain.base || 0)\n\t\t\t+ (drain.permanent || 0)\n\t\t\t+ (drain.temporary || 0)\n\t\t\t+ (drain.damage || 0);\n\t\tif (drainCurrent) {\n\t\t\ttargetDmg += regenDuration * drainCurrent;\n\t\t}\n\t\telse {\n\t\t\ttargetDmg += (regenDuration * additionalRegenMult\n\t\t\t\t* healRateCurrent * healRateMultCurrent * 0.01 * targetMax * 0.01);\n\t\t}\n\n\t\tif (targetDmg > 0) {\n\t\t\ttargetDmg = 0;\n\t\t}\n\t}\n\n\tconst currentPercentage = ac.getActorValuePercentage(av);\n\tconst currentMax = ac.getBaseActorValue(av);\n\n\tlet targetPercentage = (targetMax + targetDmg) / targetMax;\n\tif (ctx.get(\"isDead\") && av === \"health\") {\n\t\ttargetPercentage = 0;\n\t}\n\n\tconst deltaPercentage = targetPercentage - currentPercentage;\n\n\tconst k = (!targetPercentage || av === \"stamina\" || av === \"magicka\") ? 1 : 0.25;\n\n\tif (deltaPercentage > 0) {\n\t\tac.restoreActorValue(av, deltaPercentage * currentMax * k);\n\t}\n\telse if (deltaPercentage < 0) {\n\t\tac.damageActorValue(av, deltaPercentage * currentMax * k);\n\t}\n";
 };
 
-var updateAttributeNeighbor = function updateAttributeNeighbor(attr) {
+var updateAttributeNeighbor = function (attr) {
   return attr === 'health' ? updateAttributeCommon(attr) + ("ac.setActorValue(\"" + attr + "\", 9999);") : '';
 };
 
-var updateAttributeOwner = function updateAttributeOwner(attr) {
+var updateAttributeOwner = function (attr) {
   return updateAttributeCommon(attr) + ("ac.setActorValue(\"" + attr + "\", base);");
 };
 
 var avs = ['healrate', 'healratemult', 'staminarate', 'staminaratemult', 'magickarate', 'magickaratemult', 'mp_healthdrain', 'mp_magickadrain', 'mp_staminadrain'];
 var relatedPropNames = ['healthNumChanges', 'magickaNumChanges', 'staminaNumChanges'];
 
-var getAvMaximum = function getAvMaximum(avOps, formId, avName) {
+var getAvMaximum = function (avOps, formId, avName) {
   var sum = 0;
 
   for (var _i = 0, _a = ['base', 'permanent', 'temporary']; _i < _a.length; _i++) {
@@ -395,17 +378,17 @@ var getAvMaximum = function getAvMaximum(avOps, formId, avName) {
   return sum;
 };
 
-var getAvCurrent = function getAvCurrent(avOps, formId, avName) {
+var getAvCurrent = function (avOps, formId, avName) {
   var res = getAvMaximum(avOps, formId, avName);
   res += avOps.get(formId, avName, 'damage');
   return res;
 }; // Regen
 
 
-var regen = function regen(avOps, avNameTarget, avNameRate, avNameRateMult, avNameDrain) {
+var regen = function (avOps, avNameTarget, avNameRate, avNameRateMult, avNameDrain) {
   return {
     parent: avOps,
-    set: function set(formId, avName, modifierName, newValue) {
+    set: function (formId, avName, modifierName, newValue) {
       var _a;
 
       var dangerousAvNames = [avNameTarget, avNameRate, avNameRateMult, avNameDrain]; // ? Убрал .toLowerCase(), проверка типов наверно должна решить проблему
@@ -423,7 +406,7 @@ var regen = function regen(avOps, avNameTarget, avNameRate, avNameRateMult, avNa
 
       (_a = this.parent) === null || _a === void 0 ? void 0 : _a.set(formId, avName, modifierName, newValue);
     },
-    get: function get(formId, avName, modifierName) {
+    get: function (formId, avName, modifierName) {
       // ? Не уверен в проверке !this.getSecondsMatched
       if (!this.parent || !this.getSecondsMatched) {
         return 0;
@@ -452,17 +435,17 @@ var regen = function regen(avOps, avNameTarget, avNameRate, avNameRateMult, avNa
 
       return realValue;
     },
-    getSecondsMatched: function getSecondsMatched(formId) {
+    getSecondsMatched: function (formId) {
       return this.secondsMatched && this.secondsMatched[formId] || 0;
     },
-    setSecondsMatched: function setSecondsMatched(formId, secondsMatched) {
+    setSecondsMatched: function (formId, secondsMatched) {
       if (!this.secondsMatched) {
         this.secondsMatched = {};
       }
 
       this.secondsMatched[formId] = secondsMatched;
     },
-    applyRegenerationToParent: function applyRegenerationToParent(formId) {
+    applyRegenerationToParent: function (formId) {
       // ? Не уверен в проверке !this.getSecondsMatched
       if (!this.parent || !this.setSecondsMatched) {
         return 0;
@@ -477,7 +460,7 @@ var regen = function regen(avOps, avNameTarget, avNameRate, avNameRateMult, avNa
 
 var timeSource = {
   startMoment: Date.now(),
-  getSecondsPassed: function getSecondsPassed() {
+  getSecondsPassed: function () {
     if (!this.startMoment) {
       this.startMoment = Date.now();
     }
@@ -486,7 +469,7 @@ var timeSource = {
   }
 };
 
-var init = function init() {
+var init = function () {
   for (var _i = 0, _a = ['health', 'magicka', 'stamina']; _i < _a.length; _i++) {
     var attr = _a[_i];
     mp.makeProperty('av_' + attr, {
@@ -519,7 +502,7 @@ var init = function init() {
 
 
   var avOps = {
-    set: function set(formId, avName, modifierName, newValue) {
+    set: function (formId, avName, modifierName, newValue) {
       typeCheck_1.typeCheck.number('newValue', newValue);
       typeCheck_1.typeCheck.avModifier('modifierName', modifierName);
       var propName = 'av_' + avName.toLowerCase();
@@ -532,7 +515,7 @@ var init = function init() {
         mp.set(formId, propName_1, 1 + (mp.get(formId, propName_1) || 0));
       }
     },
-    get: function get(formId, avName, modifierName) {
+    get: function (formId, avName, modifierName) {
       typeCheck_1.typeCheck.avModifier('modifierName', modifierName);
       var propName = 'av_' + avName.toLowerCase();
       var propValue = mp.get(formId, propName);
@@ -548,7 +531,7 @@ var init = function init() {
 
   avOps = {
     parent: avOps,
-    set: function set(formId, avName, modifierName, newValue) {
+    set: function (formId, avName, modifierName, newValue) {
       if (!this.parent) {
         return;
       }
@@ -563,7 +546,7 @@ var init = function init() {
 
       this.parent.set(formId, avName, modifierName, newValue);
     },
-    get: function get(formId, avName, modifierName) {
+    get: function (formId, avName, modifierName) {
       if (!this.parent) {
         return 0;
       }
@@ -577,7 +560,7 @@ var init = function init() {
 
   avOps = {
     parent: avOps,
-    set: function set(formId, avName, modifierName, newValue) {
+    set: function (formId, avName, modifierName, newValue) {
       if (!this.parent) {
         return;
       }
@@ -592,7 +575,7 @@ var init = function init() {
         this.multiplyDamage(formId, avName, k);
       }
     },
-    get: function get(formId, avName, modifierName) {
+    get: function (formId, avName, modifierName) {
       // ? Не уверен в проверке !this.getSecondsMatched
       if (!this.parent || !this.setSecondsMatched) {
         return 0;
@@ -600,7 +583,7 @@ var init = function init() {
 
       return this.parent.get(formId, avName, modifierName);
     },
-    multiplyDamage: function multiplyDamage(formId, avName, k) {
+    multiplyDamage: function (formId, avName, k) {
       if (!this.parent) {
         return;
       }
@@ -610,23 +593,23 @@ var init = function init() {
     }
   };
   exports.actorValues = {
-    set: function set(formId, avName, modifierName, newValue) {
+    set: function (formId, avName, modifierName, newValue) {
       return avOps.set(formId, avName, modifierName, newValue);
     },
-    get: function get(formId, avName, modifierName) {
+    get: function (formId, avName, modifierName) {
       return avOps.get(formId, avName, modifierName);
     },
-    getMaximum: function getMaximum(formId, avName) {
+    getMaximum: function (formId, avName) {
       return getAvMaximum(avOps, formId, avName);
     },
-    getCurrent: function getCurrent(formId, avName) {
+    getCurrent: function (formId, avName) {
       return getAvCurrent(avOps, formId, avName);
     },
-    flushRegen: function flushRegen(formId, avName) {
+    flushRegen: function (formId, avName) {
       var damageModAfterRegen = avOps.get(formId, avName, 'damage');
       avOps.set(formId, avName, 'damage', damageModAfterRegen);
     },
-    setDefaults: function setDefaults(formId, options) {
+    setDefaults: function (formId, options) {
       var force = options && options.force;
 
       if (utils_1.utils.isActor(formId)) {
@@ -664,7 +647,7 @@ var init = function init() {
           }
         }
 
-        var _loop_1 = function _loop_1(avName) {
+        var _loop_1 = function (avName) {
           //if (formId == 0x9b7a2) console.log(avName, 1);
           if (!mp.get(formId, 'av_' + avName) || force) {
             //if (formId == 0x9b7a2) console.log(avName, 2);
@@ -773,7 +756,7 @@ var init = function init() {
 };
 
 exports.init = init;
-},{"fs":"../node_modules/parcel/src/builtins/_empty.js","../utils":"utils.ts","../typeCheck":"typeCheck.ts","../property/consoleOutput":"property/consoleOutput.ts"}],"event/onRegenFinish.ts":[function(require,module,exports) {
+},{"../utils":"utils.ts","../typeCheck":"typeCheck.ts","../property/consoleOutput":"property/consoleOutput.ts"}],"event/onRegenFinish.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -785,8 +768,8 @@ var utils_1 = require("../utils");
 
 var ActorValues_1 = require("../sync/ActorValues");
 
-var init = function init() {
-  var _loop_1 = function _loop_1(attr) {
+var init = function () {
+  var _loop_1 = function (attr) {
     mp.makeEventSource('_onActorValueFlushRequired' + attr, "\n      const update = () => {\n        const attr = \"" + attr + "\";\n        const percent = ctx.sp.Game.getPlayer().getActorValuePercentage(attr);\n        if (ctx.state.percent !== percent) {\n          if (ctx.state.percent !== undefined && percent === 1) {\n            ctx.sendEvent();\n          }\n          ctx.state.percent = percent;\n        }\n      };\n      (async () => {\n        while (1) {\n          await ctx.sp.Utility.wait(0.667);\n          update();\n        }\n      });\n    ");
     utils_1.utils.hook('_onActorValueFlushRequired' + attr, function (pcFormId) {
       ActorValues_1.actorValues.flushRegen(pcFormId, attr);
@@ -811,7 +794,7 @@ exports.init = void 0;
 
 var utils_1 = require("../utils");
 
-var init = function init() {
+var init = function () {
   var updateNeighbor = "\n    const ac = ctx.sp.Actor.from(ctx.refr);\n    const isDead = ctx.value;\n    if (isDead) {\n      ac.endDeferredKill();\n      ac.kill(null);\n    }\n    else {\n      ac.startDeferredKill();\n    }\n\n    if (!isDead && ac.isDead()) {\n      ctx.respawn();\n    }\n  ";
   var updateOwner = "\n    const ac = ctx.sp.Actor.from(ctx.refr);\n    ac.startDeferredKill();\n\n    const value = ctx.value;\n    if (value !== ctx.state.value) {\n      const die = !!value;\n      if (die) {\n        const pos = [\n          ac.getPositionX(), ac.getPositionY(), ac.getPositionZ()\n        ];\n\n        // Everyone should stop combat with us\n        for (let i = 0; i < 200; ++i) {\n          const randomActor = ctx.sp.Game.findRandomActor(pos[0], pos[1], pos[2], 10000);\n          if (!randomActor) continue;\n          const tgt = randomActor.getCombatTarget();\n          if (!tgt || tgt.getFormID() !== 0x14) continue;\n          randomActor.stopCombat();\n        }\n\n        ac.pushActorAway(ac, 0);\n      }\n\n      if (!die) {\n        ctx.sp.Debug.sendAnimationEvent(ac, \"GetUpBegin\");\n      }\n\n      ctx.state.value = value;\n    }\n  ";
   mp.makeProperty('isDead', {
@@ -835,7 +818,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var init = function init() {
+var init = function () {
   mp.makeEventSource('_', "\n    ctx.sp.storage._api_onAnimationEvent = { callback: () => {} };\n  ");
   mp.makeEventSource('_onSprintStateChange', "\n    ctx.sp.on(\"update\", () => {\n      const isSprinting = ctx.sp.Game.getPlayer().isSprinting();\n      if (ctx.state.isSprinting !== isSprinting) {\n        if (ctx.state.isSprinting !== undefined) {\n          ctx.sendEvent(isSprinting ? \"start\" : \"stop\");\n        }\n        ctx.state.isSprinting = isSprinting;\n      }\n    });\n  ");
   mp.makeEventSource('_onPowerAttack', "\n    const next = ctx.sp.storage._api_onAnimationEvent;\n    ctx.sp.storage._api_onAnimationEvent = {\n      callback(...args) {\n        const [serversideFormId, animEventName] = args;\n        if (serversideFormId === 0x14 && animEventName.toLowerCase().includes(\"power\")) {\n          ctx.sendEvent(serversideFormId);\n        }\n        if (typeof next.callback === \"function\") {\n          next.callback(...args);\n        }\n      }\n    };\n  ");
@@ -862,7 +845,7 @@ var defaultSpawnPoint = {
 };
 exports.spawnSystem = {
   timeToRespawn: 6000,
-  spawn: function spawn(targetFormId) {
+  spawn: function (targetFormId) {
     var spawnPoint = mp.get(targetFormId, 'spawnPoint');
 
     for (var _i = 0, _a = Object.keys(spawnPoint || defaultSpawnPoint); _i < _a.length; _i++) {
@@ -878,7 +861,7 @@ exports.spawnSystem = {
     }, 500);
     utils_1.utils.log(targetFormId.toString(16) + " respawns");
   },
-  updateSpawnPoint: function updateSpawnPoint(targetFormId) {
+  updateSpawnPoint: function (targetFormId) {
     mp.set(targetFormId, 'spawnPoint', {
       pos: mp.get(targetFormId, 'pos'),
       angle: mp.get(targetFormId, 'angle'),
@@ -887,7 +870,7 @@ exports.spawnSystem = {
   }
 };
 
-var init = function init() {
+var init = function () {
   mp.makeProperty('spawnPoint', {
     isVisibleByOwner: false,
     isVisibleByNeighbors: false,
@@ -915,7 +898,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var init = function init() {
+var init = function () {
   mp.makeEventSource('_onConsoleCommand', "\n    ctx.sp.storage._api_onConsoleCommand = {\n      callback(...args) {\n        ctx.sendEvent(...args);\n      }\n    };\n  ");
 };
 
@@ -936,15 +919,15 @@ var ActorValues_1 = require("./sync/ActorValues");
 
 var spawnSystem_1 = require("./spawnSystem");
 
-var chooseFormId = function chooseFormId(pcFormId, selectedFormId) {
+var chooseFormId = function (pcFormId, selectedFormId) {
   return selectedFormId ? selectedFormId : pcFormId;
 };
 
-var chooseTip = function chooseTip(pcFormId, selectedFormId) {
+var chooseTip = function (pcFormId, selectedFormId) {
   return selectedFormId ? '(selected)' : '(your character)';
 };
 
-var reinit = function reinit(pcFormId, selectedFormId) {
+var reinit = function (pcFormId, selectedFormId) {
   var targetFormId = chooseFormId(pcFormId, selectedFormId);
   var tip = chooseTip(pcFormId, selectedFormId); //actorValues.setDefaults(targetFormId, { force: true });
 
@@ -954,7 +937,7 @@ var reinit = function reinit(pcFormId, selectedFormId) {
   consoleOutput_1.consoleOutput.print(targetFormId, "Reinit " + targetFormId.toString(16) + " " + tip);
 };
 
-var setav = function setav(pcFormId, selectedFormId, avName, newValueStr) {
+var setav = function (pcFormId, selectedFormId, avName, newValueStr) {
   var newValue = parseFloat(newValueStr);
   newValue = isFinite(newValue) ? newValue : 1;
   var targetFormId = chooseFormId(pcFormId, selectedFormId);
@@ -963,7 +946,7 @@ var setav = function setav(pcFormId, selectedFormId, avName, newValueStr) {
   consoleOutput_1.consoleOutput.print(targetFormId, "Set " + avName + " to " + newValue + " " + tip);
 };
 
-var kill = function kill(pcFormId, selectedFormId) {
+var kill = function (pcFormId, selectedFormId) {
   var targetFormId = chooseFormId(pcFormId, selectedFormId);
   var tip = chooseTip(pcFormId, selectedFormId);
   var prev = mp.get(targetFormId, 'isDead');
@@ -971,21 +954,21 @@ var kill = function kill(pcFormId, selectedFormId) {
   consoleOutput_1.consoleOutput.print(targetFormId, 'Play visual effects for killing/resurrection', targetFormId.toString(16) + " " + tip);
 };
 
-var spawn = function spawn(pcFormId, selectedFormId) {
+var spawn = function (pcFormId, selectedFormId) {
   var targetFormId = chooseFormId(pcFormId, selectedFormId);
   var tip = chooseTip(pcFormId, selectedFormId);
   spawnSystem_1.spawnSystem.spawn(targetFormId);
   consoleOutput_1.consoleOutput.print(targetFormId, "Teleporting to the spawnpoint " + targetFormId.toString(16) + " " + tip);
 };
 
-var spawnpoint = function spawnpoint(pcFormId, selectedFormId) {
+var spawnpoint = function (pcFormId, selectedFormId) {
   var targetFormId = chooseFormId(pcFormId, selectedFormId);
   var tip = chooseTip(pcFormId, selectedFormId);
   spawnSystem_1.spawnSystem.updateSpawnPoint(targetFormId);
   consoleOutput_1.consoleOutput.print(targetFormId, "Spawnpoint has been updated for " + targetFormId.toString(16) + " " + tip);
 };
 
-var init = function init() {
+var init = function () {
   utils_1.utils.hook('_onConsoleCommand', function (pcFormId) {
     var args = [];
 
@@ -1084,208 +1067,4 @@ utils_1.utils.hook('onInit', function (pcFormId) {
  ** Работа с объектами
  * TODO: Понять как работать с конкретными объектами в простарнстве
  */
-},{"./utils":"utils.ts","./event/onHit":"event/onHit.ts","./event/onRegenFinish":"event/onRegenFinish.ts","./property/isDead":"property/isDead.ts","./property/isSprinting":"property/isSprinting.ts","./property/consoleOutput":"property/consoleOutput.ts","./sync/ActorValues":"sync/ActorValues.ts","./spawnSystem":"spawnSystem.ts","./Commands":"Commands.ts","./DevCommands":"DevCommands.ts"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
-var global = arguments[3];
-var OVERLAY_ID = '__parcel__error__overlay__';
-var OldModule = module.bundle.Module;
-
-function Module(moduleName) {
-  OldModule.call(this, moduleName);
-  this.hot = {
-    data: module.bundle.hotData,
-    _acceptCallbacks: [],
-    _disposeCallbacks: [],
-    accept: function (fn) {
-      this._acceptCallbacks.push(fn || function () {});
-    },
-    dispose: function (fn) {
-      this._disposeCallbacks.push(fn);
-    }
-  };
-  module.bundle.hotData = null;
-}
-
-module.bundle.Module = Module;
-var checkedAssets, assetsToAccept;
-var parent = module.bundle.parent;
-
-if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
-  var hostname = "" || location.hostname;
-  var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "12329" + '/');
-
-  ws.onmessage = function (event) {
-    checkedAssets = {};
-    assetsToAccept = [];
-    var data = JSON.parse(event.data);
-
-    if (data.type === 'update') {
-      var handled = false;
-      data.assets.forEach(function (asset) {
-        if (!asset.isNew) {
-          var didAccept = hmrAcceptCheck(global.parcelRequire, asset.id);
-
-          if (didAccept) {
-            handled = true;
-          }
-        }
-      }); // Enable HMR for CSS by default.
-
-      handled = handled || data.assets.every(function (asset) {
-        return asset.type === 'css' && asset.generated.js;
-      });
-
-      if (handled) {
-        console.clear();
-        data.assets.forEach(function (asset) {
-          hmrApply(global.parcelRequire, asset);
-        });
-        assetsToAccept.forEach(function (v) {
-          hmrAcceptRun(v[0], v[1]);
-        });
-      } else if (location.reload) {
-        // `location` global exists in a web worker context but lacks `.reload()` function.
-        location.reload();
-      }
-    }
-
-    if (data.type === 'reload') {
-      ws.close();
-
-      ws.onclose = function () {
-        location.reload();
-      };
-    }
-
-    if (data.type === 'error-resolved') {
-      console.log('[parcel] ✨ Error resolved');
-      removeErrorOverlay();
-    }
-
-    if (data.type === 'error') {
-      console.error('[parcel] 🚨  ' + data.error.message + '\n' + data.error.stack);
-      removeErrorOverlay();
-      var overlay = createErrorOverlay(data);
-      document.body.appendChild(overlay);
-    }
-  };
-}
-
-function removeErrorOverlay() {
-  var overlay = document.getElementById(OVERLAY_ID);
-
-  if (overlay) {
-    overlay.remove();
-  }
-}
-
-function createErrorOverlay(data) {
-  var overlay = document.createElement('div');
-  overlay.id = OVERLAY_ID; // html encode message and stack trace
-
-  var message = document.createElement('div');
-  var stackTrace = document.createElement('pre');
-  message.innerText = data.error.message;
-  stackTrace.innerText = data.error.stack;
-  overlay.innerHTML = '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' + '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' + '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' + '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' + '<pre>' + stackTrace.innerHTML + '</pre>' + '</div>';
-  return overlay;
-}
-
-function getParents(bundle, id) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return [];
-  }
-
-  var parents = [];
-  var k, d, dep;
-
-  for (k in modules) {
-    for (d in modules[k][1]) {
-      dep = modules[k][1][d];
-
-      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
-        parents.push(k);
-      }
-    }
-  }
-
-  if (bundle.parent) {
-    parents = parents.concat(getParents(bundle.parent, id));
-  }
-
-  return parents;
-}
-
-function hmrApply(bundle, asset) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return;
-  }
-
-  if (modules[asset.id] || !bundle.parent) {
-    var fn = new Function('require', 'module', 'exports', asset.generated.js);
-    asset.isNew = !modules[asset.id];
-    modules[asset.id] = [fn, asset.deps];
-  } else if (bundle.parent) {
-    hmrApply(bundle.parent, asset);
-  }
-}
-
-function hmrAcceptCheck(bundle, id) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return;
-  }
-
-  if (!modules[id] && bundle.parent) {
-    return hmrAcceptCheck(bundle.parent, id);
-  }
-
-  if (checkedAssets[id]) {
-    return;
-  }
-
-  checkedAssets[id] = true;
-  var cached = bundle.cache[id];
-  assetsToAccept.push([bundle, id]);
-
-  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
-    return true;
-  }
-
-  return getParents(global.parcelRequire, id).some(function (id) {
-    return hmrAcceptCheck(global.parcelRequire, id);
-  });
-}
-
-function hmrAcceptRun(bundle, id) {
-  var cached = bundle.cache[id];
-  bundle.hotData = {};
-
-  if (cached) {
-    cached.hot.data = bundle.hotData;
-  }
-
-  if (cached && cached.hot && cached.hot._disposeCallbacks.length) {
-    cached.hot._disposeCallbacks.forEach(function (cb) {
-      cb(bundle.hotData);
-    });
-  }
-
-  delete bundle.cache[id];
-  bundle(id);
-  cached = bundle.cache[id];
-
-  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
-    cached.hot._acceptCallbacks.forEach(function (cb) {
-      cb();
-    });
-
-    return true;
-  }
-}
-},{}]},{},["../node_modules/parcel/src/builtins/hmr-runtime.js","gamemode.ts"], null)
+},{"./utils":"utils.ts","./event/onHit":"event/onHit.ts","./event/onRegenFinish":"event/onRegenFinish.ts","./property/isDead":"property/isDead.ts","./property/isSprinting":"property/isSprinting.ts","./property/consoleOutput":"property/consoleOutput.ts","./sync/ActorValues":"sync/ActorValues.ts","./spawnSystem":"spawnSystem.ts","./Commands":"Commands.ts","./DevCommands":"DevCommands.ts"}]},{},["gamemode.ts"], null)
