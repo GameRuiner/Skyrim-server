@@ -1,0 +1,30 @@
+{
+	"name": "skyrim-server",
+	"version": "1.0.0",
+	"description": "",
+	"main": "gamemode.js",
+	"scripts": {
+		"start": ".\\skymp5-server.exe",
+		"launch": "..\\SkyMPLauncher.exe",
+		"serve": "parcel serve src/gamemode.ts --out-dir ./ --no-source-maps",
+		"build": "parcel build src/gamemode.ts --out-dir ./ --no-source-maps --no-minify",
+		"postbuild1": "node fix.js",
+		"prebuild:html": "rimraf ./html/www",
+		"serve:html": "npm run prebuild:html && parcel ./html/*.html --out-dir ./html/www --no-source-maps",
+		"build:html": "parcel build ./html/*.html --out-dir ./html/www --no-source-maps",
+		"deploy:html": "npm run build:html && firebase deploy",
+		"lint": "tsc --noEmit",
+		"refreshGitignore": "git rm -r --cached . && git add . && git commit -m \".gitignore is now working\""
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/node": "^14.14.20",
+		"parcel": "^1.12.4",
+		"prepend": "^1.0.2",
+		"rimraf": "^3.0.2",
+		"sass": "^1.32.4",
+		"typescript": "^4.1.3"
+	}
+}
