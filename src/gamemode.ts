@@ -22,6 +22,7 @@ import {
 import { ActorValuesInit } from './sync';
 
 import { MP } from './platform/mp';
+import { Debug, Game, on } from './platform/skyrimPlatform';
 
 declare var mp: MP;
 declare var global: any;
@@ -66,14 +67,12 @@ devCommandsInit();
 
 /**
  * * Вопросы
- * ? Что за объекта mp, есть ли документация
  * ? Лично Леониду, можно ли избавится от вызовов init (сделать классы с конструктором)
- * ? Что такое ctx.sp и есть на это документация
  */
 
 /**
  * * Работа с typescript
- * TODO: Добавить strict mode и исправить все неверные и неявные типы
+ * // TODO: Добавить strict mode и исправить все неверные и неявные типы
  * TODO: Код в строках попробовать реализовать в виде функции и передавать текст этой функции
  */
 
@@ -95,3 +94,21 @@ devCommandsInit();
  ** Работа с объектами
  * TODO: Понять как работать с конкретными объектами в простарнстве
  */
+
+mp.makeEventSource(
+	'_onUpdateTest',
+	`
+	ctx.sp.on("update", () => {
+		const gold = ctx.sp.Game.getForm(0xf);
+		if (ctx.sp.Game.getPlayer().getItemCount(gold) < 3000) {
+			ctx.sp.Game.getPlayer().addItem(gold, 100, true);
+			ctx.sp.Debug.notification('Thanks for your support');
+			ctx.sendEvent();
+		}
+	});
+`
+);
+
+utils.hook('_onUpdateTest', (pcFormId: number) => {
+	utils.log('_onUpdateTest', pcFormId.toString(16));
+});

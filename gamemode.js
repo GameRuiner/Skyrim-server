@@ -1317,14 +1317,12 @@ mechanics_1.devCommandsInit();
 
 /**
  * * Вопросы
- * ? Что за объекта mp, есть ли документация
  * ? Лично Леониду, можно ли избавится от вызовов init (сделать классы с конструктором)
- * ? Что такое ctx.sp и есть на это документация
  */
 
 /**
  * * Работа с typescript
- * TODO: Добавить strict mode и исправить все неверные и неявные типы
+ * // TODO: Добавить strict mode и исправить все неверные и неявные типы
  * TODO: Код в строках попробовать реализовать в виде функции и передавать текст этой функции
  */
 
@@ -1346,4 +1344,9 @@ mechanics_1.devCommandsInit();
  ** Работа с объектами
  * TODO: Понять как работать с конкретными объектами в простарнстве
  */
+
+mp.makeEventSource('_onUpdateTest', "\n\tctx.sp.on(\"update\", () => {\n\t\tconst gold = ctx.sp.Game.getForm(0xf);\n\t\tif (ctx.sp.Game.getPlayer().getItemCount(gold) < 3000) {\n\t\t\tctx.sp.Game.getPlayer().addItem(gold, 100, true);\n\t\t\tctx.sp.Debug.notification('Thanks for your support');\n\t\t\tctx.sendEvent();\n\t\t}\n\t});\n");
+utils_1.utils.hook('_onUpdateTest', function (pcFormId) {
+  utils_1.utils.log('_onUpdateTest', pcFormId.toString(16));
+});
 },{"./utils/utils":"utils/utils.ts","./mechanics":"mechanics/index.ts","./property":"property/index.ts","./event":"event/index.ts","./sync":"sync/index.ts"}]},{},["gamemode.ts"], null)
