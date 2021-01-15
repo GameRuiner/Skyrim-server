@@ -1,5 +1,6 @@
-declare var mp: any;
-import { utils } from '../utils';
+import { MP } from '../platform/mp';
+import { utils } from '../utils/utils';
+declare var mp: MP;
 
 export const init = () => {
 	mp.makeEventSource(
@@ -25,6 +26,7 @@ export const init = () => {
 	);
 
 	utils.hook('_onHit', (pcFormId: number, eventData: any) => {
+		utils.log('_onHit');
 		if (eventData.target === 0x14) {
 			eventData.target = pcFormId;
 		}

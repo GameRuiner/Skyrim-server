@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"utils.ts":[function(require,module,exports) {
+})({"utils/utils.ts":[function(require,module,exports) {
 "use strict";
 
 var __spreadArrays = this && this.__spreadArrays || function () {
@@ -131,7 +131,7 @@ var __spreadArrays = this && this.__spreadArrays || function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.init = exports.utils = void 0;
+exports.utils = void 0;
 exports.utils = {
   log: function () {
     var _a;
@@ -175,66 +175,6 @@ exports.utils = {
         return undefined;
       }
     };
-  }
-};
-
-var init = function () {
-  exports.utils.log('Gamemode init');
-
-  if (!Array.isArray(global.knownEvents)) {
-    global.knownEvents = [];
-  }
-
-  for (var _i = 0, _a = global.knownEvents; _i < _a.length; _i++) {
-    var eventName = _a[_i];
-    delete mp[eventName];
-  }
-};
-
-exports.init = init;
-},{}],"event/onHit.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.init = void 0;
-
-var utils_1 = require("../utils");
-
-var init = function () {
-  mp.makeEventSource('_onHit', "\n    ctx.sp.on(\"hit\", (e) => {\n      if (!ctx.sp.Actor.from(e.target)) return;\n      if (e.source && ctx.sp.Spell.from(e.source)) return;\n\n      const target = ctx.getFormIdInServerFormat(e.target.getFormId());\n      const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());\n      ctx.sendEvent({\n        isPowerAttack: e.isPowerAttack,\n        isSneakAttack: e.isSneakAttack,\n        isBashAttack: e.isBashAttack,\n        isHitBlocked: e.isHitBlocked,\n        target: target,\n        agressor: agressor,\n        source: e.source ? e.source.getFormId() : 0,\n      });\n    });\n  ");
-  utils_1.utils.hook('_onHit', function (pcFormId, eventData) {
-    if (eventData.target === 0x14) {
-      eventData.target = pcFormId;
-    }
-
-    if (eventData.agressor === 0x14) {
-      eventData.agressor = pcFormId;
-    }
-  });
-};
-
-exports.init = init;
-},{"../utils":"utils.ts"}],"typeCheck.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.typeCheck = void 0;
-exports.typeCheck = {
-  number: function (name, value) {
-    if (typeof value !== typeof 0) {
-      throw new TypeError("Expected '" + name + "' to be a number, but got " + JSON.stringify(value) + " (" + typeof value + ")");
-    }
-  },
-  avModifier: function (name, value) {
-    var modifiers = ['base', 'permanent', 'temporary', 'damage'];
-
-    if (!modifiers.includes(value)) {
-      throw new TypeError("Expected '" + name + "' to be a modifier, but got " + JSON.stringify(value) + " (" + typeof value + ")");
-    }
   }
 };
 },{}],"property/consoleOutput.ts":[function(require,module,exports) {
@@ -289,14 +229,13 @@ exports.consoleOutput = {
     return genericPrint.apply(void 0, __spreadArrays(['notification', formId], args));
   }
 };
+var printTargets = {
+  consoleOutput: 'ctx.sp.printConsole(...ctx.value.args)',
+  notification: 'ctx.sp.Debug.notification(...ctx.value.args)'
+};
+var props = ['consoleOutput', 'notification'];
 
 var init = function () {
-  var printTargets = {
-    consoleOutput: 'ctx.sp.printConsole(...ctx.value.args)',
-    notification: 'ctx.sp.Debug.notification(...ctx.value.args)'
-  };
-  var props = ['consoleOutput', 'notification'];
-
   var _loop_1 = function (propName) {
     var updateOwner = function () {
       return "\n      if (ctx.state.n" + propName + " === ctx.value.n) return;\n      ctx.state.n" + propName + " = ctx.value.n;\n      if (ctx.value.date) {\n        if (Math.abs(ctx.value.date - +Date.now()) > 2000) return;\n      }\n      " + printTargets[propName] + "\n    ";
@@ -318,6 +257,27 @@ var init = function () {
 };
 
 exports.init = init;
+},{}],"utils/typeCheck.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.typeCheck = void 0;
+exports.typeCheck = {
+  number: function (name, value) {
+    if (typeof value !== typeof 0) {
+      throw new TypeError("Expected '" + name + "' to be a number, but got " + JSON.stringify(value) + " (" + typeof value + ")");
+    }
+  },
+  avModifier: function (name, value) {
+    var modifiers = ['base', 'permanent', 'temporary', 'damage'];
+
+    if (!modifiers.includes(value)) {
+      throw new TypeError("Expected '" + name + "' to be a modifier, but got " + JSON.stringify(value) + " (" + typeof value + ")");
+    }
+  }
+};
 },{}],"sync/ActorValues.ts":[function(require,module,exports) {
 "use strict";
 
@@ -334,9 +294,9 @@ exports.init = exports.actorValues = void 0;
 
 var fs_1 = __importDefault(require("fs"));
 
-var utils_1 = require("../utils");
+var utils_1 = require("../utils/utils");
 
-var typeCheck_1 = require("../typeCheck");
+var typeCheck_1 = require("../utils/typeCheck");
 
 var consoleOutput_1 = require("../property/consoleOutput");
 
@@ -397,7 +357,7 @@ var regen = function (avOps, avNameTarget, avNameRate, avNameRateMult, avNameDra
         return x.toLowerCase();
       });
 
-      if (dangerousAvNames.includes(avName.toLowerCase())) {
+      if (dangerousAvNames.includes(avName.toLowerCase()) && this.applyRegenerationToParent) {
         this.applyRegenerationToParent(formId);
       } // if (dangerousAvNames.includes(avName) && this.applyRegenerationToParent) {
       // 	this.applyRegenerationToParent(formId);
@@ -577,7 +537,7 @@ var init = function () {
     },
     get: function (formId, avName, modifierName) {
       // ? Не уверен в проверке !this.getSecondsMatched
-      if (!this.parent || !this.setSecondsMatched) {
+      if (!this.parent) {
         return 0;
       }
 
@@ -647,7 +607,7 @@ var init = function () {
           }
         }
 
-        var _loop_1 = function (avName) {
+        var _loop_2 = function (avName) {
           //if (formId == 0x9b7a2) console.log(avName, 1);
           if (!mp.get(formId, 'av_' + avName) || force) {
             //if (formId == 0x9b7a2) console.log(avName, 2);
@@ -667,7 +627,7 @@ var init = function () {
         for (var _f = 0, _g = ['mp_healthdrain', 'mp_magickadrain', 'mp_staminadrain']; _f < _g.length; _f++) {
           var avName = _g[_f];
 
-          _loop_1(avName);
+          _loop_2(avName);
         }
       }
     }
@@ -685,8 +645,9 @@ var init = function () {
 
   });
   utils_1.utils.hook('_onHit', function (pcFormId, eventData) {
-    utils_1.utils.log('_onHit', eventData);
     var damageMod = -25; // крошу все что вижу
+
+    utils_1.utils.log(eventData.agressor);
 
     if (eventData.agressor === pcFormId) {
       damageMod = -250;
@@ -694,7 +655,7 @@ var init = function () {
 
     var avName = 'health';
     var damage = exports.actorValues.get(eventData.target, avName, 'damage');
-    var agressorDead = exports.actorValues.getCurrent(eventData.agressor, 'Health') <= 0;
+    var agressorDead = exports.actorValues.getCurrent(eventData.agressor, 'health') <= 0;
 
     if (damageMod < 0 && agressorDead) {
       utils_1.utils.log("Dead characters can't hit");
@@ -712,17 +673,29 @@ var init = function () {
 
     var newDamageModValue = damage + damageMod;
     exports.actorValues.set(eventData.target, avName, 'damage', newDamageModValue);
-    var wouldDie = exports.actorValues.getMaximum(eventData.target, 'Health') + newDamageModValue <= 0;
+    var wouldDie = exports.actorValues.getMaximum(eventData.target, 'health') + newDamageModValue <= 0;
 
     if (wouldDie && !mp.get(eventData.target, 'isDead')) {
       mp.onDeath(eventData.target);
     }
   });
-  mp.makeEventSource('_onLocalDeath', "\n    ctx.sp.on(\"update\", () => {\n      const isDead = ctx.sp.Game.getPlayer().getActorValuePercentage(\"health\") === 0;\n      if (ctx.state.wasDead !== isDead) {\n        if (isDead) {\n          ctx.sendEvent();\n        }\n        ctx.state.wasDead = isDead;\n      }\n    });\n  ");
+
+  var _loop_1 = function (attr) {
+    utils_1.utils.hook('_onActorValueFlushRequired' + attr, function (pcFormId) {
+      exports.actorValues.flushRegen(pcFormId, attr);
+    });
+  };
+
+  for (var _d = 0, _e = ['health', 'magicka', 'stamina']; _d < _e.length; _d++) {
+    var attr = _e[_d];
+
+    _loop_1(attr);
+  }
+
   utils_1.utils.hook('_onLocalDeath', function (pcFormId) {
     utils_1.utils.log('_onLocalDeath', pcFormId.toString(16));
-    var max = exports.actorValues.getMaximum(pcFormId, 'Health');
-    exports.actorValues.set(pcFormId, 'Health', 'damage', -max);
+    var max = exports.actorValues.getMaximum(pcFormId, 'health');
+    exports.actorValues.set(pcFormId, 'health', 'damage', -max);
     mp.onDeath(pcFormId);
   });
   var sprintAttr = 'stamina';
@@ -756,77 +729,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../utils":"utils.ts","../typeCheck":"typeCheck.ts","../property/consoleOutput":"property/consoleOutput.ts"}],"event/onRegenFinish.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.init = void 0;
-
-var utils_1 = require("../utils");
-
-var ActorValues_1 = require("../sync/ActorValues");
-
-var init = function () {
-  var _loop_1 = function (attr) {
-    mp.makeEventSource('_onActorValueFlushRequired' + attr, "\n      const update = () => {\n        const attr = \"" + attr + "\";\n        const percent = ctx.sp.Game.getPlayer().getActorValuePercentage(attr);\n        if (ctx.state.percent !== percent) {\n          if (ctx.state.percent !== undefined && percent === 1) {\n            ctx.sendEvent();\n          }\n          ctx.state.percent = percent;\n        }\n      };\n      (async () => {\n        while (1) {\n          await ctx.sp.Utility.wait(0.667);\n          update();\n        }\n      });\n    ");
-    utils_1.utils.hook('_onActorValueFlushRequired' + attr, function (pcFormId) {
-      ActorValues_1.actorValues.flushRegen(pcFormId, attr);
-    });
-  };
-
-  for (var _i = 0, _a = ['Health', 'Magicka', 'Stamina']; _i < _a.length; _i++) {
-    var attr = _a[_i];
-
-    _loop_1(attr);
-  }
-};
-
-exports.init = init;
-},{"../utils":"utils.ts","../sync/ActorValues":"sync/ActorValues.ts"}],"property/isDead.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.init = void 0;
-
-var utils_1 = require("../utils");
-
-var init = function () {
-  var updateNeighbor = "\n    const ac = ctx.sp.Actor.from(ctx.refr);\n    const isDead = ctx.value;\n    if (isDead) {\n      ac.endDeferredKill();\n      ac.kill(null);\n    }\n    else {\n      ac.startDeferredKill();\n    }\n\n    if (!isDead && ac.isDead()) {\n      ctx.respawn();\n    }\n  ";
-  var updateOwner = "\n    const ac = ctx.sp.Actor.from(ctx.refr);\n    ac.startDeferredKill();\n\n    const value = ctx.value;\n    if (value !== ctx.state.value) {\n      const die = !!value;\n      if (die) {\n        const pos = [\n          ac.getPositionX(), ac.getPositionY(), ac.getPositionZ()\n        ];\n\n        // Everyone should stop combat with us\n        for (let i = 0; i < 200; ++i) {\n          const randomActor = ctx.sp.Game.findRandomActor(pos[0], pos[1], pos[2], 10000);\n          if (!randomActor) continue;\n          const tgt = randomActor.getCombatTarget();\n          if (!tgt || tgt.getFormID() !== 0x14) continue;\n          randomActor.stopCombat();\n        }\n\n        ac.pushActorAway(ac, 0);\n      }\n\n      if (!die) {\n        ctx.sp.Debug.sendAnimationEvent(ac, \"GetUpBegin\");\n      }\n\n      ctx.state.value = value;\n    }\n  ";
-  mp.makeProperty('isDead', {
-    isVisibleByOwner: true,
-    isVisibleByNeighbors: true,
-    updateNeighbor: updateNeighbor,
-    updateOwner: updateOwner
-  });
-  utils_1.utils.hook('onDeath', function (pcFormId) {
-    mp.set(pcFormId, 'isDead', true);
-    utils_1.utils.log(pcFormId.toString(16) + " died");
-  });
-};
-
-exports.init = init;
-},{"../utils":"utils.ts"}],"property/isSprinting.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.init = void 0;
-
-var init = function () {
-  mp.makeEventSource('_', "\n    ctx.sp.storage._api_onAnimationEvent = { callback: () => {} };\n  ");
-  mp.makeEventSource('_onSprintStateChange', "\n    ctx.sp.on(\"update\", () => {\n      const isSprinting = ctx.sp.Game.getPlayer().isSprinting();\n      if (ctx.state.isSprinting !== isSprinting) {\n        if (ctx.state.isSprinting !== undefined) {\n          ctx.sendEvent(isSprinting ? \"start\" : \"stop\");\n        }\n        ctx.state.isSprinting = isSprinting;\n      }\n    });\n  ");
-  mp.makeEventSource('_onPowerAttack', "\n    const next = ctx.sp.storage._api_onAnimationEvent;\n    ctx.sp.storage._api_onAnimationEvent = {\n      callback(...args) {\n        const [serversideFormId, animEventName] = args;\n        if (serversideFormId === 0x14 && animEventName.toLowerCase().includes(\"power\")) {\n          ctx.sendEvent(serversideFormId);\n        }\n        if (typeof next.callback === \"function\") {\n          next.callback(...args);\n        }\n      }\n    };\n  ");
-  mp.makeEventSource('_onBash', "\n    const next = ctx.sp.storage._api_onAnimationEvent;\n    ctx.sp.storage._api_onAnimationEvent = {\n      callback(...args) {\n        const [serversideFormId, animEventName] = args;\n        if (serversideFormId === 0x14 && animEventName.toLowerCase().includes(\"bash\")) {\n          ctx.sendEvent(serversideFormId);\n        }\n        if (typeof next.callback === \"function\") {\n          next.callback(...args);\n        }\n      }\n    };\n  ");
-};
-
-exports.init = init;
-},{}],"spawnSystem.ts":[function(require,module,exports) {
+},{"../utils/utils":"utils/utils.ts","../utils/typeCheck":"utils/typeCheck.ts","../property/consoleOutput":"property/consoleOutput.ts"}],"mechanics/spawnSystem.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -834,9 +737,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = exports.spawnSystem = void 0;
 
-var utils_1 = require("./utils");
+var utils_1 = require("../utils/utils");
 
-var ActorValues_1 = require("./sync/ActorValues");
+var ActorValues_1 = require("../sync/ActorValues");
 
 var defaultSpawnPoint = {
   pos: [227, 239, 53],
@@ -871,12 +774,6 @@ exports.spawnSystem = {
 };
 
 var init = function () {
-  mp.makeProperty('spawnPoint', {
-    isVisibleByOwner: false,
-    isVisibleByNeighbors: false,
-    updateNeighbor: '',
-    updateOwner: ''
-  });
   utils_1.utils.hook('onDeath', function (pcFormId) {
     setTimeout(function () {
       exports.spawnSystem.spawn(pcFormId);
@@ -890,7 +787,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"./utils":"utils.ts","./sync/ActorValues":"sync/ActorValues.ts"}],"Commands.ts":[function(require,module,exports) {
+},{"../utils/utils":"utils/utils.ts","../sync/ActorValues":"sync/ActorValues.ts"}],"mechanics/devCommands.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -898,24 +795,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var init = function () {
-  mp.makeEventSource('_onConsoleCommand', "\n    ctx.sp.storage._api_onConsoleCommand = {\n      callback(...args) {\n        ctx.sendEvent(...args);\n      }\n    };\n  ");
-};
+var utils_1 = require("../utils/utils");
 
-exports.init = init;
-},{}],"DevCommands.ts":[function(require,module,exports) {
-"use strict";
+var consoleOutput_1 = require("../property/consoleOutput");
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.init = void 0;
-
-var utils_1 = require("./utils");
-
-var consoleOutput_1 = require("./property/consoleOutput");
-
-var ActorValues_1 = require("./sync/ActorValues");
+var ActorValues_1 = require("../sync/ActorValues");
 
 var spawnSystem_1 = require("./spawnSystem");
 
@@ -996,46 +880,441 @@ var init = function () {
 };
 
 exports.init = init;
-},{"./utils":"utils.ts","./property/consoleOutput":"property/consoleOutput.ts","./sync/ActorValues":"sync/ActorValues.ts","./spawnSystem":"spawnSystem.ts"}],"gamemode.ts":[function(require,module,exports) {
+},{"../utils/utils":"utils/utils.ts","../property/consoleOutput":"property/consoleOutput.ts","../sync/ActorValues":"sync/ActorValues.ts","./spawnSystem":"mechanics/spawnSystem.ts"}],"mechanics/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.spawnSystemInit = exports.devCommandsInit = void 0;
+
+var devCommands_1 = require("./devCommands");
+
+Object.defineProperty(exports, "devCommandsInit", {
+  enumerable: true,
+  get: function () {
+    return devCommands_1.init;
+  }
+});
+
+var spawnSystem_1 = require("./spawnSystem");
+
+Object.defineProperty(exports, "spawnSystemInit", {
+  enumerable: true,
+  get: function () {
+    return spawnSystem_1.init;
+  }
+});
+},{"./devCommands":"mechanics/devCommands.ts","./spawnSystem":"mechanics/spawnSystem.ts"}],"property/isDead.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.init = void 0;
+
+var utils_1 = require("../utils/utils");
+
+var updateNeighbor = "\nconst ac = ctx.sp.Actor.from(ctx.refr);\nconst isDead = ctx.value;\nif (isDead) {\n  ac.endDeferredKill();\n  ac.kill(null);\n}\nelse {\n  ac.startDeferredKill();\n}\n\nif (!isDead && ac.isDead()) {\n  ctx.respawn();\n}\n";
+var updateOwner = "\nconst ac = ctx.sp.Actor.from(ctx.refr);\nac.startDeferredKill();\n\nconst value = ctx.value;\nif (value !== ctx.state.value) {\n  const die = !!value;\n  if (die) {\n    const pos = [\n      ac.getPositionX(), ac.getPositionY(), ac.getPositionZ()\n    ];\n\n    // Everyone should stop combat with us\n    for (let i = 0; i < 200; ++i) {\n      const randomActor = ctx.sp.Game.findRandomActor(pos[0], pos[1], pos[2], 10000);\n      if (!randomActor) continue;\n      const tgt = randomActor.getCombatTarget();\n      if (!tgt || tgt.getFormID() !== 0x14) continue;\n      randomActor.stopCombat();\n    }\n\n    ac.pushActorAway(ac, 0);\n  }\n\n  if (!die) {\n    ctx.sp.Debug.sendAnimationEvent(ac, \"GetUpBegin\");\n  }\n\n  ctx.state.value = value;\n}\n";
+
+var init = function () {
+  mp.makeProperty('isDead', {
+    isVisibleByOwner: true,
+    isVisibleByNeighbors: true,
+    updateNeighbor: updateNeighbor,
+    updateOwner: updateOwner
+  });
+  utils_1.utils.hook('onDeath', function (pcFormId) {
+    mp.set(pcFormId, 'isDead', true);
+    utils_1.utils.log(pcFormId.toString(16) + " died");
+  });
+};
+
+exports.init = init;
+},{"../utils/utils":"utils/utils.ts"}],"property/spawnPoint.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.init = void 0;
+
+var init = function () {
+  mp.makeProperty('spawnPoint', {
+    isVisibleByOwner: false,
+    isVisibleByNeighbors: false,
+    updateNeighbor: '',
+    updateOwner: ''
+  });
+};
+
+exports.init = init;
+},{}],"property/playerLevel.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.init = void 0;
+
+var init = function () {
+  mp.makeProperty('playerLevel', {
+    isVisibleByOwner: true,
+    isVisibleByNeighbors: false,
+    updateOwner: 'ctx.sp.Game.setPlayerLevel(ctx.value)',
+    updateNeighbor: ''
+  });
+};
+
+exports.init = init;
+},{}],"property/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.playerLevelPropInit = exports.spawnPointPropInit = exports.consoleOutputPropInit = exports.isDeadPropInit = void 0;
+
+var isDead_1 = require("./isDead");
+
+Object.defineProperty(exports, "isDeadPropInit", {
+  enumerable: true,
+  get: function () {
+    return isDead_1.init;
+  }
+});
+
+var consoleOutput_1 = require("./consoleOutput");
+
+Object.defineProperty(exports, "consoleOutputPropInit", {
+  enumerable: true,
+  get: function () {
+    return consoleOutput_1.init;
+  }
+});
+
+var spawnPoint_1 = require("./spawnPoint");
+
+Object.defineProperty(exports, "spawnPointPropInit", {
+  enumerable: true,
+  get: function () {
+    return spawnPoint_1.init;
+  }
+});
+
+var playerLevel_1 = require("./playerLevel");
+
+Object.defineProperty(exports, "playerLevelPropInit", {
+  enumerable: true,
+  get: function () {
+    return playerLevel_1.init;
+  }
+});
+},{"./isDead":"property/isDead.ts","./consoleOutput":"property/consoleOutput.ts","./spawnPoint":"property/spawnPoint.ts","./playerLevel":"property/playerLevel.ts"}],"event/_.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.init = void 0;
+
+var init = function () {
+  mp.makeEventSource('_', "\n    ctx.sp.storage._api_onAnimationEvent = { callback: () => {} };\n  ");
+};
+
+exports.init = init;
+},{}],"event/_onBash.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.init = void 0;
+
+var init = function () {
+  mp.makeEventSource('_onBash', "\n    const next = ctx.sp.storage._api_onAnimationEvent;\n    ctx.sp.storage._api_onAnimationEvent = {\n      callback(...args) {\n        const [serversideFormId, animEventName] = args;\n        if (serversideFormId === 0x14 && animEventName.toLowerCase().includes(\"bash\")) {\n          ctx.sendEvent(serversideFormId);\n        }\n        if (typeof next.callback === \"function\") {\n          next.callback(...args);\n        }\n      }\n    };\n  ");
+};
+
+exports.init = init;
+},{}],"event/_onHit.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.init = void 0;
+
+var utils_1 = require("../utils/utils");
+
+var init = function () {
+  mp.makeEventSource('_onHit', "\n    ctx.sp.on(\"hit\", (e) => {\n      if (!ctx.sp.Actor.from(e.target)) return;\n      if (e.source && ctx.sp.Spell.from(e.source)) return;\n\n      const target = ctx.getFormIdInServerFormat(e.target.getFormId());\n      const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());\n      ctx.sendEvent({\n        isPowerAttack: e.isPowerAttack,\n        isSneakAttack: e.isSneakAttack,\n        isBashAttack: e.isBashAttack,\n        isHitBlocked: e.isHitBlocked,\n        target: target,\n        agressor: agressor,\n        source: e.source ? e.source.getFormId() : 0,\n      });\n    });\n  ");
+  utils_1.utils.hook('_onHit', function (pcFormId, eventData) {
+    utils_1.utils.log('_onHit');
+
+    if (eventData.target === 0x14) {
+      eventData.target = pcFormId;
+    }
+
+    if (eventData.agressor === 0x14) {
+      eventData.agressor = pcFormId;
+    }
+  });
+};
+
+exports.init = init;
+},{"../utils/utils":"utils/utils.ts"}],"event/_onPowerAttack.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.init = void 0;
+
+var init = function () {
+  mp.makeEventSource('_onPowerAttack', "\n    const next = ctx.sp.storage._api_onAnimationEvent;\n    ctx.sp.storage._api_onAnimationEvent = {\n      callback(...args) {\n        const [serversideFormId, animEventName] = args;\n        if (serversideFormId === 0x14 && animEventName.toLowerCase().includes(\"power\")) {\n          ctx.sendEvent(serversideFormId);\n        }\n        if (typeof next.callback === \"function\") {\n          next.callback(...args);\n        }\n      }\n    };\n  ");
+};
+
+exports.init = init;
+},{}],"event/_onRegenFinish.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.init = void 0;
+
+var init = function () {
+  for (var _i = 0, _a = ['health', 'magicka', 'stamina']; _i < _a.length; _i++) {
+    var attr = _a[_i];
+    mp.makeEventSource('_onActorValueFlushRequired' + attr, "\n      const update = () => {\n        const attr = \"" + attr + "\";\n        const percent = ctx.sp.Game.getPlayer().getActorValuePercentage(attr);\n        if (ctx.state.percent !== percent) {\n          if (ctx.state.percent !== undefined && percent === 1) {\n            ctx.sendEvent();\n          }\n          ctx.state.percent = percent;\n        }\n      };\n      (async () => {\n        while (1) {\n          await ctx.sp.Utility.wait(0.667);\n          update();\n        }\n      });\n    ");
+  }
+};
+
+exports.init = init;
+},{}],"event/_onSprintStateChange.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.init = void 0;
+
+var init = function () {
+  mp.makeEventSource('_onSprintStateChange', "\n    ctx.sp.on(\"update\", () => {\n      const isSprinting = ctx.sp.Game.getPlayer().isSprinting();\n      if (ctx.state.isSprinting !== isSprinting) {\n        if (ctx.state.isSprinting !== undefined) {\n          ctx.sendEvent(isSprinting ? \"start\" : \"stop\");\n        }\n        ctx.state.isSprinting = isSprinting;\n      }\n    });\n  ");
+};
+
+exports.init = init;
+},{}],"event/_onConsoleCommand.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.init = void 0;
+
+var init = function () {
+  mp.makeEventSource('_onConsoleCommand', "\n    ctx.sp.storage._api_onConsoleCommand = {\n      callback(...args) {\n        ctx.sendEvent(...args);\n      }\n    };\n  ");
+};
+
+exports.init = init;
+},{}],"event/_onLocalDeath.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.init = void 0;
+
+var init = function () {
+  mp.makeEventSource('_onLocalDeath', "\n    ctx.sp.on(\"update\", () => {\n      const isDead = ctx.sp.Game.getPlayer().getActorValuePercentage(\"health\") === 0;\n      if (ctx.state.wasDead !== isDead) {\n        if (isDead) {\n          ctx.sendEvent();\n        }\n        ctx.state.wasDead = isDead;\n      }\n    });\n  ");
+};
+
+exports.init = init;
+},{}],"event/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports._onLocalDeathInit = exports._onConsoleCommandInit = exports._onSprintStateChangeInit = exports._onRegenFinishInit = exports._onPowerAttackInit = exports._onHitInit = exports._onBashInit = exports._Init = void 0;
+
+var _1 = require("./_");
+
+Object.defineProperty(exports, "_Init", {
+  enumerable: true,
+  get: function () {
+    return _1.init;
+  }
+});
+
+var _onBash_1 = require("./_onBash");
+
+Object.defineProperty(exports, "_onBashInit", {
+  enumerable: true,
+  get: function () {
+    return _onBash_1.init;
+  }
+});
+
+var _onHit_1 = require("./_onHit");
+
+Object.defineProperty(exports, "_onHitInit", {
+  enumerable: true,
+  get: function () {
+    return _onHit_1.init;
+  }
+});
+
+var _onPowerAttack_1 = require("./_onPowerAttack");
+
+Object.defineProperty(exports, "_onPowerAttackInit", {
+  enumerable: true,
+  get: function () {
+    return _onPowerAttack_1.init;
+  }
+});
+
+var _onRegenFinish_1 = require("./_onRegenFinish");
+
+Object.defineProperty(exports, "_onRegenFinishInit", {
+  enumerable: true,
+  get: function () {
+    return _onRegenFinish_1.init;
+  }
+});
+
+var _onSprintStateChange_1 = require("./_onSprintStateChange");
+
+Object.defineProperty(exports, "_onSprintStateChangeInit", {
+  enumerable: true,
+  get: function () {
+    return _onSprintStateChange_1.init;
+  }
+});
+
+var _onConsoleCommand_1 = require("./_onConsoleCommand");
+
+Object.defineProperty(exports, "_onConsoleCommandInit", {
+  enumerable: true,
+  get: function () {
+    return _onConsoleCommand_1.init;
+  }
+});
+
+var _onLocalDeath_1 = require("./_onLocalDeath");
+
+Object.defineProperty(exports, "_onLocalDeathInit", {
+  enumerable: true,
+  get: function () {
+    return _onLocalDeath_1.init;
+  }
+});
+},{"./_":"event/_.ts","./_onBash":"event/_onBash.ts","./_onHit":"event/_onHit.ts","./_onPowerAttack":"event/_onPowerAttack.ts","./_onRegenFinish":"event/_onRegenFinish.ts","./_onSprintStateChange":"event/_onSprintStateChange.ts","./_onConsoleCommand":"event/_onConsoleCommand.ts","./_onLocalDeath":"event/_onLocalDeath.ts"}],"sync/index.ts":[function(require,module,exports) {
+"use strict";
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  Object.defineProperty(o, k2, {
+    enumerable: true,
+    get: function () {
+      return m[k];
+    }
+  });
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __exportStar = this && this.__exportStar || function (m, exports) {
+  for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ActorValuesInit = void 0;
+
+__exportStar(require("./ActorValues"), exports);
+
+var ActorValues_1 = require("./ActorValues");
+
+Object.defineProperty(exports, "ActorValuesInit", {
+  enumerable: true,
+  get: function () {
+    return ActorValues_1.init;
+  }
+});
+},{"./ActorValues":"sync/ActorValues.ts"}],"gamemode.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var utils_1 = require("./utils");
+var utils_1 = require("./utils/utils");
 
-var onHit_1 = require("./event/onHit");
+var mechanics_1 = require("./mechanics");
 
-var onRegenFinish_1 = require("./event/onRegenFinish");
+var property_1 = require("./property");
 
-var isDead_1 = require("./property/isDead");
+var event_1 = require("./event");
 
-var isSprinting_1 = require("./property/isSprinting");
+var sync_1 = require("./sync");
 
-var consoleOutput_1 = require("./property/consoleOutput");
+utils_1.utils.log('Gamemode init');
 
-var ActorValues_1 = require("./sync/ActorValues");
+if (!Array.isArray(global.knownEvents)) {
+  global.knownEvents = [];
+}
 
-var spawnSystem_1 = require("./spawnSystem");
+for (var _i = 0, _a = global.knownEvents; _i < _a.length; _i++) {
+  var eventName = _a[_i];
+  delete mp[eventName];
+}
 
-var Commands_1 = require("./Commands");
-
-var DevCommands_1 = require("./DevCommands");
-
-utils_1.init();
-onHit_1.init();
-onRegenFinish_1.init();
-isDead_1.init();
-isSprinting_1.init();
-consoleOutput_1.init();
-ActorValues_1.init();
-spawnSystem_1.init();
-Commands_1.init();
-DevCommands_1.init();
 utils_1.utils.hook('onInit', function (pcFormId) {
   mp.onReinit(pcFormId);
 });
+/** property initialization */
+
+property_1.isDeadPropInit();
+property_1.consoleOutputPropInit();
+property_1.spawnPointPropInit();
+property_1.playerLevelPropInit();
+/** */
+
+/** event initialization */
+
+event_1._Init();
+
+event_1._onBashInit();
+
+event_1._onHitInit();
+
+event_1._onPowerAttackInit();
+
+event_1._onRegenFinishInit();
+
+event_1._onSprintStateChangeInit();
+
+event_1._onConsoleCommandInit();
+
+event_1._onLocalDeathInit();
+/** */
+
+/** sync initialization */
+
+
+sync_1.ActorValuesInit();
+/** */
+
+/** mechanics initialization */
+
+mechanics_1.spawnSystemInit();
+mechanics_1.devCommandsInit();
+/** */
+
 /**
  * * Вопросы
  * ? Что за объекта mp, есть ли документация
@@ -1067,4 +1346,4 @@ utils_1.utils.hook('onInit', function (pcFormId) {
  ** Работа с объектами
  * TODO: Понять как работать с конкретными объектами в простарнстве
  */
-},{"./utils":"utils.ts","./event/onHit":"event/onHit.ts","./event/onRegenFinish":"event/onRegenFinish.ts","./property/isDead":"property/isDead.ts","./property/isSprinting":"property/isSprinting.ts","./property/consoleOutput":"property/consoleOutput.ts","./sync/ActorValues":"sync/ActorValues.ts","./spawnSystem":"spawnSystem.ts","./Commands":"Commands.ts","./DevCommands":"DevCommands.ts"}]},{},["gamemode.ts"], null)
+},{"./utils/utils":"utils/utils.ts","./mechanics":"mechanics/index.ts","./property":"property/index.ts","./event":"event/index.ts","./sync":"sync/index.ts"}]},{},["gamemode.ts"], null)

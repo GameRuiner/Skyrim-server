@@ -1,9 +1,10 @@
-declare var mp: any;
-import { utils } from './utils';
-import { consoleOutput } from './property/consoleOutput';
-import { actorValues } from './sync/ActorValues';
+import { utils } from '../utils/utils';
+import { consoleOutput } from '../property/consoleOutput';
+import { actorValues } from '../sync/ActorValues';
 import { spawnSystem } from './spawnSystem';
-import { AttrAll } from './types/Attr';
+import { AttrAll } from '../types/Attr';
+import { MP } from '../platform/mp';
+declare var mp: MP;
 
 const chooseFormId = (pcFormId: number, selectedFormId: number) => {
 	return selectedFormId ? selectedFormId : pcFormId;

@@ -1,6 +1,7 @@
-declare var mp: any;
-import { utils } from './utils';
-import { actorValues } from './sync/ActorValues';
+import { utils } from '../utils/utils';
+import { actorValues } from '../sync/ActorValues';
+import { MP } from '../platform/mp';
+declare var mp: MP;
 
 const defaultSpawnPoint = {
 	pos: [227, 239, 53],
@@ -37,13 +38,6 @@ export const spawnSystem = {
 };
 
 export const init = () => {
-	mp.makeProperty('spawnPoint', {
-		isVisibleByOwner: false,
-		isVisibleByNeighbors: false,
-		updateNeighbor: '',
-		updateOwner: '',
-	});
-
 	utils.hook('onDeath', (pcFormId: number) => {
 		setTimeout(() => {
 			spawnSystem.spawn(pcFormId);

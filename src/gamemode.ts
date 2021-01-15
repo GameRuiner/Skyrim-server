@@ -1,29 +1,68 @@
-declare var mp: any;
-import { utils, init as utilsInit } from './utils';
-import { init as onHitInit } from './event/onHit';
-import { init as onRegenFinishInit } from './event/onRegenFinish';
-import { init as isDeadInit } from './property/isDead';
-import { init as isSprintingInit } from './property/isSprinting';
-import { init as consoleOutputInit } from './property/consoleOutput';
-import { init as ActorValuesInit } from './sync/ActorValues';
-import { init as spawnSystemInit } from './spawnSystem';
-import { init as CommandsInit } from './Commands';
-import { init as DevCommandsInit } from './DevCommands';
+import { utils } from './utils/utils';
+import { devCommandsInit, spawnSystemInit } from './mechanics';
 
-utilsInit();
-onHitInit();
-onRegenFinishInit();
-isDeadInit();
-isSprintingInit();
-consoleOutputInit();
-ActorValuesInit();
-spawnSystemInit();
-CommandsInit();
-DevCommandsInit();
+import {
+	consoleOutputPropInit,
+	isDeadPropInit,
+	spawnPointPropInit,
+	playerLevelPropInit,
+} from './property';
 
+import {
+	_Init,
+	_onBashInit,
+	_onHitInit,
+	_onPowerAttackInit,
+	_onRegenFinishInit,
+	_onSprintStateChangeInit,
+	_onConsoleCommandInit,
+	_onLocalDeathInit,
+} from './event';
+
+import { ActorValuesInit } from './sync';
+
+import { MP } from './platform/mp';
+
+declare var mp: MP;
+declare var global: any;
+
+utils.log('Gamemode init');
+if (!Array.isArray(global.knownEvents)) {
+	global.knownEvents = [];
+}
+for (const eventName of global.knownEvents) {
+	delete mp[eventName];
+}
 utils.hook('onInit', (pcFormId: number) => {
 	mp.onReinit(pcFormId);
 });
+
+/** property initialization */
+isDeadPropInit();
+consoleOutputPropInit();
+spawnPointPropInit();
+playerLevelPropInit();
+/** */
+
+/** event initialization */
+_Init();
+_onBashInit();
+_onHitInit();
+_onPowerAttackInit();
+_onRegenFinishInit();
+_onSprintStateChangeInit();
+_onConsoleCommandInit();
+_onLocalDeathInit();
+/** */
+
+/** sync initialization */
+ActorValuesInit();
+/** */
+
+/** mechanics initialization */
+spawnSystemInit();
+devCommandsInit();
+/** */
 
 /**
  * * Вопросы

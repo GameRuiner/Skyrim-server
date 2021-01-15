@@ -1,5 +1,7 @@
+import { MP } from '../platform/mp';
+
 declare var global: any;
-declare var mp: any;
+declare var mp: MP;
 
 export const utils = {
 	log: (...args: any) => {
@@ -27,14 +29,4 @@ export const utils = {
 			}
 		};
 	},
-};
-
-export const init = () => {
-	utils.log('Gamemode init');
-	if (!Array.isArray(global.knownEvents)) {
-		global.knownEvents = [];
-	}
-	for (const eventName of global.knownEvents) {
-		delete mp[eventName];
-	}
 };

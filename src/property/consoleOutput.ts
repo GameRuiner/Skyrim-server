@@ -1,4 +1,6 @@
-declare var mp: any;
+import { MP } from '../platform/mp';
+
+declare var mp: MP;
 
 const genericPrint = (
 	propName: string,
@@ -23,13 +25,13 @@ export const consoleOutput: any = {
 		genericPrint('notification', formId, ...args),
 };
 
-export const init = () => {
-	const printTargets = {
-		consoleOutput: 'ctx.sp.printConsole(...ctx.value.args)',
-		notification: 'ctx.sp.Debug.notification(...ctx.value.args)',
-	};
+const printTargets = {
+	consoleOutput: 'ctx.sp.printConsole(...ctx.value.args)',
+	notification: 'ctx.sp.Debug.notification(...ctx.value.args)',
+};
+const props: printTargetsPropName[] = ['consoleOutput', 'notification'];
 
-	const props: printTargetsPropName[] = ['consoleOutput', 'notification'];
+export const init = () => {
 	for (const propName of props) {
 		const updateOwner = () => `
       if (ctx.state.n${propName} === ctx.value.n) return;

@@ -1,9 +1,9 @@
-declare var mp: any;
-import { utils } from '../utils';
-import { actorValues } from '../sync/ActorValues';
+import { Attr } from '../types/Attr';
+import { MP } from '../platform/mp';
+declare var mp: MP;
 
 export const init = () => {
-	for (const attr of ['Health', 'Magicka', 'Stamina']) {
+	for (const attr of ['health', 'magicka', 'stamina'] as Attr[]) {
 		mp.makeEventSource(
 			'_onActorValueFlushRequired' + attr,
 			`
@@ -25,8 +25,5 @@ export const init = () => {
       });
     `
 		);
-		utils.hook('_onActorValueFlushRequired' + attr, (pcFormId: number) => {
-			actorValues.flushRegen(pcFormId, attr);
-		});
 	}
 };

@@ -1,12 +1,10 @@
 import fs from 'fs';
 
-declare var mp: any;
-import { utils } from '../utils';
-import { typeCheck } from '../typeCheck';
+import { utils } from '../utils/utils';
+import { typeCheck } from '../utils/typeCheck';
 import { consoleOutput } from '../property/consoleOutput';
 import {
 	Attr,
-	AttrUppercase,
 	AttrRate,
 	AttrRateMult,
 	AttrDrain,
@@ -14,7 +12,9 @@ import {
 	AttrAll,
 } from '../types/Attr';
 import { Modifier } from '../types/Modifier';
+import { MP } from '../platform/mp';
 
+declare var mp: MP;
 export interface SecondsMatched {
 	[key: number]: number;
 }
@@ -198,8 +198,13 @@ let regen = (
 				avNameDrain,
 			];
 			// ? Убрал .toLowerCase(), проверка типов наверно должна решить проблему
-			dangerousAvNames = dangerousAvNames.map((x) => x.toLowerCase());
-			if (dangerousAvNames.includes(avName.toLowerCase())) {
+			dangerousAvNames = dangerousAvNames.map(
+				(x) => x.toLowerCase() as AttrAll
+			);
+			if (
+				dangerousAvNames.includes(avName.toLowerCase() as AttrAll) &&
+				this.applyRegenerationToParent
+			) {
 				this.applyRegenerationToParent(formId);
 			}
 			// if (dangerousAvNames.includes(avName) && this.applyRegenerationToParent) {
@@ -398,7 +403,7 @@ export const init = () => {
 		},
 		get(formId: number, avName: AttrAll, modifierName: Modifier) {
 			// ? Не уверен в проверке !this.getSecondsMatched
-			if (!this.parent || !this.setSecondsMatched) {
+			if (!this.parent) {
 				return 0;
 			}
 			return this.parent.get(formId, avName, modifierName);
@@ -411,6 +416,7 @@ export const init = () => {
 			this.parent.set(formId, avName, 'damage', previousDamage * k);
 		},
 	};
+
 	actorValues = {
 		set: (
 			formId: number,
@@ -492,9 +498,9 @@ export const init = () => {
 	});
 
 	utils.hook('_onHit', (pcFormId: number, eventData: any) => {
-		utils.log('_onHit', eventData);
 		let damageMod = -25;
 		// крошу все что вижу
+		utils.log(eventData.agressor);
 		if (eventData.agressor === pcFormId) {
 			damageMod = -250;
 		}
@@ -503,7 +509,7 @@ export const init = () => {
 		const damage = actorValues.get(eventData.target, avName, 'damage');
 
 		const agressorDead =
-			actorValues.getCurrent(eventData.agressor, 'Health') <= 0;
+			actorValues.getCurrent(eventData.agressor, 'health') <= 0;
 		if (damageMod < 0 && agressorDead) {
 			utils.log("Dead characters can't hit");
 			return;
@@ -525,32 +531,23 @@ export const init = () => {
 		actorValues.set(eventData.target, avName, 'damage', newDamageModValue);
 
 		const wouldDie =
-			actorValues.getMaximum(eventData.target, 'Health') + newDamageModValue <=
+			actorValues.getMaximum(eventData.target, 'health') + newDamageModValue <=
 			0;
 		if (wouldDie && !mp.get(eventData.target, 'isDead')) {
 			mp.onDeath(eventData.target);
 		}
 	});
 
-	mp.makeEventSource(
-		'_onLocalDeath',
-		`
-    ctx.sp.on("update", () => {
-      const isDead = ctx.sp.Game.getPlayer().getActorValuePercentage("health") === 0;
-      if (ctx.state.wasDead !== isDead) {
-        if (isDead) {
-          ctx.sendEvent();
-        }
-        ctx.state.wasDead = isDead;
-      }
-    });
-  `
-	);
+	for (const attr of ['health', 'magicka', 'stamina'] as Attr[]) {
+		utils.hook('_onActorValueFlushRequired' + attr, (pcFormId: number) => {
+			actorValues.flushRegen(pcFormId, attr);
+		});
+	}
 
 	utils.hook('_onLocalDeath', (pcFormId: number) => {
 		utils.log('_onLocalDeath', pcFormId.toString(16));
-		const max = actorValues.getMaximum(pcFormId, 'Health');
-		actorValues.set(pcFormId, 'Health', 'damage', -max);
+		const max = actorValues.getMaximum(pcFormId, 'health');
+		actorValues.set(pcFormId, 'health', 'damage', -max);
 		mp.onDeath(pcFormId);
 	});
 
