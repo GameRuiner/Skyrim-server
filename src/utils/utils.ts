@@ -34,7 +34,7 @@ export const utils = {
 export const getFunctionText = (func: Function): string => {
 	return func
 		.toString()
-		.replace(new RegExp('^.+[{]', 'gm'), '')
-		.replace(new RegExp('[}]$', 'gm'), '')
+		.replace(new RegExp('^.+[{]', 'm'), '')
+		.replace(new RegExp('[}]$', 'm'), '')
 		.trim();
 };

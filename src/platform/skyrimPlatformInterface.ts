@@ -28,48 +28,23 @@ export type SkyrimEventName =
 
 export type SkyrimEvent =
 	| skyrimPlatform.ActivateEvent
-	| skyrimPlatform.ActivateEvent
-	| skyrimPlatform.WaitStopEvent
 	| skyrimPlatform.WaitStopEvent
 	| skyrimPlatform.ObjectLoadedEvent
-	| skyrimPlatform.ObjectLoadedEvent
-	| skyrimPlatform.MoveAttachDetachEvent
 	| skyrimPlatform.MoveAttachDetachEvent
 	| skyrimPlatform.LockChangedEvent
-	| skyrimPlatform.LockChangedEvent
-	| skyrimPlatform.GrabReleaseEvent
 	| skyrimPlatform.GrabReleaseEvent
 	| skyrimPlatform.CellFullyLoadedEvent
-	| skyrimPlatform.CellFullyLoadedEvent
-	| skyrimPlatform.SwitchRaceCompleteEvent
 	| skyrimPlatform.SwitchRaceCompleteEvent
 	| skyrimPlatform.UniqueIDChangeEvent
-	| skyrimPlatform.UniqueIDChangeEvent
-	| skyrimPlatform.TrackedStatsEvent
 	| skyrimPlatform.TrackedStatsEvent
 	| skyrimPlatform.InitScriptEvent
-	| skyrimPlatform.InitScriptEvent
-	| skyrimPlatform.ResetEvent
 	| skyrimPlatform.ResetEvent
 	| skyrimPlatform.CombatEvent
-	| skyrimPlatform.CombatEvent
-	| skyrimPlatform.DeathEvent
-	| skyrimPlatform.DeathEvent
-	| skyrimPlatform.DeathEvent
 	| skyrimPlatform.DeathEvent
 	| skyrimPlatform.ContainerChangedEvent
-	| skyrimPlatform.ContainerChangedEvent
-	| skyrimPlatform.HitEvent
 	| skyrimPlatform.HitEvent
 	| skyrimPlatform.EquipEvent
-	| skyrimPlatform.EquipEvent
-	| skyrimPlatform.EquipEvent
-	| skyrimPlatform.EquipEvent
 	| skyrimPlatform.MagicEffectApplyEvent
-	| skyrimPlatform.MagicEffectApplyEvent
-	| skyrimPlatform.ActiveEffectApplyRemoveEvent
-	| skyrimPlatform.ActiveEffectApplyRemoveEvent
-	| skyrimPlatform.ActiveEffectApplyRemoveEvent
 	| skyrimPlatform.ActiveEffectApplyRemoveEvent;
 
 export interface SkyrimPlatform {

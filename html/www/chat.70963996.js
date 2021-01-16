@@ -118,9 +118,10 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"chat_files/chat.ts":[function(require,module,exports) {
-// const ipAndPort: string = window.location.href.split('/')[2];
+"use strict"; // const ipAndPort: string = window.location.href.split('/')[2];
 // const ip: string = ipAndPort.split(':')[0];
 // const uiPort: number = +ipAndPort.split(':')[1];
+
 var __spreadArrays = this && this.__spreadArrays || function () {
   for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
     s += arguments[i].length;
@@ -147,9 +148,9 @@ var dom_time = document.getElementById('header__time'),
     head_chatname = document.getElementById('header__chatname'),
     menu_ul = document.getElementById('menu__ul'),
     chat_sendform = document.getElementById('chat__sendform'),
-    chat_sendform_button = document.querySelector('#chat__sendform button');
-var chats = // по этой штуке находим какие менюхи соотносятся с какими чатами
-{
+    chat_sendform_button = document.querySelector('#chat__sendform button'); // по этой штуке находим какие менюхи соотносятся с какими чатами
+
+var chats = {
   menu__ul__1: 'chat__1',
   menu__ul__2: 'chat__2',
   menu__ul__3: 'chat__3',
@@ -159,8 +160,7 @@ var isScroll = true,
     // по этой штуке определяется, надо ли опускать скрол при появлении нового сообщения
 author_color = {};
 chat_sendform_button.addEventListener('click', function () {
-  var chat_uls = __spreadArrays(document.querySelectorAll('.chat__ul'));
-
+  var chat_uls = Array.from(document.querySelectorAll('.chat__ul'));
   var formData = new FormData(chat_sendform);
 
   for (var i = 0; i < chat_uls.length; i++) {
@@ -192,21 +192,26 @@ chat_sendform_button.addEventListener('click', function () {
 // 	chat_sendform.reset(); // отмена перезагрузки странцы, потом в ajax можно сделать, если будет ajax
 // };
 
-menu_ul.addEventListener('click', function (event) {
-  // event - слушатель на все вкладки менюхи
-  active(event.target);
-}); // т.к. нет скайримского времени на данный момент, то поставил реальное покачто
+if (menu_ul) {
+  menu_ul.addEventListener('click', function (event) {
+    // event - слушатель на все вкладки менюхи
+    active(event.target);
+  });
+} // т.к. нет скайримского времени на данный момент, то поставил реальное покачто
 
-setInterval(showTime, 1000);
 
-function showTime() {
-  dom_time.innerText = realTime();
+if (dom_time) {
+  var showTime = function showTime() {
+    dom_time.innerText = realTime();
+  };
+
+  setInterval(showTime, 1000);
 }
 
-function realTime() {
-  var time = new Date(),
-      hour = time.getHours().toString(),
-      minute = time.getMinutes().toString();
+var realTime = function realTime() {
+  var time = new Date();
+  var hour = time.getHours().toString();
+  var minute = time.getMinutes().toString();
 
   if (hour.length == 1) {
     hour = '0' + hour;
@@ -217,9 +222,9 @@ function realTime() {
   }
 
   return hour + ':' + minute;
-}
+};
 
-function active(elem) {
+var active = function active(elem) {
   // смена цвета вкладок менюхи и смена названия в хедере
   if (!elem.classList.contains('active')) {
     var menu_items = document.getElementsByClassName('menu__ul__item');
@@ -238,13 +243,18 @@ function active(elem) {
       chatShowing(chats[elem.id].replace('chat__', ''));
     }
 
-    if (elem.id == 'menu__ul__1') {
-      // либо можно по innerText
-      document.getElementById('chat__sendform').style.display = 'none';
-      document.getElementById('chatline').style.height = '295px';
-    } else {
-      document.getElementById('chat__sendform').style.display = 'flex';
-      document.getElementById('chatline').style.height = '265px';
+    var chat__sendform = document.getElementById('chat__sendform');
+    var chatline = document.getElementById('chatline');
+
+    if (chat__sendform && chatline) {
+      if (elem.id == 'menu__ul__1') {
+        // либо можно по innerText
+        chat__sendform.style.display = 'none';
+        chatline.style.height = '295px';
+      } else {
+        chat__sendform.style.display = 'flex';
+        chatline.style.height = '265px';
+      }
     } // хз какие будут вкладки, если есть уникальные названия, то сюда
 
 
@@ -262,7 +272,7 @@ function active(elem) {
         break;
     }
   }
-}
+};
 
 function addMenuItem(name) {
   var mdiv = document.createElement('li'),
@@ -497,7 +507,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "6842" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "11209" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -495,8 +495,7 @@ export const init = () => {
 	utils.hook('_onHit', (pcFormId: number, eventData: any) => {
 		let damageMod = -25;
 		// крошу все что вижу
-		utils.log(eventData.agressor);
-		if (eventData.agressor === pcFormId) {
+		if (eventData.agressor === pcFormId && eventData.target !== pcFormId) {
 			damageMod = -250;
 		}
 		const avName = 'health';

@@ -5,15 +5,19 @@ declare const mp: MP;
 declare const ctx: CTX;
 
 function setScale() {
-	ctx.refr.setScale(typeof ctx.value === 'number' ? ctx.value : 1);
-	//ctx.refr.getScale();
+	const defaultScale: number = 1;
+	const value: number = ctx.value ?? defaultScale;
+	if (value != ctx.state.value) {
+		ctx.refr.setScale(value);
+		ctx.state.value = value;
+	}
 }
 
 export const init = () => {
-	mp.makeProperty('playerScale', {
+	mp.makeProperty('scale', {
 		isVisibleByOwner: true,
-		isVisibleByNeighbors: false,
+		isVisibleByNeighbors: true,
 		updateOwner: getFunctionText(setScale),
-		updateNeighbor: '',
+		updateNeighbor: getFunctionText(setScale),
 	});
 };

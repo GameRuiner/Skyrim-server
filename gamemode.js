@@ -179,7 +179,7 @@ exports.utils = {
 };
 
 var getFunctionText = function (func) {
-  return func.toString().replace(new RegExp('^.+[{]', 'gm'), '').replace(new RegExp('[}]$', 'gm'), '').trim();
+  return func.toString().replace(new RegExp('^.+[{]', 'm'), '').replace(new RegExp('[}]$', 'm'), '').trim();
 };
 
 exports.getFunctionText = getFunctionText;
@@ -648,9 +648,7 @@ var init = function () {
   utils_1.utils.hook('_onHit', function (pcFormId, eventData) {
     var damageMod = -25; // крошу все что вижу
 
-    utils_1.utils.log(eventData.agressor);
-
-    if (eventData.agressor === pcFormId) {
+    if (eventData.agressor === pcFormId && eventData.target !== pcFormId) {
       damageMod = -250;
     }
 
@@ -969,6 +967,35 @@ var init = function () {
 };
 
 exports.init = init;
+},{}],"property/playerRace.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.init = void 0;
+
+function setRaceWeight() {
+  if (!(typeof ctx.value === 'number')) return;
+  ctx.refr.setWeight(ctx.value);
+}
+
+var init = function () {
+  mp.makeProperty('race', {
+    isVisibleByOwner: false,
+    isVisibleByNeighbors: false,
+    updateOwner: '',
+    updateNeighbor: ''
+  });
+  mp.makeProperty('raceWeight', {
+    isVisibleByOwner: false,
+    isVisibleByNeighbors: false,
+    updateOwner: '',
+    updateNeighbor: ''
+  });
+};
+
+exports.init = init;
 },{}],"utils/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -996,38 +1023,7 @@ Object.defineProperty(exports, "__esModule", {
 __exportStar(require("./typeCheck"), exports);
 
 __exportStar(require("./utils"), exports);
-},{"./typeCheck":"utils/typeCheck.ts","./utils":"utils/utils.ts"}],"property/playerRace.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.init = void 0;
-
-var utils_1 = require("../utils");
-
-function setRaceWeight() {
-  if (!(typeof ctx.value === 'number')) return;
-  ctx.refr.setWeight(ctx.value);
-}
-
-var init = function () {
-  mp.makeProperty('race', {
-    isVisibleByOwner: false,
-    isVisibleByNeighbors: false,
-    updateOwner: '',
-    updateNeighbor: ''
-  });
-  mp.makeProperty('raceWeight', {
-    isVisibleByOwner: true,
-    isVisibleByNeighbors: true,
-    updateOwner: utils_1.getFunctionText(setRaceWeight),
-    updateNeighbor: utils_1.getFunctionText(setRaceWeight)
-  });
-};
-
-exports.init = init;
-},{"../utils":"utils/index.ts"}],"property/scale.ts":[function(require,module,exports) {
+},{"./typeCheck":"utils/typeCheck.ts","./utils":"utils/utils.ts"}],"property/scale.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1038,15 +1034,23 @@ exports.init = void 0;
 var utils_1 = require("../utils");
 
 function setScale() {
-  ctx.refr.setScale(typeof ctx.value === 'number' ? ctx.value : 1); //ctx.refr.getScale();
+  var _a;
+
+  var defaultScale = 1;
+  var value = (_a = ctx.value) !== null && _a !== void 0 ? _a : defaultScale;
+
+  if (value != ctx.state.value) {
+    ctx.refr.setScale(value);
+    ctx.state.value = value;
+  }
 }
 
 var init = function () {
-  mp.makeProperty('playerScale', {
+  mp.makeProperty('scale', {
     isVisibleByOwner: true,
-    isVisibleByNeighbors: false,
+    isVisibleByNeighbors: true,
     updateOwner: utils_1.getFunctionText(setScale),
-    updateNeighbor: ''
+    updateNeighbor: utils_1.getFunctionText(setScale)
   });
 };
 
@@ -1449,8 +1453,45 @@ mechanics_1.devCommandsInit();
  */
 
 utils_1.utils.hook('onReinit', function (pcFormId, options) {
-  mp.set(pcFormId, 'raceWeight', 1);
-  utils_1.utils.log(pcFormId, mp.get(pcFormId, 'playerScale'));
-  utils_1.utils.log(pcFormId, mp.get(pcFormId, 'raceWeight')); // utils.log(pcFormId, mp.get(pcFormId, 'race'));
+  mp.set(pcFormId, 'scale', 1); // mp.set(pcFormId, 'raceWeight', 1);
+  // utils.log(pcFormId, mp.get(pcFormId, 'playerScale'));
+  // utils.log(pcFormId, mp.get(pcFormId, 'raceWeight'));
+  // utils.log(pcFormId, mp.get(pcFormId, 'race'));
+});
+
+function setHtml() {
+  ctx.sp.once('loadGame', function () {
+    var url = 'http://localhost:1234/chat.html';
+    ctx.sp.printConsole('load url ' + url);
+    ctx.sp.Browser.setVisible(true);
+    ctx.sp.Browser.loadUrl(url);
+    ctx.sendEvent(url);
+  });
+}
+
+mp.makeEventSource('_onInit2', utils_1.getFunctionText(setHtml));
+utils_1.utils.hook('_onInit2', function (pcformId, url) {
+  utils_1.utils.log('loadGame -> Browser -> loadUrl', pcformId, url);
+});
+
+function changeScaleOnHit() {
+  ctx.sp.on('hit', function (event) {
+    var e = event;
+    if (!ctx.sp.Actor.from(e.target)) return;
+    if (e.source && ctx.sp.Spell.from(e.source)) return;
+    var target = ctx.getFormIdInServerFormat(e.target.getFormID());
+    var agressor = ctx.getFormIdInServerFormat(e.agressor.getFormID());
+    ctx.sendEvent({
+      target: target,
+      agressor: agressor
+    });
+  });
+}
+
+mp.makeEventSource('_onHitScale', utils_1.getFunctionText(changeScaleOnHit));
+utils_1.utils.hook('_onHitScale', function (pcformId, eventData) {
+  var current = mp.get(eventData.target, 'scale');
+  mp.set(eventData.target, 'scale', current >= 1.5 ? 1 : 1.5);
+  utils_1.utils.log('_onHitScale', pcformId, eventData, current);
 });
 },{"./utils/utils":"utils/utils.ts","./mechanics":"mechanics/index.ts","./property":"property/index.ts","./event":"event/index.ts","./sync":"sync/index.ts"}]},{},["gamemode.ts"], null)

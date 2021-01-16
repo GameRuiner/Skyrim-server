@@ -17,9 +17,9 @@ export const init = () => {
 		updateNeighbor: '',
 	});
 	mp.makeProperty('raceWeight', {
-		isVisibleByOwner: true,
-		isVisibleByNeighbors: true,
-		updateOwner: getFunctionText(setRaceWeight),
-		updateNeighbor: getFunctionText(setRaceWeight),
+		isVisibleByOwner: false,
+		isVisibleByNeighbors: false,
+		updateOwner: '',
+		updateNeighbor: '',
 	});
 };

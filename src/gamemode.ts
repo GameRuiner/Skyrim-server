@@ -1,4 +1,4 @@
-import { utils } from './utils/utils';
+import { getFunctionText, utils } from './utils/utils';
 import { devCommandsInit, spawnSystemInit } from './mechanics';
 
 import {
@@ -24,6 +24,9 @@ import {
 import { ActorValuesInit } from './sync';
 
 import { MP } from './platform/mp';
+import { CTX, SkyrimEvent } from './platform';
+
+import { HitEvent } from './platform/skyrimPlatform';
 
 declare const mp: MP;
 declare var global: any;
@@ -99,8 +102,48 @@ devCommandsInit();
  */
 
 utils.hook('onReinit', (pcFormId: number, options: any) => {
-	mp.set(pcFormId, 'raceWeight', 1);
-	utils.log(pcFormId, mp.get(pcFormId, 'playerScale'));
-	utils.log(pcFormId, mp.get(pcFormId, 'raceWeight'));
+	mp.set(pcFormId, 'scale', 1);
+	// mp.set(pcFormId, 'raceWeight', 1);
+	// utils.log(pcFormId, mp.get(pcFormId, 'playerScale'));
+	// utils.log(pcFormId, mp.get(pcFormId, 'raceWeight'));
 	// utils.log(pcFormId, mp.get(pcFormId, 'race'));
+});
+
+declare const ctx: CTX;
+
+function setHtml() {
+	ctx.sp.once('loadGame', () => {
+		const url: string = 'http://localhost:1234/chat.html';
+		ctx.sp.printConsole('load url ' + url);
+		ctx.sp.Browser.setVisible(true);
+		ctx.sp.Browser.loadUrl(url);
+		ctx.sendEvent(url);
+	});
+}
+
+mp.makeEventSource('_onInit2', getFunctionText(setHtml));
+utils.hook('_onInit2', (pcformId: number, url: string) => {
+	utils.log('loadGame -> Browser -> loadUrl', pcformId, url);
+});
+
+function changeScaleOnHit() {
+	ctx.sp.on('hit', (event) => {
+		const e = event as HitEvent;
+		if (!(ctx.sp.Actor as any).from(e.target)) return;
+		if (e.source && (ctx.sp.Spell as any).from(e.source)) return;
+
+		const target = ctx.getFormIdInServerFormat(e.target.getFormID());
+		const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormID());
+		ctx.sendEvent({
+			target: target,
+			agressor: agressor,
+		});
+	});
+}
+
+mp.makeEventSource('_onHitScale', getFunctionText(changeScaleOnHit));
+utils.hook('_onHitScale', (pcformId: number, eventData: any) => {
+	const current = mp.get(eventData.target, 'scale');
+	mp.set(eventData.target, 'scale', current >= 1.5 ? 1 : 1.5);
+	utils.log('_onHitScale', pcformId, eventData, current);
 });

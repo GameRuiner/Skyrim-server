@@ -10,4 +10,5 @@ export interface CTX {
 	getFormIdInServerFormat: (formId: number) => number;
 	getFormIdInClientFormat: (formId: number) => number;
 	respawn: () => void;
+	sendEvent: (...args: any) => void;
 }
