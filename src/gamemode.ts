@@ -6,6 +6,8 @@ import {
 	isDeadPropInit,
 	spawnPointPropInit,
 	playerLevelPropInit,
+	playerRacePropInit,
+	scalePropInit,
 } from './property';
 
 import {
@@ -22,9 +24,8 @@ import {
 import { ActorValuesInit } from './sync';
 
 import { MP } from './platform/mp';
-import { Debug, Game, on } from './platform/skyrimPlatform';
 
-declare var mp: MP;
+declare const mp: MP;
 declare var global: any;
 
 utils.log('Gamemode init');
@@ -43,6 +44,8 @@ isDeadPropInit();
 consoleOutputPropInit();
 spawnPointPropInit();
 playerLevelPropInit();
+playerRacePropInit();
+scalePropInit();
 /** */
 
 /** event initialization */
@@ -95,20 +98,9 @@ devCommandsInit();
  * TODO: Понять как работать с конкретными объектами в простарнстве
  */
 
-mp.makeEventSource(
-	'_onUpdateTest',
-	`
-	ctx.sp.on("update", () => {
-		const gold = ctx.sp.Game.getForm(0xf);
-		if (ctx.sp.Game.getPlayer().getItemCount(gold) < 3000) {
-			ctx.sp.Game.getPlayer().addItem(gold, 100, true);
-			ctx.sp.Debug.notification('Thanks for your support');
-			ctx.sendEvent();
-		}
-	});
-`
-);
-
-utils.hook('_onUpdateTest', (pcFormId: number) => {
-	utils.log('_onUpdateTest', pcFormId.toString(16));
+utils.hook('onReinit', (pcFormId: number, options: any) => {
+	mp.set(pcFormId, 'raceWeight', 1);
+	utils.log(pcFormId, mp.get(pcFormId, 'playerScale'));
+	utils.log(pcFormId, mp.get(pcFormId, 'raceWeight'));
+	// utils.log(pcFormId, mp.get(pcFormId, 'race'));
 });

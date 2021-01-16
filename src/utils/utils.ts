@@ -1,7 +1,7 @@
-import { MP } from '../platform/mp';
+import { MP } from '../platform';
 
 declare var global: any;
-declare var mp: MP;
+declare const mp: MP;
 
 export const utils = {
 	log: (...args: any) => {
@@ -15,7 +15,7 @@ export const utils = {
 			global.knownEvents.push(eventName);
 		}
 		const prev = mp[eventName];
-		mp[eventName] = (...args: any) => {
+		mp[eventName] = (...args: any[]) => {
 			try {
 				const prevRes = prev ? prev(...args) : undefined;
 				const callbackRes = callback(...args);
@@ -29,4 +29,12 @@ export const utils = {
 			}
 		};
 	},
+};
+
+export const getFunctionText = (func: Function): string => {
+	return func
+		.toString()
+		.replace(new RegExp('^.+[{]', 'gm'), '')
+		.replace(new RegExp('[}]$', 'gm'), '')
+		.trim();
 };

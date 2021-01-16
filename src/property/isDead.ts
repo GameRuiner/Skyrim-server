@@ -1,6 +1,6 @@
-import { MP } from '../platform/mp';
+import { MP } from '../platform';
 import { utils } from '../utils/utils';
-declare var mp: MP;
+declare const mp: MP;
 
 const updateNeighbor = `
 const ac = ctx.sp.Actor.from(ctx.refr);

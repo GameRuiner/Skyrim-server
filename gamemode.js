@@ -131,7 +131,7 @@ var __spreadArrays = this && this.__spreadArrays || function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.utils = void 0;
+exports.getFunctionText = exports.utils = void 0;
 exports.utils = {
   log: function () {
     var _a;
@@ -177,6 +177,12 @@ exports.utils = {
     };
   }
 };
+
+var getFunctionText = function (func) {
+  return func.toString().replace(new RegExp('^.+[{]', 'gm'), '').replace(new RegExp('[}]$', 'gm'), '').trim();
+};
+
+exports.getFunctionText = getFunctionText;
 },{}],"property/consoleOutput.ts":[function(require,module,exports) {
 "use strict";
 
@@ -351,23 +357,18 @@ var regen = function (avOps, avNameTarget, avNameRate, avNameRateMult, avNameDra
     set: function (formId, avName, modifierName, newValue) {
       var _a;
 
-      var dangerousAvNames = [avNameTarget, avNameRate, avNameRateMult, avNameDrain]; // ? Убрал .toLowerCase(), проверка типов наверно должна решить проблему
-
+      var dangerousAvNames = [avNameTarget, avNameRate, avNameRateMult, avNameDrain];
       dangerousAvNames = dangerousAvNames.map(function (x) {
         return x.toLowerCase();
       });
 
       if (dangerousAvNames.includes(avName.toLowerCase()) && this.applyRegenerationToParent) {
         this.applyRegenerationToParent(formId);
-      } // if (dangerousAvNames.includes(avName) && this.applyRegenerationToParent) {
-      // 	this.applyRegenerationToParent(formId);
-      // }
-
+      }
 
       (_a = this.parent) === null || _a === void 0 ? void 0 : _a.set(formId, avName, modifierName, newValue);
     },
     get: function (formId, avName, modifierName) {
-      // ? Не уверен в проверке !this.getSecondsMatched
       if (!this.parent || !this.getSecondsMatched) {
         return 0;
       }
@@ -632,9 +633,9 @@ var init = function () {
       }
     }
   };
-  utils_1.utils.hook('onReinit', function (formId, options) {
+  utils_1.utils.hook('onReinit', function (pcFormId, options) {
     if (exports.actorValues.setDefaults) {
-      exports.actorValues.setDefaults(formId, options);
+      exports.actorValues.setDefaults(pcFormId, options);
     }
     /*if (utils.isActor(formId)) {
     const wouldDie = actorValues.getCurrent(formId, "Health") <= 0;
@@ -968,13 +969,95 @@ var init = function () {
 };
 
 exports.init = init;
-},{}],"property/index.ts":[function(require,module,exports) {
+},{}],"utils/index.ts":[function(require,module,exports) {
+"use strict";
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  Object.defineProperty(o, k2, {
+    enumerable: true,
+    get: function () {
+      return m[k];
+    }
+  });
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __exportStar = this && this.__exportStar || function (m, exports) {
+  for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+__exportStar(require("./typeCheck"), exports);
+
+__exportStar(require("./utils"), exports);
+},{"./typeCheck":"utils/typeCheck.ts","./utils":"utils/utils.ts"}],"property/playerRace.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.playerLevelPropInit = exports.spawnPointPropInit = exports.consoleOutputPropInit = exports.isDeadPropInit = void 0;
+exports.init = void 0;
+
+var utils_1 = require("../utils");
+
+function setRaceWeight() {
+  if (!(typeof ctx.value === 'number')) return;
+  ctx.refr.setWeight(ctx.value);
+}
+
+var init = function () {
+  mp.makeProperty('race', {
+    isVisibleByOwner: false,
+    isVisibleByNeighbors: false,
+    updateOwner: '',
+    updateNeighbor: ''
+  });
+  mp.makeProperty('raceWeight', {
+    isVisibleByOwner: true,
+    isVisibleByNeighbors: true,
+    updateOwner: utils_1.getFunctionText(setRaceWeight),
+    updateNeighbor: utils_1.getFunctionText(setRaceWeight)
+  });
+};
+
+exports.init = init;
+},{"../utils":"utils/index.ts"}],"property/scale.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.init = void 0;
+
+var utils_1 = require("../utils");
+
+function setScale() {
+  ctx.refr.setScale(typeof ctx.value === 'number' ? ctx.value : 1); //ctx.refr.getScale();
+}
+
+var init = function () {
+  mp.makeProperty('playerScale', {
+    isVisibleByOwner: true,
+    isVisibleByNeighbors: false,
+    updateOwner: utils_1.getFunctionText(setScale),
+    updateNeighbor: ''
+  });
+};
+
+exports.init = init;
+},{"../utils":"utils/index.ts"}],"property/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.scalePropInit = exports.playerRacePropInit = exports.playerLevelPropInit = exports.spawnPointPropInit = exports.consoleOutputPropInit = exports.isDeadPropInit = void 0;
 
 var isDead_1 = require("./isDead");
 
@@ -1011,7 +1094,25 @@ Object.defineProperty(exports, "playerLevelPropInit", {
     return playerLevel_1.init;
   }
 });
-},{"./isDead":"property/isDead.ts","./consoleOutput":"property/consoleOutput.ts","./spawnPoint":"property/spawnPoint.ts","./playerLevel":"property/playerLevel.ts"}],"event/_.ts":[function(require,module,exports) {
+
+var playerRace_1 = require("./playerRace");
+
+Object.defineProperty(exports, "playerRacePropInit", {
+  enumerable: true,
+  get: function () {
+    return playerRace_1.init;
+  }
+});
+
+var scale_1 = require("./scale");
+
+Object.defineProperty(exports, "scalePropInit", {
+  enumerable: true,
+  get: function () {
+    return scale_1.init;
+  }
+});
+},{"./isDead":"property/isDead.ts","./consoleOutput":"property/consoleOutput.ts","./spawnPoint":"property/spawnPoint.ts","./playerLevel":"property/playerLevel.ts","./playerRace":"property/playerRace.ts","./scale":"property/scale.ts"}],"event/_.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1282,6 +1383,8 @@ property_1.isDeadPropInit();
 property_1.consoleOutputPropInit();
 property_1.spawnPointPropInit();
 property_1.playerLevelPropInit();
+property_1.playerRacePropInit();
+property_1.scalePropInit();
 /** */
 
 /** event initialization */
@@ -1345,8 +1448,9 @@ mechanics_1.devCommandsInit();
  * TODO: Понять как работать с конкретными объектами в простарнстве
  */
 
-mp.makeEventSource('_onUpdateTest', "\n\tctx.sp.on(\"update\", () => {\n\t\tconst gold = ctx.sp.Game.getForm(0xf);\n\t\tif (ctx.sp.Game.getPlayer().getItemCount(gold) < 3000) {\n\t\t\tctx.sp.Game.getPlayer().addItem(gold, 100, true);\n\t\t\tctx.sp.Debug.notification('Thanks for your support');\n\t\t\tctx.sendEvent();\n\t\t}\n\t});\n");
-utils_1.utils.hook('_onUpdateTest', function (pcFormId) {
-  utils_1.utils.log('_onUpdateTest', pcFormId.toString(16));
+utils_1.utils.hook('onReinit', function (pcFormId, options) {
+  mp.set(pcFormId, 'raceWeight', 1);
+  utils_1.utils.log(pcFormId, mp.get(pcFormId, 'playerScale'));
+  utils_1.utils.log(pcFormId, mp.get(pcFormId, 'raceWeight')); // utils.log(pcFormId, mp.get(pcFormId, 'race'));
 });
 },{"./utils/utils":"utils/utils.ts","./mechanics":"mechanics/index.ts","./property":"property/index.ts","./event":"event/index.ts","./sync":"sync/index.ts"}]},{},["gamemode.ts"], null)

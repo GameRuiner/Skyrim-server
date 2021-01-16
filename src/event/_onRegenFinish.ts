@@ -1,6 +1,6 @@
 import { Attr } from '../types/Attr';
-import { MP } from '../platform/mp';
-declare var mp: MP;
+import { MP } from '../platform';
+declare const mp: MP;
 
 export const init = () => {
 	for (const attr of ['health', 'magicka', 'stamina'] as Attr[]) {

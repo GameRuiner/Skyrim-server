@@ -5,8 +5,8 @@ var __awaiter =
 			return value instanceof P
 				? value
 				: new P(function (resolve) {
-						resolve(value);
-				  });
+					resolve(value);
+				});
 		}
 		return new (P || (P = Promise))(function (resolve, reject) {
 			function fulfilled(value) {
@@ -35,14 +35,14 @@ var __generator =
 	(this && this.__generator) ||
 	function (thisArg, body) {
 		var _ = {
-				label: 0,
-				sent: function () {
-					if (t[0] & 1) throw t[1];
-					return t[1];
-				},
-				trys: [],
-				ops: [],
+			label: 0,
+			sent: function () {
+				if (t[0] & 1) throw t[1];
+				return t[1];
 			},
+			trys: [],
+			ops: [],
+		},
 			f,
 			y,
 			t,
@@ -50,9 +50,9 @@ var __generator =
 		return (
 			(g = { next: verb(0), throw: verb(1), return: verb(2) }),
 			typeof Symbol === 'function' &&
-				(g[Symbol.iterator] = function () {
-					return this;
-				}),
+			(g[Symbol.iterator] = function () {
+				return this;
+			}),
 			g
 		);
 		function verb(n) {
@@ -66,13 +66,13 @@ var __generator =
 				try {
 					if (
 						((f = 1),
-						y &&
+							y &&
 							(t =
 								op[0] & 2
 									? y['return']
 									: op[0]
-									? y['throw'] || ((t = y['return']) && t.call(y), 0)
-									: y.next) &&
+										? y['throw'] || ((t = y['return']) && t.call(y), 0)
+										: y.next) &&
 							!(t = t.call(y, op[1])).done)
 					)
 						return t;
@@ -805,7 +805,7 @@ System.register(
 		var __moduleName = context_4 && context_4.id;
 		return {
 			setters: [],
-			execute: function () {},
+			execute: function () { },
 		};
 	}
 );
@@ -814,7 +814,7 @@ System.register('src/lib/structures/look', [], function (exports_5, context_5) {
 	var __moduleName = context_5 && context_5.id;
 	return {
 		setters: [],
-		execute: function () {},
+		execute: function () { },
 	};
 });
 System.register(
@@ -825,7 +825,7 @@ System.register(
 		var __moduleName = context_6 && context_6.id;
 		return {
 			setters: [],
-			execute: function () {},
+			execute: function () { },
 		};
 	}
 );
@@ -837,7 +837,7 @@ System.register(
 		var __moduleName = context_7 && context_7.id;
 		return {
 			setters: [],
-			execute: function () {},
+			execute: function () { },
 		};
 	}
 );
@@ -849,7 +849,7 @@ System.register(
 		var __moduleName = context_8 && context_8.id;
 		return {
 			setters: [],
-			execute: function () {},
+			execute: function () { },
 		};
 	}
 );
@@ -887,15 +887,15 @@ System.register(
 									if (!self)
 										throw new Error(
 											'Unable to find form with id ' +
-												snippet.selfId.toString(16)
+											snippet.selfId.toString(16)
 										);
 									selfCasted = spAny[snippet.class].from(self);
 									if (!selfCasted)
 										throw new Error(
 											'Form ' +
-												snippet.selfId.toString(16) +
-												' is not instance of ' +
-												snippet.class
+											snippet.selfId.toString(16) +
+											' is not instance of ' +
+											snippet.class
 										);
 									f = selfCasted[snippet.function];
 									return [
@@ -1058,8 +1058,8 @@ System.register(
 									command.execute = function () {
 										skyrimPlatform_3.printConsole(
 											"You do not have permission to use this command ('" +
-												name +
-												"')"
+											name +
+											"')"
 										);
 										return false;
 									};
@@ -1667,7 +1667,7 @@ System.register(
 						this.sneakBlocker = null;
 						this.refrId = refr.getFormID();
 						skyrimPlatform_8.hooks.sendAnimationEvent.add({
-							enter: function () {},
+							enter: function () { },
 							leave: function (ctx) {
 								if (ctx.selfId !== _this.refrId) return;
 								if (!ctx.animationSucceeded) return;
@@ -1768,7 +1768,7 @@ System.register(
 										: allowedIdles.splice(i, 1);
 								}
 							},
-							leave: function () {},
+							leave: function () { },
 						});
 					})
 				);
@@ -1831,7 +1831,7 @@ System.register(
 						}
 						var numTints =
 							skyrimPlatform_9.Game.getPlayer().getFormID() ===
-							actor.getFormID()
+								actor.getFormID()
 								? skyrimPlatform_9.Game.getNumTintMasks()
 								: 0;
 						for (var i = 0; i < numTints; ++i) {
@@ -2012,12 +2012,12 @@ System.register(
 					var max = 128;
 					return s.length >= max
 						? s
-								.split('')
-								.filter(function (x, i) {
-									return i < max;
-								})
-								.join('')
-								.concat('...')
+							.split('')
+							.filter(function (x, i) {
+								return i < max;
+							})
+							.join('')
+							.concat('...')
 						: s;
 				};
 				checkIfNameIsGeneratedByGame = function (aStr, bStr, formName) {
@@ -2316,8 +2316,8 @@ System.register(
 										e.health ? e.health : 1,
 										e.enchantmentId
 											? skyrimPlatform_10.Enchantment.from(
-													skyrimPlatform_10.Game.getFormEx(e.enchantmentId)
-											  )
+												skyrimPlatform_10.Game.getFormEx(e.enchantmentId)
+											)
 											: null,
 										e.maxCharge ? e.maxCharge : 0,
 										!!e.removeEnchantmentOnUnequip,
@@ -2326,8 +2326,8 @@ System.register(
 										e.soul ? e.soul : 0,
 										e.poisonId
 											? skyrimPlatform_10.Potion.from(
-													skyrimPlatform_10.Game.getFormEx(e.poisonId)
-											  )
+												skyrimPlatform_10.Game.getFormEx(e.poisonId)
+											)
 											: null,
 										e.poisonCount ? e.poisonCount : 0
 									);
@@ -2431,7 +2431,7 @@ System.register('src/front/model', [], function (exports_21, context_21) {
 	var __moduleName = context_21 && context_21.id;
 	return {
 		setters: [],
-		execute: function () {},
+		execute: function () { },
 	};
 });
 System.register(
@@ -2764,9 +2764,9 @@ System.register(
 							if (this.lastWorldOrCell !== model.movement.worldOrCell) {
 								skyrimPlatform_13.printConsole(
 									'[1] worldOrCell changed, destroying FormView ' +
-										this.lastWorldOrCell.toString(16) +
-										' => ' +
-										model.movement.worldOrCell.toString(16)
+									this.lastWorldOrCell.toString(16) +
+									' => ' +
+									model.movement.worldOrCell.toString(16)
 								);
 								this.lastWorldOrCell = model.movement.worldOrCell;
 								this.destroy();
@@ -2855,10 +2855,10 @@ System.register(
 									model.movement
 										? model.movement.pos
 										: [
-												skyrimPlatform_13.Game.getPlayer().getPositionX(),
-												skyrimPlatform_13.Game.getPlayer().getPositionY(),
-												skyrimPlatform_13.Game.getPlayer().getPositionZ(),
-										  ],
+											skyrimPlatform_13.Game.getPlayer().getPositionX(),
+											skyrimPlatform_13.Game.getPlayer().getPositionY(),
+											skyrimPlatform_13.Game.getPlayer().getPositionZ(),
+										],
 									refr_2.getFormID(),
 									function () {
 										_this.ready = true;
@@ -2878,7 +2878,7 @@ System.register(
 							this.applyAll(refr, model);
 							for (
 								var _i = 0,
-									gUpdateNeighborFunctionsKeys_1 = gUpdateNeighborFunctionsKeys;
+								gUpdateNeighborFunctionsKeys_1 = gUpdateNeighborFunctionsKeys;
 								_i < gUpdateNeighborFunctionsKeys_1.length;
 								_i++
 							) {
@@ -2891,10 +2891,10 @@ System.register(
 								if (v !== undefined) {
 									if (this.refrId >= 0xff000000) {
 										/*printConsole(
-                                      "upd",
-                                      this.refrId.toString(16),
-                                      `${key}=${JSON.stringify(v)}`
-                                    );*/
+																			"upd",
+																			this.refrId.toString(16),
+																			`${key}=${JSON.stringify(v)}`
+																		);*/
 									}
 									ctx.refr = refr;
 									ctx.value = v;
@@ -3361,7 +3361,7 @@ System.register('src/front/msgHandler', [], function (exports_24, context_24) {
 	var __moduleName = context_24 && context_24.id;
 	return {
 		setters: [],
-		execute: function () {},
+		execute: function () { },
 	};
 });
 System.register('src/front/modelSource', [], function (exports_25, context_25) {
@@ -3369,7 +3369,7 @@ System.register('src/front/modelSource', [], function (exports_25, context_25) {
 	var __moduleName = context_25 && context_25.id;
 	return {
 		setters: [],
-		execute: function () {},
+		execute: function () { },
 	};
 });
 System.register(
@@ -3480,7 +3480,7 @@ System.register('src/front/sendTarget', [], function (exports_27, context_27) {
 	var __moduleName = context_27 && context_27.id;
 	return {
 		setters: [],
-		execute: function () {},
+		execute: function () { },
 	};
 });
 System.register(
@@ -3789,7 +3789,7 @@ System.register(
 						maxVerifyDelay *= 2;
 						skyrimPlatform_15.printConsole(
 							'Verify failed. Reconnecting. Calculated delay is ' +
-								maxVerifyDelay
+							maxVerifyDelay
 						);
 						networking.reconnect();
 						verifyStartMoment = 0;
@@ -4052,12 +4052,12 @@ System.register(
 								skyrimPlatform_15.Game.getPlayer(),
 								msg.equipment
 									? {
-											entries: msg.equipment.inv.entries.filter(function (x) {
-												return !!skyrimPlatform_15.Armor.from(
-													skyrimPlatform_15.Game.getFormEx(x.baseId)
-												);
-											}),
-									  }
+										entries: msg.equipment.inv.entries.filter(function (x) {
+											return !!skyrimPlatform_15.Armor.from(
+												skyrimPlatform_15.Game.getFormEx(x.baseId)
+											);
+										}),
+									}
 									: { entries: [] },
 								false
 							);
@@ -4116,16 +4116,16 @@ System.register(
 											msg.transform.worldOrCell,
 											msg.look
 												? {
-														name: msg.look.name,
-														raceId: msg.look.raceId,
-														face: {
-															hairColor: msg.look.hairColor,
-															bodySkinColor: msg.look.skinColor,
-															headTextureSetId: msg.look.headTextureSetId,
-															headPartIds: msg.look.headpartIds,
-															presets: msg.look.presets,
-														},
-												  }
+													name: msg.look.name,
+													raceId: msg.look.raceId,
+													face: {
+														hairColor: msg.look.hairColor,
+														bodySkinColor: msg.look.skinColor,
+														headTextureSetId: msg.look.headTextureSetId,
+														headPartIds: msg.look.headpartIds,
+														presets: msg.look.presets,
+													},
+												}
 												: undefined
 										);
 										skyrimPlatform_15.once('update', function () {
@@ -4196,7 +4196,7 @@ System.register(
 						verifySourceCode();
 						sendBrowserToken();
 					};
-					RemoteServer.prototype.handleDisconnect = function () {};
+					RemoteServer.prototype.handleDisconnect = function () { };
 					RemoteServer.prototype.setRaceMenuOpen = function (msg) {
 						if (msg.open) {
 							// wait 0.3s cause we can see visual bugs when teleporting
@@ -4338,7 +4338,7 @@ System.register(
 						} else {
 							skyrimPlatform_15.storage['eventSourceContexts'].forEach(
 								function (ctx) {
-									ctx.sendEvent = function () {};
+									ctx.sendEvent = function () { };
 									ctx._expired = true;
 								}
 							);
@@ -4395,8 +4395,8 @@ System.register(
 						var refrId = msg._refrId;
 						var idxInModel = refrId
 							? this.worldModel.forms.findIndex(function (f) {
-									return f && f.refrId === refrId;
-							  })
+								return f && f.refrId === refrId;
+							})
 							: this.worldModel.playerCharacterFormIdx;
 						msg.idx = this.getIdManager().getValueById(idxInModel);
 						delete msg._refrId;
@@ -4510,12 +4510,12 @@ System.register(
 					var handler = handler_;
 					var f = handler[msgType];
 					/*if (msgType !== "UpdateMovement") {
-                  printConsole();
-                  for (const key in msgAny) {
-                    const v = (msgAny as Record<string, any>)[key];
-                    printConsole(`${key}=${JSON.stringify(v)}`);
-                  }
-                }*/
+									printConsole();
+									for (const key in msgAny) {
+										const v = (msgAny as Record<string, any>)[key];
+										printConsole(`${key}=${JSON.stringify(v)}`);
+									}
+								}*/
 					if (msgType === 'hostStart') {
 						var msg = msgAny;
 						var target = msg.target;
@@ -4560,9 +4560,9 @@ System.register(
 					skyrimPlatform_16.storage.targetPort = targetPort;
 					skyrimPlatform_16.printConsole(
 						'Connecting to ' +
-							skyrimPlatform_16.storage.targetIp +
-							':' +
-							skyrimPlatform_16.storage.targetPort
+						skyrimPlatform_16.storage.targetIp +
+						':' +
+						skyrimPlatform_16.storage.targetPort
 					);
 					networking.connect(targetIp, targetPort);
 				} else {
@@ -4669,10 +4669,10 @@ System.register(
 								furnitureStreak.set(furrnitureId, craftInputObjects);
 								skyrimPlatform_16.printConsole(
 									'Adding ' +
-										baseObjId.toString(16) +
-										' (' +
-										e.numItems +
-										') to recipe'
+									baseObjId.toString(16) +
+									' (' +
+									e.numItems +
+									') to recipe'
 								);
 							} else if (oldContainerId === 0 && newContainerId === 0x14) {
 								skyrimPlatform_16.printConsole('Flushing recipe');
@@ -4796,10 +4796,10 @@ System.register(
 					SkympClient.prototype.getInputOwner = function (_refrId) {
 						return _refrId
 							? skyrimPlatform_16.Actor.from(
-									skyrimPlatform_16.Game.getFormEx(
-										this.remoteIdToLocalId(_refrId)
-									)
-							  )
+								skyrimPlatform_16.Game.getFormEx(
+									this.remoteIdToLocalId(_refrId)
+								)
+							)
 							: skyrimPlatform_16.Game.getPlayer();
 					};
 					SkympClient.prototype.sendMovement = function (_refrId) {
@@ -5011,9 +5011,9 @@ System.register(
 						if (!requiredVersion.includes(realVersion)) {
 							skyrimPlatform_17.Debug.messageBox(
 								'You need to have on of those SkyrimPlatform versions ' +
-									JSON.stringify(requiredVersion) +
-									' to join this server. Your current version is ' +
-									realVersion
+								JSON.stringify(requiredVersion) +
+								' to join this server. Your current version is ' +
+								realVersion
 							);
 							skyrimPlatform_17.Utility.waitMenuMode(0.5).then(function () {
 								skyrimPlatform_17.on('update', function () {
@@ -5120,9 +5120,9 @@ System.register(
 					);
 					gameHour.setValue(
 						d.getUTCHours() +
-							d.getUTCMinutes() / 60 +
-							d.getUTCSeconds() / 60 / 60 +
-							d.getUTCMilliseconds() / 60 / 60 / 1000
+						d.getUTCMinutes() / 60 +
+						d.getUTCSeconds() / 60 / 60 +
+						d.getUTCMilliseconds() / 60 / 60 / 1000
 					);
 					var gameDay = skyrimPlatform_18.GlobalVariable.from(
 						skyrimPlatform_18.Game.getFormEx(gameDayId)

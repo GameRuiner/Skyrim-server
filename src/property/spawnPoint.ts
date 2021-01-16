@@ -1,6 +1,6 @@
-import { MP } from '../platform/mp';
+import { MP } from '../platform';
 
-declare var mp: MP;
+declare const mp: MP;
 
 export const init = () => {
 	mp.makeProperty('spawnPoint', {

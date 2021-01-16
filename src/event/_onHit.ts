@@ -1,6 +1,6 @@
-import { MP } from '../platform/mp';
+import { MP } from '../platform';
 import { utils } from '../utils/utils';
-declare var mp: MP;
+declare const mp: MP;
 
 export const init = () => {
 	mp.makeEventSource(

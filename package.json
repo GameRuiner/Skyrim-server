@@ -8,7 +8,7 @@
 		"launch": "..\\SkyMPLauncher.exe",
 		"serve": "parcel serve src/gamemode.ts --out-dir ./ --no-source-maps --no-cache --target node",
 		"build": "parcel build src/gamemode.ts --out-dir ./ --no-source-maps --no-minify --no-cache --target node",
-		"postbuild1": "node fix.js",
+		"postbuild": "node fix.js",
 		"prebuild:html": "rimraf ./html/www",
 		"serve:html": "npm run prebuild:html && parcel ./html/*.html --out-dir ./html/www --no-source-maps",
 		"build:html": "parcel build ./html/*.html --out-dir ./html/www --no-source-maps",

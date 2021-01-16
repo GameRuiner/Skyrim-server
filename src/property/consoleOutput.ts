@@ -1,6 +1,6 @@
-import { MP } from '../platform/mp';
+import { MP } from '../platform';
 
-declare var mp: MP;
+declare const mp: MP;
 
 const genericPrint = (
 	propName: string,
@@ -18,7 +18,7 @@ const genericPrint = (
 
 export type printTargetsPropName = 'consoleOutput' | 'notification';
 
-export const consoleOutput: any = {
+export const consoleOutput = {
 	print: (formId: number, ...args: any[]) =>
 		genericPrint('consoleOutput', formId, ...args),
 	printNote: (formId: number, ...args: any[]) =>

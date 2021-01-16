@@ -12,9 +12,9 @@ import {
 	AttrAll,
 } from '../types/Attr';
 import { Modifier } from '../types/Modifier';
-import { MP } from '../platform/mp';
+import { MP } from '../platform';
 
-declare var mp: MP;
+declare const mp: MP;
 export interface SecondsMatched {
 	[key: number]: number;
 }
@@ -197,7 +197,6 @@ let regen = (
 				avNameRateMult,
 				avNameDrain,
 			];
-			// ? Убрал .toLowerCase(), проверка типов наверно должна решить проблему
 			dangerousAvNames = dangerousAvNames.map(
 				(x) => x.toLowerCase() as AttrAll
 			);
@@ -207,13 +206,9 @@ let regen = (
 			) {
 				this.applyRegenerationToParent(formId);
 			}
-			// if (dangerousAvNames.includes(avName) && this.applyRegenerationToParent) {
-			// 	this.applyRegenerationToParent(formId);
-			// }
 			this.parent?.set(formId, avName, modifierName, newValue);
 		},
 		get(formId: number, avName: AttrAll, modifierName: Modifier) {
-			// ? Не уверен в проверке !this.getSecondsMatched
 			if (!this.parent || !this.getSecondsMatched) {
 				return 0;
 			}
@@ -484,9 +479,9 @@ export const init = () => {
 		},
 	};
 
-	utils.hook('onReinit', (formId: number, options: any) => {
+	utils.hook('onReinit', (pcFormId: number, options: any) => {
 		if (actorValues.setDefaults) {
-			actorValues.setDefaults(formId, options);
+			actorValues.setDefaults(pcFormId, options);
 		}
 
 		/*if (utils.isActor(formId)) {
@@ -551,7 +546,7 @@ export const init = () => {
 		mp.onDeath(pcFormId);
 	});
 
-	const sprintAttr = 'stamina';
+	const sprintAttr: Attr = 'stamina';
 	const staminaReduce = 10;
 	utils.hook('_onSprintStateChange', (pcFormId: number, newState: any) => {
 		switch (newState) {

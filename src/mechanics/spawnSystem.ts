@@ -1,7 +1,7 @@
 import { utils } from '../utils/utils';
 import { actorValues } from '../sync/ActorValues';
-import { MP } from '../platform/mp';
-declare var mp: MP;
+import { MP } from '../platform';
+declare const mp: MP;
 
 const defaultSpawnPoint = {
 	pos: [227, 239, 53],

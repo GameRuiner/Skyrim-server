@@ -3,8 +3,8 @@ import { consoleOutput } from '../property/consoleOutput';
 import { actorValues } from '../sync/ActorValues';
 import { spawnSystem } from './spawnSystem';
 import { AttrAll } from '../types/Attr';
-import { MP } from '../platform/mp';
-declare var mp: MP;
+import { MP } from '../platform';
+declare const mp: MP;
 
 const chooseFormId = (pcFormId: number, selectedFormId: number) => {
 	return selectedFormId ? selectedFormId : pcFormId;
