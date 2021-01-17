@@ -1287,13 +1287,58 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../sync":"sync/index.ts","../utils":"utils/index.ts"}],"event/index.ts":[function(require,module,exports) {
+},{"../sync":"sync/index.ts","../utils":"utils/index.ts"}],"event/_onCurrentCellChange.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports._onLocalDeathInit = exports._onConsoleCommandInit = exports._onSprintStateChangeInit = exports._onRegenFinishInit = exports._onPowerAttackInit = exports._onHitInit = exports._onBashInit = exports._Init = void 0;
+exports.init = void 0;
+
+var utils_1 = require("../utils");
+
+function _onCurrentCellChange() {
+  ctx.sp.on('update', function () {
+    try {
+      var result = {
+        hasError: false
+      };
+      var currentCell = ctx.sp.Game.getPlayer().getParentCell();
+
+      if (ctx.state.currentCellId !== currentCell.getFormID()) {
+        if (ctx.state.currentCellId !== undefined) {
+          result.cell = currentCell.getName() || 'Мир';
+          ctx.sendEvent(result);
+        }
+
+        ctx.state.currentCellId = currentCell.getFormID();
+      }
+    } catch (err) {
+      ctx.sendEvent({
+        hasError: true,
+        err: err.toString()
+      });
+    }
+  });
+}
+
+var init = function () {
+  mp.makeEventSource('_onCurrentCellChange', utils_1.getFunctionText(_onCurrentCellChange));
+  utils_1.utils.hook('_onCurrentCellChange', function (pcformId, event) {
+    if (!event.hasError) {
+      utils_1.utils.log(pcformId, event.cell);
+    }
+  });
+};
+
+exports.init = init;
+},{"../utils":"utils/index.ts"}],"event/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports._onCurrentCellChangeInit = exports._onLocalDeathInit = exports._onConsoleCommandInit = exports._onSprintStateChangeInit = exports._onRegenFinishInit = exports._onPowerAttackInit = exports._onHitInit = exports._onBashInit = exports._Init = void 0;
 
 var _1 = require("./_");
 
@@ -1366,7 +1411,16 @@ Object.defineProperty(exports, "_onLocalDeathInit", {
     return _onLocalDeath_1.init;
   }
 });
-},{"./_":"event/_.ts","./_onBash":"event/_onBash.ts","./_onHit":"event/_onHit.ts","./_onPowerAttack":"event/_onPowerAttack.ts","./_onRegenFinish":"event/_onRegenFinish.ts","./_onSprintStateChange":"event/_onSprintStateChange.ts","./_onConsoleCommand":"event/_onConsoleCommand.ts","./_onLocalDeath":"event/_onLocalDeath.ts"}],"gamemode.ts":[function(require,module,exports) {
+
+var _onCurrentCellChange_1 = require("./_onCurrentCellChange");
+
+Object.defineProperty(exports, "_onCurrentCellChangeInit", {
+  enumerable: true,
+  get: function () {
+    return _onCurrentCellChange_1.init;
+  }
+});
+},{"./_":"event/_.ts","./_onBash":"event/_onBash.ts","./_onHit":"event/_onHit.ts","./_onPowerAttack":"event/_onPowerAttack.ts","./_onRegenFinish":"event/_onRegenFinish.ts","./_onSprintStateChange":"event/_onSprintStateChange.ts","./_onConsoleCommand":"event/_onConsoleCommand.ts","./_onLocalDeath":"event/_onLocalDeath.ts","./_onCurrentCellChange":"event/_onCurrentCellChange.ts"}],"gamemode.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1426,6 +1480,8 @@ event_1._onSprintStateChangeInit();
 event_1._onConsoleCommandInit();
 
 event_1._onLocalDeathInit();
+
+event_1._onCurrentCellChangeInit();
 /** */
 
 /** sync initialization */
@@ -1448,7 +1504,7 @@ mechanics_1.devCommandsInit();
 /**
  * * Работа с typescript
  * // TODO: Добавить strict mode и исправить все неверные и неявные типы
- * TODO: Код в строках попробовать реализовать в виде функции и передавать текст этой функции
+ * // TODO: Код в строках попробовать реализовать в виде функции и передавать текст этой функции
  */
 
 /**
@@ -1460,14 +1516,9 @@ mechanics_1.devCommandsInit();
  */
 
 /**
- * * Доп функции:
- * TODO: Отключить ванильный расход зс при спринте
- * TODO: Откличить ванильный расход зс при силовой атаке
- */
-
-/**
- ** Работа с объектами
- * TODO: Понять как работать с конкретными объектами в простарнстве
+ * TODO: Определить что локацию в которую зашел это шахта
+ * TODO: Выдать игроку кирку и одежду шахтера и надеть ее
+ * TODO: Перенести доработки Леонида в ts
  */
 
 utils_1.utils.hook('onReinit', function (pcFormId, options) {
@@ -1485,45 +1536,6 @@ utils_1.utils.hook('onReinit', function (pcFormId, options) {
 
 
   mp.set(pcFormId, 'scale', 1);
-});
-
-function onEquip() {
-  ctx.sp.on('equip', function (e) {
-    var event = e;
-    ctx.sendEvent({
-      event: JSON.stringify('lockChanged'),
-      obj: event.baseObj.getName()
-    });
-  });
-}
-
-function onloadGame() {
-  ctx.sp.on('update', function () {
-    try {
-      var currentCell = ctx.sp.Game.getPlayer().getParentCell();
-
-      if (ctx.state.currentCell !== currentCell) {
-        if (ctx.state.currentCell !== undefined) {
-          ctx.sendEvent({
-            event: JSON.stringify('update'),
-            data: currentCell.getType(),
-            last: ctx.state.lastCellId
-          });
-        }
-
-        ctx.state.currentCell = currentCell;
-      }
-    } catch (err) {
-      ctx.sendEvent({
-        err: err.toString()
-      });
-    }
-  });
-}
-
-mp.makeEventSource('_onInit2', utils_1.getFunctionText(onloadGame));
-utils_1.utils.hook('_onInit2', function (pcformId, event) {
-  utils_1.utils.log(event);
 }); // import { init as scaleHitInit } from './test/scaleHit';
 // scaleHitInit();
 

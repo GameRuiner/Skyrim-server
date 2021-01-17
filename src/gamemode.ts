@@ -19,6 +19,7 @@ import {
 	_onSprintStateChangeInit,
 	_onConsoleCommandInit,
 	_onLocalDeathInit,
+	_onCurrentCellChangeInit,
 } from './event';
 
 import { actorValues, ActorValuesInit } from './sync';
@@ -68,6 +69,7 @@ _onRegenFinishInit();
 _onSprintStateChangeInit();
 _onConsoleCommandInit();
 _onLocalDeathInit();
+_onCurrentCellChangeInit();
 /** */
 
 /** sync initialization */
@@ -87,7 +89,7 @@ devCommandsInit();
 /**
  * * Работа с typescript
  * // TODO: Добавить strict mode и исправить все неверные и неявные типы
- * TODO: Код в строках попробовать реализовать в виде функции и передавать текст этой функции
+ * // TODO: Код в строках попробовать реализовать в виде функции и передавать текст этой функции
  */
 
 /**
@@ -99,14 +101,9 @@ devCommandsInit();
  */
 
 /**
- * * Доп функции:
- * TODO: Отключить ванильный расход зс при спринте
- * TODO: Откличить ванильный расход зс при силовой атаке
- */
-
-/**
- ** Работа с объектами
- * TODO: Понять как работать с конкретными объектами в простарнстве
+ * TODO: Определить что локацию в которую зашел это шахта
+ * TODO: Выдать игроку кирку и одежду шахтера и надеть ее
+ * TODO: Перенести доработки Леонида в ts
  */
 
 utils.hook('onReinit', (pcFormId: number, options: any) => {
@@ -124,43 +121,6 @@ utils.hook('onReinit', (pcFormId: number, options: any) => {
 
 /** TEST */
 declare const ctx: CTX;
-
-function onEquip() {
-	ctx.sp.on('equip', (e) => {
-		const event = e as EquipEvent;
-		ctx.sendEvent({
-			event: JSON.stringify('lockChanged'),
-			obj: event.baseObj.getName(),
-		});
-	});
-}
-
-function onloadGame() {
-	ctx.sp.on('update', () => {
-		try {
-			const currentCell = ctx.sp.Game.getPlayer().getParentCell();
-			if (ctx.state.currentCell !== currentCell) {
-				if (ctx.state.currentCell !== undefined) {
-					ctx.sendEvent({
-						event: JSON.stringify('update'),
-						data: currentCell.getType(),
-						last: ctx.state.lastCellId,
-					});
-				}
-				ctx.state.currentCell = currentCell;
-			}
-		} catch (err) {
-			ctx.sendEvent({
-				err: err.toString(),
-			});
-		}
-	});
-}
-
-mp.makeEventSource('_onInit2', getFunctionText(onloadGame));
-utils.hook('_onInit2', (pcformId: number, event: unknown) => {
-	utils.log(event);
-});
 
 // import { init as scaleHitInit } from './test/scaleHit';
 // scaleHitInit();

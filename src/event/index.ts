@@ -6,3 +6,4 @@ export { init as _onRegenFinishInit } from './_onRegenFinish';
 export { init as _onSprintStateChangeInit } from './_onSprintStateChange';
 export { init as _onConsoleCommandInit } from './_onConsoleCommand';
 export { init as _onLocalDeathInit } from './_onLocalDeath';
+export { init as _onCurrentCellChangeInit } from './_onCurrentCellChange';
