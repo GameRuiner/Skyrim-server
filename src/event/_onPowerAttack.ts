@@ -1,4 +1,7 @@
 import { MP } from '../platform';
+import { actorValues } from '../sync';
+import { utils } from '../utils';
+import { Attr } from '../types/Attr';
 
 declare const mp: MP;
 
@@ -20,4 +23,11 @@ export const init = () => {
     };
   `
 	);
+
+	const sprintAttr: Attr = 'stamina';
+	utils.hook('_onPowerAttack', (pcFormId: number) => {
+		const damage = actorValues.get(pcFormId, sprintAttr, 'damage');
+		const damageMod = -35;
+		actorValues.set(pcFormId, sprintAttr, 'damage', damage + damageMod);
+	});
 };

@@ -128,10 +128,19 @@ var __spreadArrays = this && this.__spreadArrays || function () {
   return r;
 };
 
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getFunctionText = exports.utils = void 0;
+
+var string_minify_1 = __importDefault(require("string-minify"));
+
 exports.utils = {
   log: function () {
     var _a;
@@ -179,7 +188,7 @@ exports.utils = {
 };
 
 var getFunctionText = function (func) {
-  return func.toString().replace(new RegExp('^.+[{]', 'm'), '').replace(new RegExp('[}]$', 'm'), '').trim();
+  return string_minify_1.default(func.toString()).replace(new RegExp('^.+?{', 'm'), '').replace(new RegExp('[}]$', 'm'), '').trim();
 };
 
 exports.getFunctionText = getFunctionText;
@@ -303,8 +312,6 @@ var fs_1 = __importDefault(require("fs"));
 var utils_1 = require("../utils/utils");
 
 var typeCheck_1 = require("../utils/typeCheck");
-
-var consoleOutput_1 = require("../property/consoleOutput");
 
 var rate = function (attr) {
   return attr === 'health' ? 'av_healrate' : "av_" + attr + "rate";
@@ -608,7 +615,7 @@ var init = function () {
           }
         }
 
-        var _loop_2 = function (avName) {
+        var _loop_1 = function (avName) {
           //if (formId == 0x9b7a2) console.log(avName, 1);
           if (!mp.get(formId, 'av_' + avName) || force) {
             //if (formId == 0x9b7a2) console.log(avName, 2);
@@ -628,107 +635,28 @@ var init = function () {
         for (var _f = 0, _g = ['mp_healthdrain', 'mp_magickadrain', 'mp_staminadrain']; _f < _g.length; _f++) {
           var avName = _g[_f];
 
-          _loop_2(avName);
+          _loop_1(avName);
         }
       }
     }
   };
-  utils_1.utils.hook('onReinit', function (pcFormId, options) {
-    if (exports.actorValues.setDefaults) {
-      exports.actorValues.setDefaults(pcFormId, options);
-    }
-    /*if (utils.isActor(formId)) {
-    const wouldDie = actorValues.getCurrent(formId, "Health") <= 0;
-    if (wouldDie && !mp.get(formId, "isDead")) {
-    mp.onDeath(formId);
-    }
-    }*/
-
-  });
-  utils_1.utils.hook('_onHit', function (pcFormId, eventData) {
-    var damageMod = -25; // крошу все что вижу
-
-    if (eventData.agressor === pcFormId && eventData.target !== pcFormId) {
-      damageMod = -250;
-    }
-
-    var avName = 'health';
-    var damage = exports.actorValues.get(eventData.target, avName, 'damage');
-    var agressorDead = exports.actorValues.getCurrent(eventData.agressor, 'health') <= 0;
-
-    if (damageMod < 0 && agressorDead) {
-      utils_1.utils.log("Dead characters can't hit");
-      return;
-    }
-
-    var greenZone = '165a7:Skyrim.esm';
-
-    if (0 && mp.get(eventData.agressor, 'worldOrCellDesc') === greenZone) {
-      var msgs = ['Вы с удивлением замечаете, что оставили лишь царапину', 'Вы не верите своим глазам. Боги отвели удар от цели', 'Вы чувствуете, что Кинарет наблюдает за вашими действиями'];
-      var i = Math.floor(Math.random() * msgs.length);
-      consoleOutput_1.consoleOutput.printNote(pcFormId, msgs[i]);
-      damageMod = i === 0 ? -1 : 0;
-    }
-
-    var newDamageModValue = damage + damageMod;
-    exports.actorValues.set(eventData.target, avName, 'damage', newDamageModValue);
-    var wouldDie = exports.actorValues.getMaximum(eventData.target, 'health') + newDamageModValue <= 0;
-
-    if (wouldDie && !mp.get(eventData.target, 'isDead')) {
-      mp.onDeath(eventData.target);
-    }
-  });
-
-  var _loop_1 = function (attr) {
-    utils_1.utils.hook('_onActorValueFlushRequired' + attr, function (pcFormId) {
-      exports.actorValues.flushRegen(pcFormId, attr);
-    });
-  };
-
-  for (var _d = 0, _e = ['health', 'magicka', 'stamina']; _d < _e.length; _d++) {
-    var attr = _e[_d];
-
-    _loop_1(attr);
-  }
-
-  utils_1.utils.hook('_onLocalDeath', function (pcFormId) {
-    utils_1.utils.log('_onLocalDeath', pcFormId.toString(16));
-    var max = exports.actorValues.getMaximum(pcFormId, 'health');
-    exports.actorValues.set(pcFormId, 'health', 'damage', -max);
-    mp.onDeath(pcFormId);
-  });
-  var sprintAttr = 'stamina';
-  var staminaReduce = 10;
-  utils_1.utils.hook('_onSprintStateChange', function (pcFormId, newState) {
-    switch (newState) {
-      case 'start':
-        exports.actorValues.set(pcFormId, "mp_" + sprintAttr + "drain", 'base', -staminaReduce);
-        var damageMod = exports.actorValues.get(pcFormId, sprintAttr, 'damage');
-        exports.actorValues.set(pcFormId, sprintAttr, 'damage', damageMod - staminaReduce);
-        break;
-
-      case 'stop':
-        exports.actorValues.set(pcFormId, "mp_" + sprintAttr + "drain", 'base', 0);
-        break;
-
-      default:
-        break;
-    }
-  });
-  utils_1.utils.hook('_onPowerAttack', function (pcFormId) {
-    var damage = exports.actorValues.get(pcFormId, sprintAttr, 'damage');
-    var damageMod = -35;
-    exports.actorValues.set(pcFormId, sprintAttr, 'damage', damage + damageMod);
-  });
-  utils_1.utils.hook('_onBash', function (pcFormId) {
-    var damage = exports.actorValues.get(pcFormId, sprintAttr, 'damage');
-    var damageMod = -35;
-    exports.actorValues.set(pcFormId, sprintAttr, 'damage', damage + damageMod);
-  });
 };
 
 exports.init = init;
-},{"../utils/utils":"utils/utils.ts","../utils/typeCheck":"utils/typeCheck.ts","../property/consoleOutput":"property/consoleOutput.ts"}],"mechanics/spawnSystem.ts":[function(require,module,exports) {
+},{"../utils/utils":"utils/utils.ts","../utils/typeCheck":"utils/typeCheck.ts"}],"constants/constants.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.defaultSpawnPoint = exports.currentActor = void 0;
+exports.currentActor = 0x14;
+exports.defaultSpawnPoint = {
+  pos: [227, 239, 53],
+  angle: [0, 0, 0],
+  worldOrCellDesc: '165a7:Skyrim.esm'
+};
+},{}],"mechanics/spawnSystem.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -740,19 +668,16 @@ var utils_1 = require("../utils/utils");
 
 var ActorValues_1 = require("../sync/ActorValues");
 
-var defaultSpawnPoint = {
-  pos: [227, 239, 53],
-  angle: [0, 0, 0],
-  worldOrCellDesc: '165a7:Skyrim.esm'
-};
+var constants_1 = require("../constants/constants");
+
 exports.spawnSystem = {
   timeToRespawn: 6000,
   spawn: function (targetFormId) {
     var spawnPoint = mp.get(targetFormId, 'spawnPoint');
 
-    for (var _i = 0, _a = Object.keys(spawnPoint || defaultSpawnPoint); _i < _a.length; _i++) {
+    for (var _i = 0, _a = Object.keys(spawnPoint || constants_1.defaultSpawnPoint); _i < _a.length; _i++) {
       var propName = _a[_i];
-      mp.set(targetFormId, propName, (spawnPoint || defaultSpawnPoint)[propName]);
+      mp.set(targetFormId, propName, (spawnPoint || constants_1.defaultSpawnPoint)[propName]);
     }
 
     ActorValues_1.actorValues.set(targetFormId, 'health', 'damage', 0);
@@ -778,15 +703,10 @@ var init = function () {
       exports.spawnSystem.spawn(pcFormId);
     }, exports.spawnSystem.timeToRespawn);
   });
-  utils_1.utils.hook('onReinit', function (pcFormId, options) {
-    if (!mp.get(pcFormId, 'spawnPoint') || options && options.force) {
-      mp.set(pcFormId, 'spawnPoint', defaultSpawnPoint);
-    }
-  });
 };
 
 exports.init = init;
-},{"../utils/utils":"utils/utils.ts","../sync/ActorValues":"sync/ActorValues.ts"}],"mechanics/devCommands.ts":[function(require,module,exports) {
+},{"../utils/utils":"utils/utils.ts","../sync/ActorValues":"sync/ActorValues.ts","../constants/constants":"constants/constants.ts"}],"mechanics/devCommands.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -957,13 +877,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var init = function () {
-  mp.makeProperty('playerLevel', {
-    isVisibleByOwner: true,
-    isVisibleByNeighbors: false,
-    updateOwner: 'ctx.sp.Game.setPlayerLevel(ctx.value)',
-    updateNeighbor: ''
-  });
+var init = function () {// mp.makeProperty('playerLevel', {
+  // 	isVisibleByOwner: true,
+  // 	isVisibleByNeighbors: false,
+  // 	updateOwner: 'ctx.sp.Game.setPlayerLevel(ctx.value)',
+  // 	updateNeighbor: '',
+  // });
 };
 
 exports.init = init;
@@ -1034,14 +953,9 @@ exports.init = void 0;
 var utils_1 = require("../utils");
 
 function setScale() {
-  var _a;
-
-  var defaultScale = 1;
-  var value = (_a = ctx.value) !== null && _a !== void 0 ? _a : defaultScale;
-
-  if (value != ctx.state.value) {
-    ctx.refr.setScale(value);
-    ctx.state.value = value;
+  if (ctx.value !== ctx.state.lastScale) {
+    ctx.state.lastScale = +ctx.value;
+    ctx.refr.setScale(+ctx.value);
   }
 }
 
@@ -1129,34 +1043,81 @@ var init = function () {
 };
 
 exports.init = init;
-},{}],"event/_onBash.ts":[function(require,module,exports) {
+},{}],"sync/index.ts":[function(require,module,exports) {
+"use strict";
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  Object.defineProperty(o, k2, {
+    enumerable: true,
+    get: function () {
+      return m[k];
+    }
+  });
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __exportStar = this && this.__exportStar || function (m, exports) {
+  for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ActorValuesInit = void 0;
+
+__exportStar(require("./ActorValues"), exports);
+
+var ActorValues_1 = require("./ActorValues");
+
+Object.defineProperty(exports, "ActorValuesInit", {
+  enumerable: true,
+  get: function () {
+    return ActorValues_1.init;
+  }
+});
+},{"./ActorValues":"sync/ActorValues.ts"}],"event/_onBash.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.init = void 0;
+
+var sync_1 = require("../sync");
+
+var utils_1 = require("../utils");
 
 var init = function () {
   mp.makeEventSource('_onBash', "\n    const next = ctx.sp.storage._api_onAnimationEvent;\n    ctx.sp.storage._api_onAnimationEvent = {\n      callback(...args) {\n        const [serversideFormId, animEventName] = args;\n        if (serversideFormId === 0x14 && animEventName.toLowerCase().includes(\"bash\")) {\n          ctx.sendEvent(serversideFormId);\n        }\n        if (typeof next.callback === \"function\") {\n          next.callback(...args);\n        }\n      }\n    };\n  ");
+  var sprintAttr = 'stamina';
+  utils_1.utils.hook('_onBash', function (pcFormId) {
+    var damage = sync_1.actorValues.get(pcFormId, sprintAttr, 'damage');
+    var damageMod = -35;
+    sync_1.actorValues.set(pcFormId, sprintAttr, 'damage', damage + damageMod);
+  });
 };
 
 exports.init = init;
-},{}],"event/_onHit.ts":[function(require,module,exports) {
+},{"../sync":"sync/index.ts","../utils":"utils/index.ts"}],"event/_onHit.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.init = void 0;
+
+var consoleOutput_1 = require("../property/consoleOutput");
+
+var sync_1 = require("../sync");
 
 var utils_1 = require("../utils/utils");
 
 var init = function () {
   mp.makeEventSource('_onHit', "\n    ctx.sp.on(\"hit\", (e) => {\n      if (!ctx.sp.Actor.from(e.target)) return;\n      if (e.source && ctx.sp.Spell.from(e.source)) return;\n\n      const target = ctx.getFormIdInServerFormat(e.target.getFormId());\n      const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());\n      ctx.sendEvent({\n        isPowerAttack: e.isPowerAttack,\n        isSneakAttack: e.isSneakAttack,\n        isBashAttack: e.isBashAttack,\n        isHitBlocked: e.isHitBlocked,\n        target: target,\n        agressor: agressor,\n        source: e.source ? e.source.getFormId() : 0,\n      });\n    });\n  ");
   utils_1.utils.hook('_onHit', function (pcFormId, eventData) {
-    utils_1.utils.log('_onHit');
-
     if (eventData.target === 0x14) {
       eventData.target = pcFormId;
     }
@@ -1165,39 +1126,98 @@ var init = function () {
       eventData.agressor = pcFormId;
     }
   });
+  utils_1.utils.hook('_onHit', function (pcFormId, eventData) {
+    var damageMod = -25; // крошу все что вижу
+
+    if (eventData.agressor === pcFormId && eventData.target !== pcFormId) {
+      damageMod = -250;
+    }
+
+    var avName = 'health';
+    var damage = sync_1.actorValues.get(eventData.target, avName, 'damage');
+    var agressorDead = sync_1.actorValues.getCurrent(eventData.agressor, 'health') <= 0;
+
+    if (damageMod < 0 && agressorDead) {
+      utils_1.utils.log("Dead characters can't hit");
+      return;
+    }
+
+    var greenZone = '165a7:Skyrim.esm';
+
+    if (0 && mp.get(eventData.agressor, 'worldOrCellDesc') === greenZone) {
+      var msgs = ['Вы с удивлением замечаете, что оставили лишь царапину', 'Вы не верите своим глазам. Боги отвели удар от цели', 'Вы чувствуете, что Кинарет наблюдает за вашими действиями'];
+      var i = Math.floor(Math.random() * msgs.length);
+      consoleOutput_1.consoleOutput.printNote(pcFormId, msgs[i]);
+      damageMod = i === 0 ? -1 : 0;
+    }
+
+    var newDamageModValue = damage + damageMod;
+    sync_1.actorValues.set(eventData.target, avName, 'damage', newDamageModValue);
+    var wouldDie = sync_1.actorValues.getMaximum(eventData.target, 'health') + newDamageModValue <= 0;
+
+    if (wouldDie && !mp.get(eventData.target, 'isDead')) {
+      mp.onDeath(eventData.target);
+    }
+  });
 };
 
 exports.init = init;
-},{"../utils/utils":"utils/utils.ts"}],"event/_onPowerAttack.ts":[function(require,module,exports) {
+},{"../property/consoleOutput":"property/consoleOutput.ts","../sync":"sync/index.ts","../utils/utils":"utils/utils.ts"}],"event/_onPowerAttack.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.init = void 0;
+
+var sync_1 = require("../sync");
+
+var utils_1 = require("../utils");
 
 var init = function () {
   mp.makeEventSource('_onPowerAttack', "\n    const next = ctx.sp.storage._api_onAnimationEvent;\n    ctx.sp.storage._api_onAnimationEvent = {\n      callback(...args) {\n        const [serversideFormId, animEventName] = args;\n        if (serversideFormId === 0x14 && animEventName.toLowerCase().includes(\"power\")) {\n          ctx.sendEvent(serversideFormId);\n        }\n        if (typeof next.callback === \"function\") {\n          next.callback(...args);\n        }\n      }\n    };\n  ");
+  var sprintAttr = 'stamina';
+  utils_1.utils.hook('_onPowerAttack', function (pcFormId) {
+    var damage = sync_1.actorValues.get(pcFormId, sprintAttr, 'damage');
+    var damageMod = -35;
+    sync_1.actorValues.set(pcFormId, sprintAttr, 'damage', damage + damageMod);
+  });
 };
 
 exports.init = init;
-},{}],"event/_onRegenFinish.ts":[function(require,module,exports) {
+},{"../sync":"sync/index.ts","../utils":"utils/index.ts"}],"event/_onRegenFinish.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.init = void 0;
+
+var utils_1 = require("../utils");
+
+var sync_1 = require("../sync");
 
 var init = function () {
   for (var _i = 0, _a = ['health', 'magicka', 'stamina']; _i < _a.length; _i++) {
     var attr = _a[_i];
     mp.makeEventSource('_onActorValueFlushRequired' + attr, "\n      const update = () => {\n        const attr = \"" + attr + "\";\n        const percent = ctx.sp.Game.getPlayer().getActorValuePercentage(attr);\n        if (ctx.state.percent !== percent) {\n          if (ctx.state.percent !== undefined && percent === 1) {\n            ctx.sendEvent();\n          }\n          ctx.state.percent = percent;\n        }\n      };\n      (async () => {\n        while (1) {\n          await ctx.sp.Utility.wait(0.667);\n          update();\n        }\n      });\n    ");
   }
+
+  var _loop_1 = function (attr) {
+    utils_1.utils.hook('_onActorValueFlushRequired' + attr, function (pcFormId) {
+      sync_1.actorValues.flushRegen(pcFormId, attr);
+    });
+  };
+
+  for (var _b = 0, _c = ['health', 'magicka', 'stamina']; _b < _c.length; _b++) {
+    var attr = _c[_b];
+
+    _loop_1(attr);
+  }
 };
 
 exports.init = init;
-},{}],"event/_onSprintStateChange.ts":[function(require,module,exports) {
+},{"../utils":"utils/index.ts","../sync":"sync/index.ts"}],"event/_onSprintStateChange.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1205,12 +1225,34 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
+var sync_1 = require("../sync");
+
+var utils_1 = require("../utils");
+
 var init = function () {
   mp.makeEventSource('_onSprintStateChange', "\n    ctx.sp.on(\"update\", () => {\n      const isSprinting = ctx.sp.Game.getPlayer().isSprinting();\n      if (ctx.state.isSprinting !== isSprinting) {\n        if (ctx.state.isSprinting !== undefined) {\n          ctx.sendEvent(isSprinting ? \"start\" : \"stop\");\n        }\n        ctx.state.isSprinting = isSprinting;\n      }\n    });\n  ");
+  var sprintAttr = 'stamina';
+  var staminaReduce = 10;
+  utils_1.utils.hook('_onSprintStateChange', function (pcFormId, newState) {
+    switch (newState) {
+      case 'start':
+        sync_1.actorValues.set(pcFormId, "mp_" + sprintAttr + "drain", 'base', -staminaReduce);
+        var damageMod = sync_1.actorValues.get(pcFormId, sprintAttr, 'damage');
+        sync_1.actorValues.set(pcFormId, sprintAttr, 'damage', damageMod - staminaReduce);
+        break;
+
+      case 'stop':
+        sync_1.actorValues.set(pcFormId, "mp_" + sprintAttr + "drain", 'base', 0);
+        break;
+
+      default:
+        break;
+    }
+  });
 };
 
 exports.init = init;
-},{}],"event/_onConsoleCommand.ts":[function(require,module,exports) {
+},{"../sync":"sync/index.ts","../utils":"utils/index.ts"}],"event/_onConsoleCommand.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1231,12 +1273,21 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
+var sync_1 = require("../sync");
+
+var utils_1 = require("../utils");
+
 var init = function () {
   mp.makeEventSource('_onLocalDeath', "\n    ctx.sp.on(\"update\", () => {\n      const isDead = ctx.sp.Game.getPlayer().getActorValuePercentage(\"health\") === 0;\n      if (ctx.state.wasDead !== isDead) {\n        if (isDead) {\n          ctx.sendEvent();\n        }\n        ctx.state.wasDead = isDead;\n      }\n    });\n  ");
+  utils_1.utils.hook('_onLocalDeath', function (pcFormId) {
+    var max = sync_1.actorValues.getMaximum(pcFormId, 'health');
+    sync_1.actorValues.set(pcFormId, 'health', 'damage', -max);
+    mp.onDeath(pcFormId);
+  });
 };
 
 exports.init = init;
-},{}],"event/index.ts":[function(require,module,exports) {
+},{"../sync":"sync/index.ts","../utils":"utils/index.ts"}],"event/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1315,42 +1366,7 @@ Object.defineProperty(exports, "_onLocalDeathInit", {
     return _onLocalDeath_1.init;
   }
 });
-},{"./_":"event/_.ts","./_onBash":"event/_onBash.ts","./_onHit":"event/_onHit.ts","./_onPowerAttack":"event/_onPowerAttack.ts","./_onRegenFinish":"event/_onRegenFinish.ts","./_onSprintStateChange":"event/_onSprintStateChange.ts","./_onConsoleCommand":"event/_onConsoleCommand.ts","./_onLocalDeath":"event/_onLocalDeath.ts"}],"sync/index.ts":[function(require,module,exports) {
-"use strict";
-
-var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  Object.defineProperty(o, k2, {
-    enumerable: true,
-    get: function () {
-      return m[k];
-    }
-  });
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
-});
-
-var __exportStar = this && this.__exportStar || function (m, exports) {
-  for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ActorValuesInit = void 0;
-
-__exportStar(require("./ActorValues"), exports);
-
-var ActorValues_1 = require("./ActorValues");
-
-Object.defineProperty(exports, "ActorValuesInit", {
-  enumerable: true,
-  get: function () {
-    return ActorValues_1.init;
-  }
-});
-},{"./ActorValues":"sync/ActorValues.ts"}],"gamemode.ts":[function(require,module,exports) {
+},{"./_":"event/_.ts","./_onBash":"event/_onBash.ts","./_onHit":"event/_onHit.ts","./_onPowerAttack":"event/_onPowerAttack.ts","./_onRegenFinish":"event/_onRegenFinish.ts","./_onSprintStateChange":"event/_onSprintStateChange.ts","./_onConsoleCommand":"event/_onConsoleCommand.ts","./_onLocalDeath":"event/_onLocalDeath.ts"}],"gamemode.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1366,6 +1382,8 @@ var property_1 = require("./property");
 var event_1 = require("./event");
 
 var sync_1 = require("./sync");
+
+var constants_1 = require("./constants/constants");
 
 utils_1.utils.log('Gamemode init');
 
@@ -1453,45 +1471,61 @@ mechanics_1.devCommandsInit();
  */
 
 utils_1.utils.hook('onReinit', function (pcFormId, options) {
-  mp.set(pcFormId, 'scale', 1); // mp.set(pcFormId, 'raceWeight', 1);
-  // utils.log(pcFormId, mp.get(pcFormId, 'playerScale'));
-  // utils.log(pcFormId, mp.get(pcFormId, 'raceWeight'));
-  // utils.log(pcFormId, mp.get(pcFormId, 'race'));
+  /** Проставляем значения по умолчанию персонажу */
+  if (sync_1.actorValues.setDefaults) {
+    sync_1.actorValues.setDefaults(pcFormId, options);
+  }
+  /** Проставляем точку для респавна */
+
+
+  if (!mp.get(pcFormId, 'spawnPoint') || options && options.force) {
+    mp.set(pcFormId, 'spawnPoint', constants_1.defaultSpawnPoint);
+  }
+  /** Проставляем размер персонажа на стандартный */
+
+
+  mp.set(pcFormId, 'scale', 1);
 });
 
-function setHtml() {
-  ctx.sp.once('loadGame', function () {
-    var url = 'http://localhost:1234/chat.html';
-    ctx.sp.printConsole('load url ' + url);
-    ctx.sp.Browser.setVisible(true);
-    ctx.sp.Browser.loadUrl(url);
-    ctx.sendEvent(url);
-  });
-}
-
-mp.makeEventSource('_onInit2', utils_1.getFunctionText(setHtml));
-utils_1.utils.hook('_onInit2', function (pcformId, url) {
-  utils_1.utils.log('loadGame -> Browser -> loadUrl', pcformId, url);
-});
-
-function changeScaleOnHit() {
-  ctx.sp.on('hit', function (event) {
-    var e = event;
-    if (!ctx.sp.Actor.from(e.target)) return;
-    if (e.source && ctx.sp.Spell.from(e.source)) return;
-    var target = ctx.getFormIdInServerFormat(e.target.getFormID());
-    var agressor = ctx.getFormIdInServerFormat(e.agressor.getFormID());
+function onEquip() {
+  ctx.sp.on('equip', function (e) {
+    var event = e;
     ctx.sendEvent({
-      target: target,
-      agressor: agressor
+      event: JSON.stringify('lockChanged'),
+      obj: event.baseObj.getName()
     });
   });
 }
 
-mp.makeEventSource('_onHitScale', utils_1.getFunctionText(changeScaleOnHit));
-utils_1.utils.hook('_onHitScale', function (pcformId, eventData) {
-  var current = mp.get(eventData.target, 'scale');
-  mp.set(eventData.target, 'scale', current >= 1.5 ? 1 : 1.5);
-  utils_1.utils.log('_onHitScale', pcformId, eventData, current);
-});
-},{"./utils/utils":"utils/utils.ts","./mechanics":"mechanics/index.ts","./property":"property/index.ts","./event":"event/index.ts","./sync":"sync/index.ts"}]},{},["gamemode.ts"], null)
+function onloadGame() {
+  ctx.sp.on('update', function () {
+    try {
+      var currentCell = ctx.sp.Game.getPlayer().getParentCell();
+
+      if (ctx.state.currentCell !== currentCell) {
+        if (ctx.state.currentCell !== undefined) {
+          ctx.sendEvent({
+            event: JSON.stringify('update'),
+            data: currentCell.getType(),
+            last: ctx.state.lastCellId
+          });
+        }
+
+        ctx.state.currentCell = currentCell;
+      }
+    } catch (err) {
+      ctx.sendEvent({
+        err: err.toString()
+      });
+    }
+  });
+}
+
+mp.makeEventSource('_onInit2', utils_1.getFunctionText(onloadGame));
+utils_1.utils.hook('_onInit2', function (pcformId, event) {
+  utils_1.utils.log(event);
+}); // import { init as scaleHitInit } from './test/scaleHit';
+// scaleHitInit();
+
+/**  */
+},{"./utils/utils":"utils/utils.ts","./mechanics":"mechanics/index.ts","./property":"property/index.ts","./event":"event/index.ts","./sync":"sync/index.ts","./constants/constants":"constants/constants.ts"}]},{},["gamemode.ts"], null)

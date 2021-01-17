@@ -241,9 +241,9 @@ System.register(
 						skyrimPlatform_1.printConsole({ cfg: cfg });
 						var uiPort = cfg.port === 7777 ? 3000 : cfg.port + 1;
 						// var url = "http://" + cfg.ip + ":" + uiPort + "/chat.html";
-						// var url = 'http://127.0.0.1:5514/chat_2.html';
-						// skyrimPlatform_1.printConsole('loading url ' + url);
-						// skyrimPlatform_1.browser.loadUrl(url);
+						var url = 'http://localhost:1234/chat.html';
+						skyrimPlatform_1.printConsole('loading url ' + url);
+						skyrimPlatform_1.browser.loadUrl(url);
 
 						// var F5 = 0x3F;
 						// {

@@ -1,4 +1,5 @@
 import { MP } from '../platform';
+import minify from 'string-minify';
 
 declare var global: any;
 declare const mp: MP;
@@ -32,9 +33,8 @@ export const utils = {
 };
 
 export const getFunctionText = (func: Function): string => {
-	return func
-		.toString()
-		.replace(new RegExp('^.+[{]', 'm'), '')
+	return minify(func.toString())
+		.replace(new RegExp('^.+?{', 'm'), '')
 		.replace(new RegExp('[}]$', 'm'), '')
 		.trim();
 };

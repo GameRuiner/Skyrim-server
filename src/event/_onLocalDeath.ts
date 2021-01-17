@@ -1,4 +1,6 @@
 import { MP } from '../platform';
+import { actorValues } from '../sync';
+import { utils } from '../utils';
 
 declare const mp: MP;
 
@@ -17,4 +19,10 @@ export const init = () => {
     });
   `
 	);
+
+	utils.hook('_onLocalDeath', (pcFormId: number) => {
+		const max = actorValues.getMaximum(pcFormId, 'health');
+		actorValues.set(pcFormId, 'health', 'damage', -max);
+		mp.onDeath(pcFormId);
+	});
 };

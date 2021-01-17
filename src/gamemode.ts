@@ -21,12 +21,20 @@ import {
 	_onLocalDeathInit,
 } from './event';
 
-import { ActorValuesInit } from './sync';
+import { actorValues, ActorValuesInit } from './sync';
 
 import { MP } from './platform/mp';
-import { CTX, SkyrimEvent } from './platform';
+import { CTX } from './platform';
 
-import { HitEvent } from './platform/skyrimPlatform';
+import {
+	CellFullyLoadedEvent,
+	EquipEvent,
+	HitEvent,
+	LockChangedEvent,
+} from './platform/skyrimPlatform';
+import { defaultSpawnPoint } from './constants/constants';
+import { consoleOutput } from './property/consoleOutput';
+import { FormType } from './platform/FormType';
 
 declare const mp: MP;
 declare var global: any;
@@ -102,48 +110,59 @@ devCommandsInit();
  */
 
 utils.hook('onReinit', (pcFormId: number, options: any) => {
+	/** Проставляем значения по умолчанию персонажу */
+	if (actorValues.setDefaults) {
+		actorValues.setDefaults(pcFormId, options);
+	}
+	/** Проставляем точку для респавна */
+	if (!mp.get(pcFormId, 'spawnPoint') || (options && options.force)) {
+		mp.set(pcFormId, 'spawnPoint', defaultSpawnPoint);
+	}
+	/** Проставляем размер персонажа на стандартный */
 	mp.set(pcFormId, 'scale', 1);
-	// mp.set(pcFormId, 'raceWeight', 1);
-	// utils.log(pcFormId, mp.get(pcFormId, 'playerScale'));
-	// utils.log(pcFormId, mp.get(pcFormId, 'raceWeight'));
-	// utils.log(pcFormId, mp.get(pcFormId, 'race'));
 });
 
+/** TEST */
 declare const ctx: CTX;
 
-function setHtml() {
-	ctx.sp.once('loadGame', () => {
-		const url: string = 'http://localhost:1234/chat.html';
-		ctx.sp.printConsole('load url ' + url);
-		ctx.sp.Browser.setVisible(true);
-		ctx.sp.Browser.loadUrl(url);
-		ctx.sendEvent(url);
-	});
-}
-
-mp.makeEventSource('_onInit2', getFunctionText(setHtml));
-utils.hook('_onInit2', (pcformId: number, url: string) => {
-	utils.log('loadGame -> Browser -> loadUrl', pcformId, url);
-});
-
-function changeScaleOnHit() {
-	ctx.sp.on('hit', (event) => {
-		const e = event as HitEvent;
-		if (!(ctx.sp.Actor as any).from(e.target)) return;
-		if (e.source && (ctx.sp.Spell as any).from(e.source)) return;
-
-		const target = ctx.getFormIdInServerFormat(e.target.getFormID());
-		const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormID());
+function onEquip() {
+	ctx.sp.on('equip', (e) => {
+		const event = e as EquipEvent;
 		ctx.sendEvent({
-			target: target,
-			agressor: agressor,
+			event: JSON.stringify('lockChanged'),
+			obj: event.baseObj.getName(),
 		});
 	});
 }
 
-mp.makeEventSource('_onHitScale', getFunctionText(changeScaleOnHit));
-utils.hook('_onHitScale', (pcformId: number, eventData: any) => {
-	const current = mp.get(eventData.target, 'scale');
-	mp.set(eventData.target, 'scale', current >= 1.5 ? 1 : 1.5);
-	utils.log('_onHitScale', pcformId, eventData, current);
+function onloadGame() {
+	ctx.sp.on('update', () => {
+		try {
+			const currentCell = ctx.sp.Game.getPlayer().getParentCell();
+			if (ctx.state.currentCell !== currentCell) {
+				if (ctx.state.currentCell !== undefined) {
+					ctx.sendEvent({
+						event: JSON.stringify('update'),
+						data: currentCell.getType(),
+						last: ctx.state.lastCellId,
+					});
+				}
+				ctx.state.currentCell = currentCell;
+			}
+		} catch (err) {
+			ctx.sendEvent({
+				err: err.toString(),
+			});
+		}
+	});
+}
+
+mp.makeEventSource('_onInit2', getFunctionText(onloadGame));
+utils.hook('_onInit2', (pcformId: number, event: unknown) => {
+	utils.log(event);
 });
+
+// import { init as scaleHitInit } from './test/scaleHit';
+// scaleHitInit();
+
+/**  */

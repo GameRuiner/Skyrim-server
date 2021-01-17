@@ -1,13 +1,8 @@
 import { utils } from '../utils/utils';
 import { actorValues } from '../sync/ActorValues';
 import { MP } from '../platform';
+import { defaultSpawnPoint } from '../constants/constants';
 declare const mp: MP;
-
-const defaultSpawnPoint = {
-	pos: [227, 239, 53],
-	angle: [0, 0, 0],
-	worldOrCellDesc: '165a7:Skyrim.esm',
-};
 
 export const spawnSystem = {
 	timeToRespawn: 6000,
@@ -42,11 +37,5 @@ export const init = () => {
 		setTimeout(() => {
 			spawnSystem.spawn(pcFormId);
 		}, spawnSystem.timeToRespawn);
-	});
-
-	utils.hook('onReinit', (pcFormId: number, options: any) => {
-		if (!mp.get(pcFormId, 'spawnPoint') || (options && options.force)) {
-			mp.set(pcFormId, 'spawnPoint', defaultSpawnPoint);
-		}
 	});
 };

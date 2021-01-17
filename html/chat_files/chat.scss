@@ -5,16 +5,18 @@
 	font-style: normal;
 }
 
-body {
-	&::after {
-		content: 'on';
-		position: absolute;
-		top: 10px;
-		right: 10px;
-		padding: 6px;
-		background-color: green;
-	}
-}
+@import './index';
+
+// body {
+// 	&::after {
+// 		content: 'on';
+// 		position: absolute;
+// 		top: 10px;
+// 		right: 10px;
+// 		padding: 6px;
+// 		background-color: green;
+// 	}
+// }
 
 .clearfix::after {
 	content: '';

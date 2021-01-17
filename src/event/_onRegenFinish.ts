@@ -1,5 +1,7 @@
 import { Attr } from '../types/Attr';
 import { MP } from '../platform';
+import { utils } from '../utils';
+import { actorValues } from '../sync';
 declare const mp: MP;
 
 export const init = () => {
@@ -25,5 +27,11 @@ export const init = () => {
       });
     `
 		);
+	}
+
+	for (const attr of ['health', 'magicka', 'stamina'] as Attr[]) {
+		utils.hook('_onActorValueFlushRequired' + attr, (pcFormId: number) => {
+			actorValues.flushRegen(pcFormId, attr);
+		});
 	}
 };

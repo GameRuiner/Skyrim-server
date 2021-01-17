@@ -5,11 +5,9 @@ declare const mp: MP;
 declare const ctx: CTX;
 
 function setScale() {
-	const defaultScale: number = 1;
-	const value: number = ctx.value ?? defaultScale;
-	if (value != ctx.state.value) {
-		ctx.refr.setScale(value);
-		ctx.state.value = value;
+	if (ctx.value !== ctx.state.lastScale) {
+		ctx.state.lastScale = +ctx.value;
+		ctx.refr.setScale(+ctx.value);
 	}
 }
 
