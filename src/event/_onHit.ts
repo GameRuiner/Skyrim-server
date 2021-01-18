@@ -1,15 +1,15 @@
-import { EVENTS_NAME } from 'helper';
 import { CTX, MP } from '../platform';
 import { consoleOutput } from '../properties/consoleOutput';
 import { actorValues } from '../properties';
 import { getFunctionText, utils } from '../utility/utils';
+import { currentActor, EVENTS_NAME } from '../constants/constants';
 
 declare const mp: MP;
 declare const ctx: CTX;
 
 export const init = () => {
 	mp.makeEventSource(
-		'_onHit',
+		EVENTS_NAME.hit,
 		getFunctionText(() => {
 			ctx.sp.on('hit', (e: any) => {
 				if (!ctx.sp.Actor.from(e.target)) return;
@@ -17,6 +17,7 @@ export const init = () => {
 
 				const target = ctx.getFormIdInServerFormat(e.target.getFormId());
 				const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());
+				
 				ctx.sendEvent({
 					isPowerAttack: e.isPowerAttack,
 					isSneakAttack: e.isSneakAttack,
@@ -30,16 +31,16 @@ export const init = () => {
 		})
 	);
 
-	utils.hook('_onHit', (pcFormId: number, eventData: any) => {
-		if (eventData.target === 0x14) {
+	utils.hook(EVENTS_NAME.hit, (pcFormId: number, eventData: any) => {
+		if (eventData.target === currentActor) {
 			eventData.target = pcFormId;
 		}
-		if (eventData.agressor === 0x14) {
+		if (eventData.agressor === currentActor) {
 			eventData.agressor = pcFormId;
 		}
 	});
 
-	utils.hook('_onHit', (pcFormId: number, eventData: any) => {
+	utils.hook(EVENTS_NAME.hit, (pcFormId: number, eventData: any) => {
 		let damageMod = -25;
 		// крошу все что вижу
 		if (eventData.agressor === pcFormId && eventData.target !== pcFormId) {

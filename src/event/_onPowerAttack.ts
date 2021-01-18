@@ -2,6 +2,7 @@ import { CTX, MP } from '../platform';
 import { actorValues } from '../properties';
 import { getFunctionText, utils } from '../utility';
 import { Attr } from '../types/Attr';
+import { currentActor } from '../constants/constants';
 
 declare const mp: MP;
 declare const ctx: CTX;

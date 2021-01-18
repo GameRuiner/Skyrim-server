@@ -5,7 +5,7 @@
 //
 // anything defined in a previous bundle is accessed via the
 // orig method which is the require for previous bundles
-parcelRequire = (function (modules, cache, entry, globalName) {
+var parcelRequire = (function (modules, cache, entry, globalName) {
   // Save the require from previous bundle to this closure if any
   var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
   var nodeRequire = typeof require === 'function' && require;
@@ -246,8 +246,8 @@ exports.consoleOutput = {
   }
 };
 var printTargets = {
-  consoleOutput: 'ctx.sp.printConsole(...ctx.value.args)',
-  notification: 'ctx.sp.Debug.notification(...ctx.value.args)'
+  consoleOutput: 'ctx.sp.printConsole(...ctx.value.args);',
+  notification: 'ctx.sp.Debug.notification(...ctx.value.args);'
 };
 var props = ['consoleOutput', 'notification'];
 
@@ -719,7 +719,7 @@ exports.init = init;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.init = void 0;
+exports.init = exports.reinit = void 0;
 
 var utils_1 = require("../utility/utils");
 
@@ -728,6 +728,8 @@ var consoleOutput_1 = require("../properties/consoleOutput");
 var ActorValues_1 = require("../properties/ActorValues");
 
 var spawnSystem_1 = require("./spawnSystem");
+
+var constants_1 = require("../constants/constants");
 
 var chooseFormId = function (pcFormId, selectedFormId) {
   return selectedFormId ? selectedFormId : pcFormId;
@@ -745,6 +747,8 @@ var reinit = function (pcFormId, selectedFormId) {
   });
   consoleOutput_1.consoleOutput.print(targetFormId, "Reinit " + targetFormId.toString(16) + " " + tip);
 };
+
+exports.reinit = reinit;
 
 var setav = function (pcFormId, selectedFormId, avName, newValueStr) {
   var newValue = parseFloat(newValueStr);
@@ -785,13 +789,13 @@ var init = function () {
       args[_i - 1] = arguments[_i];
     }
 
-    var selectedFormId = args[0] !== 0x14 ? args[0] : pcFormId;
+    var selectedFormId = args[0] !== constants_1.currentActor ? args[0] : pcFormId;
     var sub = args[1];
     var arg0 = args[2];
     var arg1 = args[3];
 
     if (sub === 'reinit') {
-      reinit(pcFormId, selectedFormId);
+      exports.reinit(pcFormId, selectedFormId);
     } else if (sub === 'setav') {
       setav(pcFormId, selectedFormId, arg0, arg1);
     } else if (sub === 'kill') {
@@ -805,105 +809,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../utility/utils":"utility/utils.ts","../properties/consoleOutput":"properties/consoleOutput.ts","../properties/ActorValues":"properties/ActorValues.ts","./spawnSystem":"systems/spawnSystem.ts"}],"systems/mines.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.init = void 0;
-
-var utils_1 = require("../utility/utils");
-
-var simplePickaxe = 0xE3C16;
-var items = [simplePickaxe, 0xaccd1, 0xb974f, 0x7a14e, 0x7a132, 0x10df21, 0x100e3b, 0xb505c, 0xb50c1];
-
-var isMine = function (formId) {
-  return formId === 91570 ? true : false;
-};
-
-var addItem = function (formId, baseId, count) {
-  if (count <= 0) return;
-  var inv = mp.get(formId, 'inventory');
-  var added = false;
-
-  for (var _i = 0, inv_1 = inv; _i < inv_1.length; _i++) {
-    var value = inv_1[_i];
-
-    if (Object.keys(value).length == 2 && value.baseId == baseId) {
-      value.count += count;
-      added = true;
-      break;
-    }
-  }
-
-  if (!added) {
-    inv.entries.push({
-      baseId: baseId,
-      count: count
-    });
-  }
-
-  mp.set(formId, 'inventory', inv);
-};
-
-var init = function () {
-  utils_1.utils.hook('_onCurrentCellChange', function (pcFormId, event) {
-    try {
-      if (isMine(event.cell.id)) {
-        var invEntry_1 = mp.get(pcFormId, 'inventory').entries;
-        items.forEach(function (item) {
-          if (invEntry_1.map(function (x) {
-            return x.baseId;
-          }).findIndex(function (x) {
-            return x === item;
-          }) === -1) {
-            addItem(pcFormId, item, 1);
-          }
-        });
-      }
-    } catch (err) {
-      utils_1.utils.log(err);
-    }
-  });
-};
-
-exports.init = init;
-},{"../utility/utils":"utility/utils.ts"}],"systems/index.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.minesInit = exports.spawnSystemInit = exports.devCommandsInit = void 0;
-
-var devCommands_1 = require("./devCommands");
-
-Object.defineProperty(exports, "devCommandsInit", {
-  enumerable: true,
-  get: function () {
-    return devCommands_1.init;
-  }
-});
-
-var spawnSystem_1 = require("./spawnSystem");
-
-Object.defineProperty(exports, "spawnSystemInit", {
-  enumerable: true,
-  get: function () {
-    return spawnSystem_1.init;
-  }
-});
-
-var mines_1 = require("./mines");
-
-Object.defineProperty(exports, "minesInit", {
-  enumerable: true,
-  get: function () {
-    return mines_1.init;
-  }
-});
-},{"./devCommands":"systems/devCommands.ts","./spawnSystem":"systems/spawnSystem.ts","./mines":"systems/mines.ts"}],"properties/isDead.ts":[function(require,module,exports) {
+},{"../utility/utils":"utility/utils.ts","../properties/consoleOutput":"properties/consoleOutput.ts","../properties/ActorValues":"properties/ActorValues.ts","./spawnSystem":"systems/spawnSystem.ts","../constants/constants":"constants/constants.ts"}],"properties/isDead.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1036,7 +942,7 @@ var __exportStar = this && this.__exportStar || function (m, exports) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ActorValuesInit = exports.scalePropInit = exports.playerRacePropInit = exports.playerLevelPropInit = exports.spawnPointPropInit = exports.consoleOutputPropInit = exports.isDeadPropInit = void 0;
+exports.ActorValuesInit = exports.scalePropInit = exports.playerRacePropInit = exports.playerLevelPropInit = exports.spawnPointPropInit = exports.consoleOutputPropInit = exports.consoleOutput = exports.isDeadPropInit = void 0;
 
 var isDead_1 = require("./isDead");
 
@@ -1049,10 +955,19 @@ Object.defineProperty(exports, "isDeadPropInit", {
 
 var consoleOutput_1 = require("./consoleOutput");
 
+Object.defineProperty(exports, "consoleOutput", {
+  enumerable: true,
+  get: function () {
+    return consoleOutput_1.consoleOutput;
+  }
+});
+
+var consoleOutput_2 = require("./consoleOutput");
+
 Object.defineProperty(exports, "consoleOutputPropInit", {
   enumerable: true,
   get: function () {
-    return consoleOutput_1.init;
+    return consoleOutput_2.init;
   }
 });
 
@@ -1102,7 +1017,120 @@ Object.defineProperty(exports, "ActorValuesInit", {
     return ActorValues_1.init;
   }
 });
-},{"./isDead":"properties/isDead.ts","./consoleOutput":"properties/consoleOutput.ts","./spawnPoint":"properties/spawnPoint.ts","./playerLevel":"properties/playerLevel.ts","./playerRace":"properties/playerLevel.ts","./scale":"properties/scale.ts","./ActorValues":"properties/ActorValues.ts"}],"event/_.ts":[function(require,module,exports) {
+},{"./isDead":"properties/isDead.ts","./consoleOutput":"properties/consoleOutput.ts","./spawnPoint":"properties/spawnPoint.ts","./playerLevel":"properties/playerLevel.ts","./playerRace":"properties/playerLevel.ts","./scale":"properties/scale.ts","./ActorValues":"properties/ActorValues.ts"}],"systems/mines.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.init = void 0;
+
+var utils_1 = require("../utility/utils");
+
+var properties_1 = require("../properties");
+
+var constants_1 = require("../constants/constants");
+
+var simplePickaxe = 0xe3c16;
+var items = [simplePickaxe, 0xaccd1, 0xb974f, 0x7a14e, 0x7a132, 0x10df21, 0x100e3b, 0xb505c, 0xb50c1];
+
+var isMine = function (formId) {
+  return formId === 91570 ? true : false;
+};
+
+var addItem = function (formId, baseId, count) {
+  if (count <= 0) return;
+  var inv = mp.get(formId, 'inventory');
+  var added = false;
+
+  for (var _i = 0, inv_1 = inv; _i < inv_1.length; _i++) {
+    var value = inv_1[_i];
+
+    if (Object.keys(value).length == 2 && value.baseId == baseId) {
+      value.count += count;
+      added = true;
+      break;
+    }
+  }
+
+  if (!added) {
+    inv.entries.push({
+      baseId: baseId,
+      count: count
+    });
+  }
+
+  mp.set(formId, 'inventory', inv);
+};
+
+var init = function () {
+  utils_1.utils.hook(constants_1.EVENTS_NAME.hit, function (pcFormId, eventData) {
+    try {
+      if (eventData.agressor === pcFormId) {
+        properties_1.consoleOutput.printNote(pcFormId, 'Эй, не стукай!');
+        utils_1.utils.log(constants_1.currentActor);
+      }
+    } catch (err) {
+      utils_1.utils.log(err);
+    }
+  });
+  utils_1.utils.hook(constants_1.EVENTS_NAME.currentCellChange, function (pcFormId, event) {
+    try {
+      if (isMine(event.cell.id)) {
+        var invEntry_1 = mp.get(pcFormId, 'inventory').entries;
+        items.forEach(function (item) {
+          if (invEntry_1.map(function (x) {
+            return x.baseId;
+          }).findIndex(function (x) {
+            return x === item;
+          }) === -1) {
+            addItem(pcFormId, item, 1);
+          }
+        });
+        properties_1.consoleOutput.print(pcFormId, 'Теперь ты шахтер! Работай!');
+      }
+    } catch (err) {
+      utils_1.utils.log(err);
+    }
+  });
+};
+
+exports.init = init;
+},{"../utility/utils":"utility/utils.ts","../properties":"properties/index.ts","../constants/constants":"constants/constants.ts"}],"systems/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.minesInit = exports.spawnSystemInit = exports.devCommandsInit = void 0;
+
+var devCommands_1 = require("./devCommands");
+
+Object.defineProperty(exports, "devCommandsInit", {
+  enumerable: true,
+  get: function () {
+    return devCommands_1.init;
+  }
+});
+
+var spawnSystem_1 = require("./spawnSystem");
+
+Object.defineProperty(exports, "spawnSystemInit", {
+  enumerable: true,
+  get: function () {
+    return spawnSystem_1.init;
+  }
+});
+
+var mines_1 = require("./mines");
+
+Object.defineProperty(exports, "minesInit", {
+  enumerable: true,
+  get: function () {
+    return mines_1.init;
+  }
+});
+},{"./devCommands":"systems/devCommands.ts","./spawnSystem":"systems/spawnSystem.ts","./mines":"systems/mines.ts"}],"event/_.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1174,8 +1202,10 @@ var properties_1 = require("../properties");
 
 var utils_1 = require("../utility/utils");
 
+var constants_1 = require("../constants/constants");
+
 var init = function () {
-  mp.makeEventSource('_onHit', utils_1.getFunctionText(function () {
+  mp.makeEventSource(constants_1.EVENTS_NAME.hit, utils_1.getFunctionText(function () {
     ctx.sp.on('hit', function (e) {
       if (!ctx.sp.Actor.from(e.target)) return;
       if (e.source && ctx.sp.Spell.from(e.source)) return;
@@ -1192,16 +1222,16 @@ var init = function () {
       });
     });
   }));
-  utils_1.utils.hook('_onHit', function (pcFormId, eventData) {
-    if (eventData.target === 0x14) {
+  utils_1.utils.hook(constants_1.EVENTS_NAME.hit, function (pcFormId, eventData) {
+    if (eventData.target === constants_1.currentActor) {
       eventData.target = pcFormId;
     }
 
-    if (eventData.agressor === 0x14) {
+    if (eventData.agressor === constants_1.currentActor) {
       eventData.agressor = pcFormId;
     }
   });
-  utils_1.utils.hook('_onHit', function (pcFormId, eventData) {
+  utils_1.utils.hook(constants_1.EVENTS_NAME.hit, function (pcFormId, eventData) {
     var damageMod = -25;
 
     if (eventData.agressor === pcFormId && eventData.target !== pcFormId) {
@@ -1237,7 +1267,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../properties/consoleOutput":"properties/consoleOutput.ts","../properties":"properties/index.ts","../utility/utils":"utility/utils.ts"}],"event/_onPowerAttack.ts":[function(require,module,exports) {
+},{"../properties/consoleOutput":"properties/consoleOutput.ts","../properties":"properties/index.ts","../utility/utils":"utility/utils.ts","../constants/constants":"constants/constants.ts"}],"event/_onPowerAttack.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1456,13 +1486,47 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../utility":"utility/index.ts"}],"event/index.ts":[function(require,module,exports) {
+},{"../utility":"utility/index.ts"}],"event/_Test.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports._onCurrentCellChangeInit = exports._onLocalDeathInit = exports._onConsoleCommandInit = exports._onSprintStateChangeInit = exports._onRegenFinishInit = exports._onPowerAttackInit = exports._onHitInit = exports._onBashInit = exports._Init = void 0;
+exports.init = void 0;
+
+var devCommands_1 = require("../systems/devCommands");
+
+var utility_1 = require("../utility");
+
+var init = function () {
+  mp.makeEventSource('_onInputTest', utility_1.getFunctionText(function () {
+    var F5 = 0x3f;
+    ctx.sp.on('update', function () {
+      var isPressed = ctx.sp.Input.isKeyPressed(F5);
+
+      if (ctx.state.isPressed !== isPressed) {
+        if (ctx.state.isPressed !== undefined && isPressed === true) {
+          ctx.sendEvent();
+        }
+
+        ctx.state.isPressed = isPressed;
+      }
+    });
+  }));
+  utility_1.utils.hook('_onInputTest', function (pcFormId) {
+    devCommands_1.reinit(pcFormId);
+    utility_1.utils.log('Нажал F5');
+  });
+};
+
+exports.init = init;
+},{"../systems/devCommands":"systems/devCommands.ts","../utility":"utility/index.ts"}],"event/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports._TestInit = exports._onCurrentCellChangeInit = exports._onLocalDeathInit = exports._onConsoleCommandInit = exports._onSprintStateChangeInit = exports._onRegenFinishInit = exports._onPowerAttackInit = exports._onHitInit = exports._onBashInit = exports._Init = void 0;
 
 var _1 = require("./_");
 
@@ -1544,7 +1608,16 @@ Object.defineProperty(exports, "_onCurrentCellChangeInit", {
     return _onCurrentCellChange_1.init;
   }
 });
-},{"./_":"event/_.ts","./_onBash":"event/_onBash.ts","./_onHit":"event/_onHit.ts","./_onPowerAttack":"event/_onPowerAttack.ts","./_onRegenFinish":"event/_onRegenFinish.ts","./_onSprintStateChange":"event/_onSprintStateChange.ts","./_onConsoleCommand":"event/_onConsoleCommand.ts","./_onLocalDeath":"event/_onLocalDeath.ts","./_onCurrentCellChange":"event/_onCurrentCellChange.ts"}],"index.ts":[function(require,module,exports) {
+
+var _Test_1 = require("./_Test");
+
+Object.defineProperty(exports, "_TestInit", {
+  enumerable: true,
+  get: function () {
+    return _Test_1.init;
+  }
+});
+},{"./_":"event/_.ts","./_onBash":"event/_onBash.ts","./_onHit":"event/_onHit.ts","./_onPowerAttack":"event/_onPowerAttack.ts","./_onRegenFinish":"event/_onRegenFinish.ts","./_onSprintStateChange":"event/_onSprintStateChange.ts","./_onConsoleCommand":"event/_onConsoleCommand.ts","./_onLocalDeath":"event/_onLocalDeath.ts","./_onCurrentCellChange":"event/_onCurrentCellChange.ts","./_Test":"event/_Test.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1601,6 +1674,8 @@ event_1._onConsoleCommandInit();
 event_1._onLocalDeathInit();
 
 event_1._onCurrentCellChangeInit();
+
+event_1._TestInit();
 
 properties_2.ActorValuesInit();
 systems_1.spawnSystemInit();

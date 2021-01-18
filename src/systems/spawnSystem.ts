@@ -2,7 +2,7 @@ import { utils } from '../utility/utils';
 import { actorValues } from '../properties/ActorValues';
 import { MP } from '../platform';
 import { defaultSpawnPoint } from '../constants/constants';
-import { PropertyName } from 'types/PropertyName';
+import { PropertyName } from '../types/PropertyName';
 declare const mp: MP;
 
 export const spawnSystem = {

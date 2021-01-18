@@ -20,6 +20,7 @@ import {
 	_onConsoleCommandInit,
 	_onLocalDeathInit,
 	_onCurrentCellChangeInit,
+	_TestInit,
 } from './event';
 
 import { actorValues, ActorValuesInit } from './properties';
@@ -62,6 +63,7 @@ _onSprintStateChangeInit();
 _onConsoleCommandInit();
 _onLocalDeathInit();
 _onCurrentCellChangeInit();
+_TestInit();
 /** */
 
 /** sync initialization */

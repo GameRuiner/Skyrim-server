@@ -1,4 +1,4 @@
-import { Modifier } from 'types/Modifier';
+import { Modifier } from '../types/Modifier';
 
 export const typeCheck = {
 	number: (name: string, value: number) => {

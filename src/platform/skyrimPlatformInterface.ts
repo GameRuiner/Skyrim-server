@@ -1,6 +1,8 @@
-import { Actor } from './Actor';
-import { Game } from './Game';
 import * as skyrimPlatform from './skyrimPlatform';
+import { Actor } from './Actor';
+import { Debug } from './Debug';
+import { Game } from './Game';
+import { Input } from './Input';
 import { Spell } from './Spell';
 import { Utility } from './Utility';
 
@@ -54,7 +56,12 @@ export type SkyrimEvent =
 export interface SkyrimPlatform {
 	printConsole: (...args: any[]) => void;
 	writeScript: (scriptName: string, src: string) => void;
-	callNative: (className: string, functionName: string, self?: object, ...args: any) => any;
+	callNative: (
+		className: string,
+		functionName: string,
+		self?: object,
+		...args: any
+	) => any;
 	getJsMemoryUsage: () => number;
 	getPluginSourceCode: (pluginName: string) => string;
 	writePlugin: (pluginName: string, newSources: string) => string;
@@ -63,7 +70,12 @@ export interface SkyrimPlatform {
 	settings: any;
 	Face: skyrimPlatform.Face;
 	ChangeFormNpc: skyrimPlatform.ChangeFormNpc;
-	loadGame: (pos: number[], angle: number[], worldOrCell: number, changeFormNpc?: skyrimPlatform.ChangeFormNpc) => void;
+	loadGame: (
+		pos: number[],
+		angle: number[],
+		worldOrCell: number,
+		changeFormNpc?: skyrimPlatform.ChangeFormNpc
+	) => void;
 	worldPointToScreenPoint: (...args: number[][]) => number[][];
 	PacketType: skyrimPlatform.PacketType;
 	Browser: skyrimPlatform.Browser;
@@ -79,7 +91,9 @@ export interface SkyrimPlatform {
 	ExtraWornLeft: skyrimPlatform.ExtraWornLeft;
 	BaseExtraList: skyrimPlatform.BaseExtraList;
 	InventoryChangesEntry: skyrimPlatform.InventoryChangesEntry;
-	getExtraContainerChanges: (objectReferenceId: number) => skyrimPlatform.InventoryChangesEntry[];
+	getExtraContainerChanges: (
+		objectReferenceId: number
+	) => skyrimPlatform.InventoryChangesEntry[];
 	InventoryEntry: skyrimPlatform.InventoryEntry;
 	getContainer: (baseId: number) => skyrimPlatform.InventoryEntry[];
 	ActivateEvent: skyrimPlatform.ActivateEvent;
@@ -102,8 +116,14 @@ export interface SkyrimPlatform {
 	ActiveEffectApplyRemoveEvent: skyrimPlatform.ActiveEffectApplyRemoveEvent;
 	MagicEffectApplyEvent: skyrimPlatform.MagicEffectApplyEvent;
 
-	on: (eventName: SkyrimEventName, callback: (event?: SkyrimEvent) => void) => void;
-	once: (eventName: SkyrimEventName, callback: (event?: SkyrimEvent) => void) => void;
+	on: (
+		eventName: SkyrimEventName,
+		callback: (event?: SkyrimEvent) => void
+	) => void;
+	once: (
+		eventName: SkyrimEventName,
+		callback: (event?: SkyrimEvent) => void
+	) => void;
 
 	Hooks: skyrimPlatform.Hooks;
 	HttpResponse: skyrimPlatform.HttpResponse;
@@ -131,7 +151,7 @@ export interface SkyrimPlatform {
 	CombatStyle: skyrimPlatform.CombatStyle;
 	ConstructibleObject: skyrimPlatform.ConstructibleObject;
 	Container: skyrimPlatform.Container;
-	Debug: skyrimPlatform.Debug;
+	Debug: Debug;
 	DefaultObjectManager: skyrimPlatform.DefaultObjectManager;
 	Door: skyrimPlatform.Door;
 	EffectShader: skyrimPlatform.EffectShader;
@@ -151,7 +171,7 @@ export interface SkyrimPlatform {
 	ImageSpaceModifier: skyrimPlatform.ImageSpaceModifier;
 	ImpactDataSet: skyrimPlatform.ImpactDataSet;
 	Ingredient: skyrimPlatform.Ingredient;
-	Input: skyrimPlatform.Input;
+	Input: Input;
 	Key: skyrimPlatform.Key;
 	Keyword: skyrimPlatform.Keyword;
 	LeveledActor: skyrimPlatform.LeveledActor;

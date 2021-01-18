@@ -1,9 +1,12 @@
 import { utils } from '../utility/utils';
 import { MP } from '../platform';
-import { CellChangeEvent } from 'types/Events';
+import { consoleOutput } from '../properties';
+import { currentActor, EVENTS_NAME } from '../constants/constants';
+import { CellChangeEvent } from '../types/Events';
+
 declare const mp: MP;
 
-const simplePickaxe = 0xE3C16;
+const simplePickaxe = 0xe3c16;
 const items = [
 	simplePickaxe,
 	0xaccd1,
@@ -50,26 +53,18 @@ const addItem = (formId: number, baseId: number, count: number) => {
 };
 
 export const init = () => {
-	// utils.hook('_onHit', (pcFormId: number, eventData: any) => {
-	// 	try {
-	// 		if (eventData.agressor === pcFormId) {
-	// 			utils.log('[mines _onHit]', eventData.agressor);
-	// 			utils.log('[mines]', mp.get(pcFormId, 'inventory').entries);
-	// 			const invEntry: any[] = mp.get(pcFormId, 'inventory').entries;
-	// 			items.forEach((item) => {
-	// 				if (
-	// 					invEntry.map((x) => x.baseId).findIndex((x) => x === item) === -1
-	// 				) {
-	// 					addItem(pcFormId, item, 1);
-	// 				}
-	// 			});
-	// 		}
-	// 	} catch (err) {
-	// 		utils.log(err);
-	// 	}
-	// });
+	utils.hook(EVENTS_NAME.hit, (pcFormId: number, eventData: any) => {
+		try {
+			if (eventData.agressor === pcFormId) {
+				consoleOutput.printNote(pcFormId, 'Эй, не стукай!');
+				utils.log(currentActor);
+			}
+		} catch (err) {
+			utils.log(err);
+		}
+	});
 	utils.hook(
-		'_onCurrentCellChange',
+		EVENTS_NAME.currentCellChange,
 		(pcFormId: number, event: CellChangeEvent) => {
 			try {
 				if (isMine(event.cell.id)) {
@@ -81,6 +76,7 @@ export const init = () => {
 							addItem(pcFormId, item, 1);
 						}
 					});
+					consoleOutput.print(pcFormId, 'Теперь ты шахтер! Работай!');
 				}
 			} catch (err) {
 				utils.log(err);

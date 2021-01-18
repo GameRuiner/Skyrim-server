@@ -1,6 +1,6 @@
 import { MP } from '../platform';
 import minify from 'string-minify';
-import { EventName } from 'types/EventName';
+import { EventName } from '../types/EventName';
 
 declare var global: any;
 declare const mp: MP;

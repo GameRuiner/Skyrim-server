@@ -1,3 +1,5 @@
+import { EventName } from '../types/EventName';
+
 /**
  * текущий игрок
  */
@@ -17,15 +19,15 @@ export const defaultSpawnPoint = {
  */
 export const EVENTS_NAME = {
 	_: '_',
-	bash: '_onBash',
-	consoleCommand: '_onConsoleCommand',
-	currentCellChange: '_onCurrentCellChange',
-	hit: '_onHit',
-	localDeath: '_onLocalDeath',
-	powerAttack: '_onPowerAttack',
-	actorValueFlushRequiredhealth: '_onActorValueFlushRequiredhealth',
-	actorValueFlushRequiredstamina: '_onActorValueFlushRequiredstamina',
-	actorValueFlushRequiredmagicka: '_onActorValueFlushRequiredmagicka',
-	sprintStateChange: '_onSprintStateChange',
-	hitScale: '_onHitScale',
+	bash: '_onBash' as EventName,
+	consoleCommand: '_onConsoleCommand' as EventName,
+	currentCellChange: '_onCurrentCellChange' as EventName,
+	hit: '_onHit' as EventName,
+	localDeath: '_onLocalDeath' as EventName,
+	powerAttack: '_onPowerAttack' as EventName,
+	actorValueFlushRequiredhealth: '_onActorValueFlushRequiredhealth' as EventName,
+	actorValueFlushRequiredstamina: '_onActorValueFlushRequiredstamina' as EventName,
+	actorValueFlushRequiredmagicka: '_onActorValueFlushRequiredmagicka' as EventName,
+	sprintStateChange: '_onSprintStateChange' as EventName,
+	hitScale: '_onHitScale' as EventName,
 };

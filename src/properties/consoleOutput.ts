@@ -1,9 +1,10 @@
 import { MP } from '../platform';
+import { PropertyName } from '../types/PropertyName';
 
 declare const mp: MP;
 
 const genericPrint = (
-	propName: string,
+	propName: PropertyName,
 	formId: number,
 	...printConsoleArgs: any[]
 ) => {
@@ -25,11 +26,11 @@ export const consoleOutput = {
 		genericPrint('notification', formId, ...args),
 };
 
-const printTargets = {
-	consoleOutput: 'ctx.sp.printConsole(...ctx.value.args)',
-	notification: 'ctx.sp.Debug.notification(...ctx.value.args)',
+const printTargets: { [key: string]: string } = {
+	consoleOutput: 'ctx.sp.printConsole(...ctx.value.args);',
+	notification: 'ctx.sp.Debug.notification(...ctx.value.args);',
 };
-const props: printTargetsPropName[] = ['consoleOutput', 'notification'];
+const props: PropertyName[] = ['consoleOutput', 'notification'];
 
 export const init = () => {
 	for (const propName of props) {

@@ -1,3 +1,4 @@
+import { currentActor } from '../constants/constants';
 import { CTX, MP } from '../platform';
 import { actorValues } from '../properties';
 import { Attr } from '../types/Attr';

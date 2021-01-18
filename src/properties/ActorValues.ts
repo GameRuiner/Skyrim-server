@@ -6,7 +6,7 @@ import { consoleOutput } from './consoleOutput';
 import { Attr, AttrRate, AttrRateMult, AttrDrain, AttrRelated, AttrAll } from '../types/Attr';
 import { Modifier } from '../types/Modifier';
 import { MP } from '../platform';
-import { PropertyName } from 'types/PropertyName';
+import { PropertyName } from '../types/PropertyName';
 
 declare const mp: MP;
 export interface SecondsMatched {

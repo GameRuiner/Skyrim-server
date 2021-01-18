@@ -1,5 +1,5 @@
-import { EventName } from 'types/EventName';
-import { PropertyName } from 'types/PropertyName';
+import { EventName } from '../types/EventName';
+import { PropertyName } from '../types/PropertyName';
 
 /* Definition */
 interface MakePropertyOptions {
