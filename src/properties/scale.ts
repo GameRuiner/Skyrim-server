@@ -1,5 +1,5 @@
 import { CTX, MP } from '../platform';
-import { getFunctionText } from '../utils';
+import { getFunctionText } from '../utility';
 
 declare const mp: MP;
 declare const ctx: CTX;

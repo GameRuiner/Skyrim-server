@@ -1,5 +1,5 @@
 import { CTX } from 'platform';
-import { getFunctionText } from 'utils';
+import { getFunctionText } from 'utility';
 
 declare const ctx: CTX;
 

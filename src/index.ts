@@ -1,5 +1,5 @@
-import { utils } from './utils/utils';
-import { devCommandsInit, minesInit, spawnSystemInit } from './mechanics';
+import { utils } from './utility/utils';
+import { devCommandsInit, minesInit, spawnSystemInit } from './systems';
 
 import {
 	consoleOutputPropInit,
@@ -8,7 +8,7 @@ import {
 	playerLevelPropInit,
 	playerRacePropInit,
 	scalePropInit,
-} from './property';
+} from './properties';
 
 import {
 	_Init,
@@ -22,7 +22,7 @@ import {
 	_onCurrentCellChangeInit,
 } from './event';
 
-import { actorValues, ActorValuesInit } from './sync';
+import { actorValues, ActorValuesInit } from './properties';
 
 import { MP } from './platform/mp';
 import { CTX } from './platform';

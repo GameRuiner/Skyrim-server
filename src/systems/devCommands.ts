@@ -1,6 +1,6 @@
-import { utils } from '../utils/utils';
-import { consoleOutput } from '../property/consoleOutput';
-import { actorValues } from '../sync/ActorValues';
+import { utils } from '../utility/utils';
+import { consoleOutput } from '../properties/consoleOutput';
+import { actorValues } from '../properties/ActorValues';
 import { spawnSystem } from './spawnSystem';
 import { AttrAll } from '../types/Attr';
 import { MP } from '../platform';

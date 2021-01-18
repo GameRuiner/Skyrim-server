@@ -1,8 +1,8 @@
 import { EVENTS_NAME } from 'helper';
 import { CTX, MP } from '../platform';
-import { consoleOutput } from '../property/consoleOutput';
-import { actorValues } from '../sync';
-import { getFunctionText, utils } from '../utils/utils';
+import { consoleOutput } from '../properties/consoleOutput';
+import { actorValues } from '../properties';
+import { getFunctionText, utils } from '../utility/utils';
 
 declare const mp: MP;
 declare const ctx: CTX;

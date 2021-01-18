@@ -1,6 +1,6 @@
 import { CellChangeEvent } from 'types/Events';
 import { CTX, MP } from '../platform';
-import { getFunctionText, utils } from '../utils';
+import { getFunctionText, utils } from '../utility';
 
 declare const mp: MP;
 declare const ctx: CTX;

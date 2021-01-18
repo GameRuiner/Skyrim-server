@@ -1,9 +1,9 @@
-import { utils } from '../utils/utils';
+import { utils } from '../utility/utils';
 import { MP } from '../platform';
 import { CellChangeEvent } from 'types/Events';
 declare const mp: MP;
 
-const simplePickaxe = 0xe3c16;
+const simplePickaxe = 0xE3C16;
 const items = [
 	simplePickaxe,
 	0xaccd1,

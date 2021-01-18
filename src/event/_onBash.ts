@@ -1,7 +1,7 @@
 import { CTX, MP } from '../platform';
-import { actorValues } from '../sync';
+import { actorValues } from '../properties';
 import { Attr } from '../types/Attr';
-import { getFunctionText, utils } from '../utils';
+import { getFunctionText, utils } from '../utility';
 
 declare const mp: MP;
 declare const ctx: CTX;

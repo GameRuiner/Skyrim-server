@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"utils/utils.ts":[function(require,module,exports) {
+})({"utility/utils.ts":[function(require,module,exports) {
 "use strict";
 
 var __spreadArrays = this && this.__spreadArrays || function () {
@@ -193,7 +193,7 @@ var getFunctionText = function (func) {
 };
 
 exports.getFunctionText = getFunctionText;
-},{}],"property/consoleOutput.ts":[function(require,module,exports) {
+},{}],"properties/consoleOutput.ts":[function(require,module,exports) {
 "use strict";
 
 var __spreadArrays = this && this.__spreadArrays || function () {
@@ -273,7 +273,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{}],"utils/typeCheck.ts":[function(require,module,exports) {
+},{}],"utility/typeCheck.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -294,7 +294,7 @@ exports.typeCheck = {
     }
   }
 };
-},{}],"sync/ActorValues.ts":[function(require,module,exports) {
+},{}],"properties/ActorValues.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -310,9 +310,9 @@ exports.init = exports.actorValues = void 0;
 
 var fs_1 = __importDefault(require("fs"));
 
-var utils_1 = require("../utils/utils");
+var utils_1 = require("../utility/utils");
 
-var typeCheck_1 = require("../utils/typeCheck");
+var typeCheck_1 = require("../utility/typeCheck");
 
 var rate = function (attr) {
   return attr === 'health' ? 'av_healrate' : "av_" + attr + "rate";
@@ -636,20 +636,34 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../utils/utils":"utils/utils.ts","../utils/typeCheck":"utils/typeCheck.ts"}],"constants/constants.ts":[function(require,module,exports) {
+},{"../utility/utils":"utility/utils.ts","../utility/typeCheck":"utility/typeCheck.ts"}],"constants/constants.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.defaultSpawnPoint = exports.currentActor = void 0;
+exports.EVENTS_NAME = exports.defaultSpawnPoint = exports.currentActor = void 0;
 exports.currentActor = 0x14;
 exports.defaultSpawnPoint = {
   pos: [227, 239, 53],
   angle: [0, 0, 0],
   worldOrCellDesc: '165a7:Skyrim.esm'
 };
-},{}],"mechanics/spawnSystem.ts":[function(require,module,exports) {
+exports.EVENTS_NAME = {
+  _: '_',
+  bash: '_onBash',
+  consoleCommand: '_onConsoleCommand',
+  currentCellChange: '_onCurrentCellChange',
+  hit: '_onHit',
+  localDeath: '_onLocalDeath',
+  powerAttack: '_onPowerAttack',
+  actorValueFlushRequiredhealth: '_onActorValueFlushRequiredhealth',
+  actorValueFlushRequiredstamina: '_onActorValueFlushRequiredstamina',
+  actorValueFlushRequiredmagicka: '_onActorValueFlushRequiredmagicka',
+  sprintStateChange: '_onSprintStateChange',
+  hitScale: '_onHitScale'
+};
+},{}],"systems/spawnSystem.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -657,9 +671,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = exports.spawnSystem = void 0;
 
-var utils_1 = require("../utils/utils");
+var utils_1 = require("../utility/utils");
 
-var ActorValues_1 = require("../sync/ActorValues");
+var ActorValues_1 = require("../properties/ActorValues");
 
 var constants_1 = require("../constants/constants");
 
@@ -699,7 +713,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../utils/utils":"utils/utils.ts","../sync/ActorValues":"sync/ActorValues.ts","../constants/constants":"constants/constants.ts"}],"mechanics/devCommands.ts":[function(require,module,exports) {
+},{"../utility/utils":"utility/utils.ts","../properties/ActorValues":"properties/ActorValues.ts","../constants/constants":"constants/constants.ts"}],"systems/devCommands.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -707,11 +721,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var utils_1 = require("../utils/utils");
+var utils_1 = require("../utility/utils");
 
-var consoleOutput_1 = require("../property/consoleOutput");
+var consoleOutput_1 = require("../properties/consoleOutput");
 
-var ActorValues_1 = require("../sync/ActorValues");
+var ActorValues_1 = require("../properties/ActorValues");
 
 var spawnSystem_1 = require("./spawnSystem");
 
@@ -791,7 +805,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../utils/utils":"utils/utils.ts","../property/consoleOutput":"property/consoleOutput.ts","../sync/ActorValues":"sync/ActorValues.ts","./spawnSystem":"mechanics/spawnSystem.ts"}],"mechanics/mines.ts":[function(require,module,exports) {
+},{"../utility/utils":"utility/utils.ts","../properties/consoleOutput":"properties/consoleOutput.ts","../properties/ActorValues":"properties/ActorValues.ts","./spawnSystem":"systems/spawnSystem.ts"}],"systems/mines.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -799,9 +813,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var utils_1 = require("../utils/utils");
+var utils_1 = require("../utility/utils");
 
-var simplePickaxe = 0xe3c16;
+var simplePickaxe = 0xE3C16;
 var items = [simplePickaxe, 0xaccd1, 0xb974f, 0x7a14e, 0x7a132, 0x10df21, 0x100e3b, 0xb505c, 0xb50c1];
 
 var isMine = function (formId) {
@@ -855,7 +869,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../utils/utils":"utils/utils.ts"}],"mechanics/index.ts":[function(require,module,exports) {
+},{"../utility/utils":"utility/utils.ts"}],"systems/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -889,7 +903,7 @@ Object.defineProperty(exports, "minesInit", {
     return mines_1.init;
   }
 });
-},{"./devCommands":"mechanics/devCommands.ts","./spawnSystem":"mechanics/spawnSystem.ts","./mines":"mechanics/mines.ts"}],"property/isDead.ts":[function(require,module,exports) {
+},{"./devCommands":"systems/devCommands.ts","./spawnSystem":"systems/spawnSystem.ts","./mines":"systems/mines.ts"}],"properties/isDead.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -897,7 +911,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var utils_1 = require("../utils/utils");
+var utils_1 = require("../utility/utils");
 
 var updateNeighbor = "\nconst ac = ctx.sp.Actor.from(ctx.refr);\nconst isDead = ctx.value;\nif (isDead) {\n  ac.endDeferredKill();\n  ac.kill(null);\n}\nelse {\n  ac.startDeferredKill();\n}\n\nif (!isDead && ac.isDead()) {\n  ctx.respawn();\n}\n";
 var updateOwner = "\nconst ac = ctx.sp.Actor.from(ctx.refr);\nac.startDeferredKill();\n\nconst value = ctx.value;\nif (value !== ctx.state.value) {\n  const die = !!value;\n  if (die) {\n    const pos = [\n      ac.getPositionX(), ac.getPositionY(), ac.getPositionZ()\n    ];\n\n    // Everyone should stop combat with us\n    for (let i = 0; i < 200; ++i) {\n      const randomActor = ctx.sp.Game.findRandomActor(pos[0], pos[1], pos[2], 10000);\n      if (!randomActor) continue;\n      const tgt = randomActor.getCombatTarget();\n      if (!tgt || tgt.getFormID() !== 0x14) continue;\n      randomActor.stopCombat();\n    }\n\n    ac.pushActorAway(ac, 0);\n  }\n\n  if (!die) {\n    ctx.sp.Debug.sendAnimationEvent(ac, \"GetUpBegin\");\n  }\n\n  ctx.state.value = value;\n}\n";
@@ -916,7 +930,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../utils/utils":"utils/utils.ts"}],"property/spawnPoint.ts":[function(require,module,exports) {
+},{"../utility/utils":"utility/utils.ts"}],"properties/spawnPoint.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -934,7 +948,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{}],"property/playerLevel.ts":[function(require,module,exports) {
+},{}],"properties/playerLevel.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -945,36 +959,7 @@ exports.init = void 0;
 var init = function () {};
 
 exports.init = init;
-},{}],"property/playerRace.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.init = void 0;
-
-function setRaceWeight() {
-  if (!(typeof ctx.value === 'number')) return;
-  ctx.refr.setWeight(ctx.value);
-}
-
-var init = function () {
-  mp.makeProperty('race', {
-    isVisibleByOwner: false,
-    isVisibleByNeighbors: false,
-    updateOwner: '',
-    updateNeighbor: ''
-  });
-  mp.makeProperty('raceWeight', {
-    isVisibleByOwner: false,
-    isVisibleByNeighbors: false,
-    updateOwner: '',
-    updateNeighbor: ''
-  });
-};
-
-exports.init = init;
-},{}],"utils/index.ts":[function(require,module,exports) {
+},{}],"utility/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -1001,7 +986,7 @@ Object.defineProperty(exports, "__esModule", {
 __exportStar(require("./typeCheck"), exports);
 
 __exportStar(require("./utils"), exports);
-},{"./typeCheck":"utils/typeCheck.ts","./utils":"utils/utils.ts"}],"property/scale.ts":[function(require,module,exports) {
+},{"./typeCheck":"utility/typeCheck.ts","./utils":"utility/utils.ts"}],"properties/scale.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1009,7 +994,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var utils_1 = require("../utils");
+var utility_1 = require("../utility");
 
 function setScale() {
   if (ctx.value !== ctx.state.lastScale) {
@@ -1022,19 +1007,36 @@ var init = function () {
   mp.makeProperty('scale', {
     isVisibleByOwner: true,
     isVisibleByNeighbors: true,
-    updateOwner: utils_1.getFunctionText(setScale),
-    updateNeighbor: utils_1.getFunctionText(setScale)
+    updateOwner: utility_1.getFunctionText(setScale),
+    updateNeighbor: utility_1.getFunctionText(setScale)
   });
 };
 
 exports.init = init;
-},{"../utils":"utils/index.ts"}],"property/index.ts":[function(require,module,exports) {
+},{"../utility":"utility/index.ts"}],"properties/index.ts":[function(require,module,exports) {
 "use strict";
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  Object.defineProperty(o, k2, {
+    enumerable: true,
+    get: function () {
+      return m[k];
+    }
+  });
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __exportStar = this && this.__exportStar || function (m, exports) {
+  for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.scalePropInit = exports.playerRacePropInit = exports.playerLevelPropInit = exports.spawnPointPropInit = exports.consoleOutputPropInit = exports.isDeadPropInit = void 0;
+exports.ActorValuesInit = exports.scalePropInit = exports.playerRacePropInit = exports.playerLevelPropInit = exports.spawnPointPropInit = exports.consoleOutputPropInit = exports.isDeadPropInit = void 0;
 
 var isDead_1 = require("./isDead");
 
@@ -1089,7 +1091,18 @@ Object.defineProperty(exports, "scalePropInit", {
     return scale_1.init;
   }
 });
-},{"./isDead":"property/isDead.ts","./consoleOutput":"property/consoleOutput.ts","./spawnPoint":"property/spawnPoint.ts","./playerLevel":"property/playerLevel.ts","./playerRace":"property/playerRace.ts","./scale":"property/scale.ts"}],"event/_.ts":[function(require,module,exports) {
+
+__exportStar(require("./ActorValues"), exports);
+
+var ActorValues_1 = require("./ActorValues");
+
+Object.defineProperty(exports, "ActorValuesInit", {
+  enumerable: true,
+  get: function () {
+    return ActorValues_1.init;
+  }
+});
+},{"./isDead":"properties/isDead.ts","./consoleOutput":"properties/consoleOutput.ts","./spawnPoint":"properties/spawnPoint.ts","./playerLevel":"properties/playerLevel.ts","./playerRace":"properties/playerLevel.ts","./scale":"properties/scale.ts","./ActorValues":"properties/ActorValues.ts"}],"event/_.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1102,42 +1115,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{}],"sync/index.ts":[function(require,module,exports) {
-"use strict";
-
-var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  Object.defineProperty(o, k2, {
-    enumerable: true,
-    get: function () {
-      return m[k];
-    }
-  });
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
-});
-
-var __exportStar = this && this.__exportStar || function (m, exports) {
-  for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ActorValuesInit = void 0;
-
-__exportStar(require("./ActorValues"), exports);
-
-var ActorValues_1 = require("./ActorValues");
-
-Object.defineProperty(exports, "ActorValuesInit", {
-  enumerable: true,
-  get: function () {
-    return ActorValues_1.init;
-  }
-});
-},{"./ActorValues":"sync/ActorValues.ts"}],"event/_onBash.ts":[function(require,module,exports) {
+},{}],"event/_onBash.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1145,12 +1123,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var sync_1 = require("../sync");
+var properties_1 = require("../properties");
 
-var utils_1 = require("../utils");
+var utility_1 = require("../utility");
 
 var init = function () {
-  mp.makeEventSource('_onBash', utils_1.getFunctionText(function () {
+  mp.makeEventSource('_onBash', utility_1.getFunctionText(function () {
     var next = ctx.sp.storage._api_onAnimationEvent;
     ctx.sp.storage._api_onAnimationEvent = {
       callback: function () {
@@ -1174,15 +1152,15 @@ var init = function () {
     };
   }));
   var sprintAttr = 'stamina';
-  utils_1.utils.hook('_onBash', function (pcFormId) {
-    var damage = sync_1.actorValues.get(pcFormId, sprintAttr, 'damage');
+  utility_1.utils.hook('_onBash', function (pcFormId) {
+    var damage = properties_1.actorValues.get(pcFormId, sprintAttr, 'damage');
     var damageMod = -35;
-    sync_1.actorValues.set(pcFormId, sprintAttr, 'damage', damage + damageMod);
+    properties_1.actorValues.set(pcFormId, sprintAttr, 'damage', damage + damageMod);
   });
 };
 
 exports.init = init;
-},{"../sync":"sync/index.ts","../utils":"utils/index.ts"}],"event/_onHit.ts":[function(require,module,exports) {
+},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"event/_onHit.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1190,11 +1168,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var consoleOutput_1 = require("../property/consoleOutput");
+var consoleOutput_1 = require("../properties/consoleOutput");
 
-var sync_1 = require("../sync");
+var properties_1 = require("../properties");
 
-var utils_1 = require("../utils/utils");
+var utils_1 = require("../utility/utils");
 
 var init = function () {
   mp.makeEventSource('_onHit', utils_1.getFunctionText(function () {
@@ -1231,8 +1209,8 @@ var init = function () {
     }
 
     var avName = 'health';
-    var damage = sync_1.actorValues.get(eventData.target, avName, 'damage');
-    var agressorDead = sync_1.actorValues.getCurrent(eventData.agressor, 'health') <= 0;
+    var damage = properties_1.actorValues.get(eventData.target, avName, 'damage');
+    var agressorDead = properties_1.actorValues.getCurrent(eventData.agressor, 'health') <= 0;
 
     if (damageMod < 0 && agressorDead) {
       utils_1.utils.log("Dead characters can't hit");
@@ -1249,8 +1227,8 @@ var init = function () {
     }
 
     var newDamageModValue = damage + damageMod;
-    sync_1.actorValues.set(eventData.target, avName, 'damage', newDamageModValue);
-    var wouldDie = sync_1.actorValues.getMaximum(eventData.target, 'health') + newDamageModValue <= 0;
+    properties_1.actorValues.set(eventData.target, avName, 'damage', newDamageModValue);
+    var wouldDie = properties_1.actorValues.getMaximum(eventData.target, 'health') + newDamageModValue <= 0;
 
     if (wouldDie && !mp.get(eventData.target, 'isDead')) {
       mp.onDeath(eventData.target);
@@ -1259,7 +1237,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../property/consoleOutput":"property/consoleOutput.ts","../sync":"sync/index.ts","../utils/utils":"utils/utils.ts"}],"event/_onPowerAttack.ts":[function(require,module,exports) {
+},{"../properties/consoleOutput":"properties/consoleOutput.ts","../properties":"properties/index.ts","../utility/utils":"utility/utils.ts"}],"event/_onPowerAttack.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1267,12 +1245,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var sync_1 = require("../sync");
+var properties_1 = require("../properties");
 
-var utils_1 = require("../utils");
+var utility_1 = require("../utility");
 
 var init = function () {
-  mp.makeEventSource('_onPowerAttack', utils_1.getFunctionText(function () {
+  mp.makeEventSource('_onPowerAttack', utility_1.getFunctionText(function () {
     var next = ctx.sp.storage._api_onAnimationEvent;
     ctx.sp.storage._api_onAnimationEvent = {
       callback: function () {
@@ -1296,15 +1274,15 @@ var init = function () {
     };
   }));
   var sprintAttr = 'stamina';
-  utils_1.utils.hook('_onPowerAttack', function (pcFormId) {
-    var damage = sync_1.actorValues.get(pcFormId, sprintAttr, 'damage');
+  utility_1.utils.hook('_onPowerAttack', function (pcFormId) {
+    var damage = properties_1.actorValues.get(pcFormId, sprintAttr, 'damage');
     var damageMod = -35;
-    sync_1.actorValues.set(pcFormId, sprintAttr, 'damage', damage + damageMod);
+    properties_1.actorValues.set(pcFormId, sprintAttr, 'damage', damage + damageMod);
   });
 };
 
 exports.init = init;
-},{"../sync":"sync/index.ts","../utils":"utils/index.ts"}],"event/_onRegenFinish.ts":[function(require,module,exports) {
+},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"event/_onRegenFinish.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1312,9 +1290,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var utils_1 = require("../utils");
+var utility_1 = require("../utility");
 
-var sync_1 = require("../sync");
+var properties_1 = require("../properties");
 
 var init = function () {
   for (var _i = 0, _a = ['health', 'magicka', 'stamina']; _i < _a.length; _i++) {
@@ -1323,8 +1301,8 @@ var init = function () {
   }
 
   var _loop_1 = function (attr) {
-    utils_1.utils.hook('_onActorValueFlushRequired' + attr, function (pcFormId) {
-      sync_1.actorValues.flushRegen(pcFormId, attr);
+    utility_1.utils.hook('_onActorValueFlushRequired' + attr, function (pcFormId) {
+      properties_1.actorValues.flushRegen(pcFormId, attr);
     });
   };
 
@@ -1336,7 +1314,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../utils":"utils/index.ts","../sync":"sync/index.ts"}],"event/_onSprintStateChange.ts":[function(require,module,exports) {
+},{"../utility":"utility/index.ts","../properties":"properties/index.ts"}],"event/_onSprintStateChange.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1344,12 +1322,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var sync_1 = require("../sync");
+var properties_1 = require("../properties");
 
-var utils_1 = require("../utils");
+var utility_1 = require("../utility");
 
 var init = function () {
-  mp.makeEventSource('_onSprintStateChange', utils_1.getFunctionText(function () {
+  mp.makeEventSource('_onSprintStateChange', utility_1.getFunctionText(function () {
     ctx.sp.on('update', function () {
       var isSprinting = ctx.sp.Game.getPlayer().isSprinting();
 
@@ -1364,16 +1342,16 @@ var init = function () {
   }));
   var sprintAttr = 'stamina';
   var staminaReduce = 10;
-  utils_1.utils.hook('_onSprintStateChange', function (pcFormId, newState) {
+  utility_1.utils.hook('_onSprintStateChange', function (pcFormId, newState) {
     switch (newState) {
       case 'start':
-        sync_1.actorValues.set(pcFormId, "mp_" + sprintAttr + "drain", 'base', -staminaReduce);
-        var damageMod = sync_1.actorValues.get(pcFormId, sprintAttr, 'damage');
-        sync_1.actorValues.set(pcFormId, sprintAttr, 'damage', damageMod - staminaReduce);
+        properties_1.actorValues.set(pcFormId, "mp_" + sprintAttr + "drain", 'base', -staminaReduce);
+        var damageMod = properties_1.actorValues.get(pcFormId, sprintAttr, 'damage');
+        properties_1.actorValues.set(pcFormId, sprintAttr, 'damage', damageMod - staminaReduce);
         break;
 
       case 'stop':
-        sync_1.actorValues.set(pcFormId, "mp_" + sprintAttr + "drain", 'base', 0);
+        properties_1.actorValues.set(pcFormId, "mp_" + sprintAttr + "drain", 'base', 0);
         break;
 
       default:
@@ -1383,7 +1361,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../sync":"sync/index.ts","../utils":"utils/index.ts"}],"event/_onConsoleCommand.ts":[function(require,module,exports) {
+},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"event/_onConsoleCommand.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1404,12 +1382,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var sync_1 = require("../sync");
+var properties_1 = require("../properties");
 
-var utils_1 = require("../utils");
+var utility_1 = require("../utility");
 
 var init = function () {
-  mp.makeEventSource('_onLocalDeath', utils_1.getFunctionText(function () {
+  mp.makeEventSource('_onLocalDeath', utility_1.getFunctionText(function () {
     ctx.sp.on('update', function () {
       var isDead = ctx.sp.Game.getPlayer().getActorValuePercentage('health') === 0;
 
@@ -1422,15 +1400,15 @@ var init = function () {
       }
     });
   }));
-  utils_1.utils.hook('_onLocalDeath', function (pcFormId) {
-    var max = sync_1.actorValues.getMaximum(pcFormId, 'health');
-    sync_1.actorValues.set(pcFormId, 'health', 'damage', -max);
+  utility_1.utils.hook('_onLocalDeath', function (pcFormId) {
+    var max = properties_1.actorValues.getMaximum(pcFormId, 'health');
+    properties_1.actorValues.set(pcFormId, 'health', 'damage', -max);
     mp.onDeath(pcFormId);
   });
 };
 
 exports.init = init;
-},{"../sync":"sync/index.ts","../utils":"utils/index.ts"}],"event/_onCurrentCellChange.ts":[function(require,module,exports) {
+},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"event/_onCurrentCellChange.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1438,7 +1416,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var utils_1 = require("../utils");
+var utility_1 = require("../utility");
 
 function _onCurrentCellChange() {
   ctx.sp.on('update', function () {
@@ -1469,16 +1447,16 @@ function _onCurrentCellChange() {
 }
 
 var init = function () {
-  mp.makeEventSource('_onCurrentCellChange', utils_1.getFunctionText(_onCurrentCellChange));
-  utils_1.utils.hook('_onCurrentCellChange', function (pcformId, event) {
+  mp.makeEventSource('_onCurrentCellChange', utility_1.getFunctionText(_onCurrentCellChange));
+  utility_1.utils.hook('_onCurrentCellChange', function (pcformId, event) {
     if (!event.hasError) {
-      utils_1.utils.log('[_onCurrentCellChange]', pcformId, event.cell);
+      utility_1.utils.log('[_onCurrentCellChange]', pcformId, event.cell);
     }
   });
 };
 
 exports.init = init;
-},{"../utils":"utils/index.ts"}],"event/index.ts":[function(require,module,exports) {
+},{"../utility":"utility/index.ts"}],"event/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1573,15 +1551,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var utils_1 = require("./utils/utils");
+var utils_1 = require("./utility/utils");
 
-var mechanics_1 = require("./mechanics");
+var systems_1 = require("./systems");
 
-var property_1 = require("./property");
+var properties_1 = require("./properties");
 
 var event_1 = require("./event");
 
-var sync_1 = require("./sync");
+var properties_2 = require("./properties");
 
 var constants_1 = require("./constants/constants");
 
@@ -1599,12 +1577,12 @@ for (var _i = 0, _a = global.knownEvents; _i < _a.length; _i++) {
 utils_1.utils.hook('onInit', function (pcFormId) {
   mp.onReinit(pcFormId);
 });
-property_1.isDeadPropInit();
-property_1.consoleOutputPropInit();
-property_1.spawnPointPropInit();
-property_1.playerLevelPropInit();
-property_1.playerRacePropInit();
-property_1.scalePropInit();
+properties_1.isDeadPropInit();
+properties_1.consoleOutputPropInit();
+properties_1.spawnPointPropInit();
+properties_1.playerLevelPropInit();
+properties_1.playerRacePropInit();
+properties_1.scalePropInit();
 
 event_1._Init();
 
@@ -1624,13 +1602,13 @@ event_1._onLocalDeathInit();
 
 event_1._onCurrentCellChangeInit();
 
-sync_1.ActorValuesInit();
-mechanics_1.spawnSystemInit();
-mechanics_1.devCommandsInit();
-mechanics_1.minesInit();
+properties_2.ActorValuesInit();
+systems_1.spawnSystemInit();
+systems_1.devCommandsInit();
+systems_1.minesInit();
 utils_1.utils.hook('onReinit', function (pcFormId, options) {
-  if (sync_1.actorValues.setDefaults) {
-    sync_1.actorValues.setDefaults(pcFormId, options);
+  if (properties_2.actorValues.setDefaults) {
+    properties_2.actorValues.setDefaults(pcFormId, options);
   }
 
   if (!mp.get(pcFormId, 'spawnPoint') || options && options.force) {
@@ -1639,4 +1617,4 @@ utils_1.utils.hook('onReinit', function (pcFormId, options) {
 
   mp.set(pcFormId, 'scale', 1);
 });
-},{"./utils/utils":"utils/utils.ts","./mechanics":"mechanics/index.ts","./property":"property/index.ts","./event":"event/index.ts","./sync":"sync/index.ts","./constants/constants":"constants/constants.ts"}]},{},["index.ts"], null)
+},{"./utility/utils":"utility/utils.ts","./systems":"systems/index.ts","./properties":"properties/index.ts","./event":"event/index.ts","./constants/constants":"constants/constants.ts"}]},{},["index.ts"], null)

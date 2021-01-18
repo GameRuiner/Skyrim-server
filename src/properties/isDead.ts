@@ -1,5 +1,5 @@
 import { MP } from '../platform';
-import { utils } from '../utils/utils';
+import { utils } from '../utility/utils';
 declare const mp: MP;
 
 const updateNeighbor = `

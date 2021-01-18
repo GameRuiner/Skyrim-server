@@ -1,4 +1,3 @@
-import { getFunctionText, utils } from 'utils';
 import { CTX, MP } from '../platform';
 
 declare const mp: MP;
@@ -13,6 +12,3 @@ export const init = () => {
 		// })
 	);
 };
-
-// ctx.sp.storage._api_onAnimationEvent = { callback: function () {} };
-// ctx.sp.storage._api_onAnimationEvent = { callback: () => {} };
