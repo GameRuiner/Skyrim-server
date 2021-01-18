@@ -1,5 +1,5 @@
-import { getFunctionText, utils } from './utils/utils';
-import { devCommandsInit, spawnSystemInit } from './mechanics';
+import { utils } from './utils/utils';
+import { devCommandsInit, minesInit, spawnSystemInit } from './mechanics';
 
 import {
 	consoleOutputPropInit,
@@ -71,6 +71,7 @@ ActorValuesInit();
 /** mechanics initialization */
 spawnSystemInit();
 devCommandsInit();
+minesInit();
 /** */
 
 /**

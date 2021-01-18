@@ -1,3 +1,5 @@
+import { Modifier } from 'types/Modifier';
+
 export const typeCheck = {
 	number: (name: string, value: number) => {
 		if (typeof value !== typeof 0) {
@@ -8,8 +10,8 @@ export const typeCheck = {
 			);
 		}
 	},
-	avModifier: (name: string, value: string) => {
-		const modifiers = ['base', 'permanent', 'temporary', 'damage'];
+	avModifier: (name: string, value: Modifier) => {
+		const modifiers: Modifier[] = ['base', 'permanent', 'temporary', 'damage'];
 		if (!modifiers.includes(value)) {
 			throw new TypeError(
 				`Expected '${name}' to be a modifier, but got ${JSON.stringify(

@@ -1,3 +1,6 @@
+import { EventName } from 'types/EventName';
+import { PropertyName } from 'types/PropertyName';
+
 /* Definition */
 interface MakePropertyOptions {
 	// If set to false, `updateOwner` would never be invoked
@@ -15,10 +18,10 @@ interface MakePropertyOptions {
 }
 
 export interface MP {
-	makeProperty(propertyName: string, options: MakePropertyOptions): void;
-	makeEventSource(eventName: string, functionBody: string): void;
-	get(formId: number, propertyName: string): any;
-	set(formId: number, propertyName: string, newValue: any): void;
+	makeProperty(propertyName: PropertyName, options: MakePropertyOptions): void;
+	makeEventSource(eventName: EventName, functionBody: string): void;
+	get(formId: number, propertyName: PropertyName): any;
+	set(formId: number, propertyName: PropertyName, newValue: any): void;
 	clear(): void;
 	[key: string]: (...args: any[]) => void;
 }

@@ -2,12 +2,13 @@ import { Attr } from '../types/Attr';
 import { MP } from '../platform';
 import { utils } from '../utils';
 import { actorValues } from '../sync';
+import { EventName } from 'types/EventName';
 declare const mp: MP;
 
 export const init = () => {
 	for (const attr of ['health', 'magicka', 'stamina'] as Attr[]) {
 		mp.makeEventSource(
-			'_onActorValueFlushRequired' + attr,
+			('_onActorValueFlushRequired' + attr) as EventName,
 			`
       const update = () => {
         const attr = "${attr}";
@@ -30,8 +31,11 @@ export const init = () => {
 	}
 
 	for (const attr of ['health', 'magicka', 'stamina'] as Attr[]) {
-		utils.hook('_onActorValueFlushRequired' + attr, (pcFormId: number) => {
-			actorValues.flushRegen(pcFormId, attr);
-		});
+		utils.hook(
+			('_onActorValueFlushRequired' + attr) as EventName,
+			(pcFormId: number) => {
+				actorValues.flushRegen(pcFormId, attr);
+			}
+		);
 	}
 };

@@ -1,5 +1,6 @@
 import { MP } from '../platform';
 import minify from 'string-minify';
+import { EventName } from 'types/EventName';
 
 declare var global: any;
 declare const mp: MP;
@@ -11,7 +12,7 @@ export const utils = {
 	isActor: (formId: number) => {
 		return mp.get(formId, 'type') === 'MpActor';
 	},
-	hook: (eventName: string, callback: (...args: any[]) => void) => {
+	hook: (eventName: EventName, callback: (...args: any[]) => void) => {
 		if (!global.knownEvents.includes(eventName)) {
 			global.knownEvents.push(eventName);
 		}

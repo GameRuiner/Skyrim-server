@@ -1,3 +1,4 @@
+import { EVENTS_NAME } from 'helper';
 import { CTX, MP } from '../platform';
 import { consoleOutput } from '../property/consoleOutput';
 import { actorValues } from '../sync';

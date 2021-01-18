@@ -791,13 +791,77 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../utils/utils":"utils/utils.ts","../property/consoleOutput":"property/consoleOutput.ts","../sync/ActorValues":"sync/ActorValues.ts","./spawnSystem":"mechanics/spawnSystem.ts"}],"mechanics/index.ts":[function(require,module,exports) {
+},{"../utils/utils":"utils/utils.ts","../property/consoleOutput":"property/consoleOutput.ts","../sync/ActorValues":"sync/ActorValues.ts","./spawnSystem":"mechanics/spawnSystem.ts"}],"mechanics/mines.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.spawnSystemInit = exports.devCommandsInit = void 0;
+exports.init = void 0;
+
+var utils_1 = require("../utils/utils");
+
+var simplePickaxe = 0xe3c16;
+var items = [simplePickaxe, 0xaccd1, 0xb974f, 0x7a14e, 0x7a132, 0x10df21, 0x100e3b, 0xb505c, 0xb50c1];
+
+var isMine = function (formId) {
+  return formId === 91570 ? true : false;
+};
+
+var addItem = function (formId, baseId, count) {
+  if (count <= 0) return;
+  var inv = mp.get(formId, 'inventory');
+  var added = false;
+
+  for (var _i = 0, inv_1 = inv; _i < inv_1.length; _i++) {
+    var value = inv_1[_i];
+
+    if (Object.keys(value).length == 2 && value.baseId == baseId) {
+      value.count += count;
+      added = true;
+      break;
+    }
+  }
+
+  if (!added) {
+    inv.entries.push({
+      baseId: baseId,
+      count: count
+    });
+  }
+
+  mp.set(formId, 'inventory', inv);
+};
+
+var init = function () {
+  utils_1.utils.hook('_onCurrentCellChange', function (pcFormId, event) {
+    try {
+      if (isMine(event.cell.id)) {
+        var invEntry_1 = mp.get(pcFormId, 'inventory').entries;
+        items.forEach(function (item) {
+          if (invEntry_1.map(function (x) {
+            return x.baseId;
+          }).findIndex(function (x) {
+            return x === item;
+          }) === -1) {
+            addItem(pcFormId, item, 1);
+          }
+        });
+      }
+    } catch (err) {
+      utils_1.utils.log(err);
+    }
+  });
+};
+
+exports.init = init;
+},{"../utils/utils":"utils/utils.ts"}],"mechanics/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.minesInit = exports.spawnSystemInit = exports.devCommandsInit = void 0;
 
 var devCommands_1 = require("./devCommands");
 
@@ -816,7 +880,16 @@ Object.defineProperty(exports, "spawnSystemInit", {
     return spawnSystem_1.init;
   }
 });
-},{"./devCommands":"mechanics/devCommands.ts","./spawnSystem":"mechanics/spawnSystem.ts"}],"property/isDead.ts":[function(require,module,exports) {
+
+var mines_1 = require("./mines");
+
+Object.defineProperty(exports, "minesInit", {
+  enumerable: true,
+  get: function () {
+    return mines_1.init;
+  }
+});
+},{"./devCommands":"mechanics/devCommands.ts","./spawnSystem":"mechanics/spawnSystem.ts","./mines":"mechanics/mines.ts"}],"property/isDead.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1377,7 +1450,10 @@ function _onCurrentCellChange() {
 
       if (ctx.state.currentCellId !== currentCell.getFormID()) {
         if (ctx.state.currentCellId !== undefined) {
-          result.cell = currentCell.getFormID();
+          result.cell = {
+            id: currentCell.getFormID(),
+            name: currentCell.getName()
+          };
           ctx.sendEvent(result);
         }
 
@@ -1395,14 +1471,8 @@ function _onCurrentCellChange() {
 var init = function () {
   mp.makeEventSource('_onCurrentCellChange', utils_1.getFunctionText(_onCurrentCellChange));
   utils_1.utils.hook('_onCurrentCellChange', function (pcformId, event) {
-    try {
-      utils_1.utils.log(mp.get(pcformId, 'inventory'));
-    } catch (err) {
-      utils_1.utils.log(err);
-    }
-
     if (!event.hasError) {
-      utils_1.utils.log(pcformId, event.cell);
+      utils_1.utils.log('[_onCurrentCellChange]', pcformId, event.cell);
     }
   });
 };
@@ -1557,6 +1627,7 @@ event_1._onCurrentCellChangeInit();
 sync_1.ActorValuesInit();
 mechanics_1.spawnSystemInit();
 mechanics_1.devCommandsInit();
+mechanics_1.minesInit();
 utils_1.utils.hook('onReinit', function (pcFormId, options) {
   if (sync_1.actorValues.setDefaults) {
     sync_1.actorValues.setDefaults(pcFormId, options);
