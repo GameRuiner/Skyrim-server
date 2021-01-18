@@ -1,24 +1,36 @@
-import { MP } from '../platform';
+import { CTX, MP } from '../platform';
 import { actorValues } from '../sync';
-import { utils } from '../utils';
+import { getFunctionText, utils } from '../utils';
 import { Attr, AttrAll } from '../types/Attr';
 
 declare const mp: MP;
+declare const ctx: CTX;
 
 export const init = () => {
 	mp.makeEventSource(
 		'_onSprintStateChange',
-		`
-    ctx.sp.on("update", () => {
-      const isSprinting = ctx.sp.Game.getPlayer().isSprinting();
-      if (ctx.state.isSprinting !== isSprinting) {
-        if (ctx.state.isSprinting !== undefined) {
-          ctx.sendEvent(isSprinting ? "start" : "stop");
-        }
-        ctx.state.isSprinting = isSprinting;
-      }
-    });
-  `
+		// 	`
+		//   ctx.sp.on("update", () => {
+		//     const isSprinting = ctx.sp.Game.getPlayer().isSprinting();
+		//     if (ctx.state.isSprinting !== isSprinting) {
+		//       if (ctx.state.isSprinting !== undefined) {
+		//         ctx.sendEvent(isSprinting ? "start" : "stop");
+		//       }
+		//       ctx.state.isSprinting = isSprinting;
+		//     }
+		//   });
+		// `
+		getFunctionText(() => {
+			ctx.sp.on('update', () => {
+				const isSprinting = ctx.sp.Game.getPlayer().isSprinting();
+				if (ctx.state.isSprinting !== isSprinting) {
+					if (ctx.state.isSprinting !== undefined) {
+						ctx.sendEvent(isSprinting ? 'start' : 'stop');
+					}
+					ctx.state.isSprinting = isSprinting;
+				}
+			});
+		})
 	);
 
 	const sprintAttr: Attr = 'stamina';

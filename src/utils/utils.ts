@@ -33,8 +33,10 @@ export const utils = {
 };
 
 export const getFunctionText = (func: Function): string => {
-	return minify(func.toString())
+	const result = minify(func.toString())
 		.replace(new RegExp('^.+?{', 'm'), '')
 		.replace(new RegExp('[}]$', 'm'), '')
 		.trim();
+
+	return result;
 };

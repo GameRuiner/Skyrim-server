@@ -6,15 +6,17 @@
 	"scripts": {
 		"start": ".\\skymp5-server.exe",
 		"launch": "..\\SkyMPLauncher.exe",
-		"serve": "parcel serve src/gamemode.ts --out-dir ./ --no-source-maps --no-cache --target node",
-		"build": "parcel build src/gamemode.ts --out-dir ./ --no-source-maps --no-minify --no-cache --target node",
+		"serve": "parcel serve src/index.ts --out-dir ./ --out-file gamemode.js --no-source-maps --no-cache --target node",
+		"build": "parcel build src/index.ts --out-dir ./ --out-file gamemode.js --no-source-maps --no-minify --no-cache --target node",
 		"postbuild": "node fix.js",
 		"prebuild:html": "rimraf ./html/www",
 		"serve:html": "npm run prebuild:html && parcel serve ./html/index.html --out-dir ./html/www --no-source-maps --no-cache",
 		"build:html": "parcel build ./html/*.html --out-dir ./html/www --no-source-maps --no-cache",
 		"deploy:html": "npm run build:html && firebase deploy",
 		"lint": "tsc --noEmit",
-		"refreshGitignore": "git rm -r --cached . && git add . && git commit -m \".gitignore is now working\""
+		"refreshGitignore": "git rm -r --cached . && git add . && git commit -m \".gitignore is now working\"",
+		"tsc:watch": "tsc --p tsconfig.json -w",
+		"tsc:build": "tsc --p tsconfig.json"
 	},
 	"keywords": [],
 	"author": "",

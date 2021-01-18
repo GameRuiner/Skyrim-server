@@ -1,27 +1,31 @@
-import { MP } from '../platform';
+import { CTX, MP } from '../platform';
 import { actorValues } from '../sync';
 import { Attr } from '../types/Attr';
-import { utils } from '../utils';
+import { getFunctionText, utils } from '../utils';
 
 declare const mp: MP;
+declare const ctx: CTX;
 
 export const init = () => {
 	mp.makeEventSource(
 		'_onBash',
-		`
-    const next = ctx.sp.storage._api_onAnimationEvent;
-    ctx.sp.storage._api_onAnimationEvent = {
-      callback(...args) {
-        const [serversideFormId, animEventName] = args;
-        if (serversideFormId === 0x14 && animEventName.toLowerCase().includes("bash")) {
-          ctx.sendEvent(serversideFormId);
-        }
-        if (typeof next.callback === "function") {
-          next.callback(...args);
-        }
-      }
-    };
-  `
+		getFunctionText(() => {
+			const next = ctx.sp.storage._api_onAnimationEvent;
+			ctx.sp.storage._api_onAnimationEvent = {
+				callback(...args: any[]) {
+					const [serversideFormId, animEventName] = args;
+					if (
+						serversideFormId === 0x14 &&
+						animEventName.toLowerCase().includes('bash')
+					) {
+						ctx.sendEvent(serversideFormId);
+					}
+					if (typeof next.callback === 'function') {
+						next.callback(...args);
+					}
+				},
+			};
+		})
 	);
 
 	const sprintAttr: Attr = 'stamina';

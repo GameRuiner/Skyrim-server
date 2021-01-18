@@ -27,15 +27,7 @@ import { actorValues, ActorValuesInit } from './sync';
 import { MP } from './platform/mp';
 import { CTX } from './platform';
 
-import {
-	CellFullyLoadedEvent,
-	EquipEvent,
-	HitEvent,
-	LockChangedEvent,
-} from './platform/skyrimPlatform';
 import { defaultSpawnPoint } from './constants/constants';
-import { consoleOutput } from './property/consoleOutput';
-import { FormType } from './platform/FormType';
 
 declare const mp: MP;
 declare var global: any;

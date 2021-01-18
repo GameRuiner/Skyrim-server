@@ -1,30 +1,32 @@
-import { MP } from '../platform';
+import { CTX, MP } from '../platform';
 import { consoleOutput } from '../property/consoleOutput';
 import { actorValues } from '../sync';
-import { utils } from '../utils/utils';
+import { getFunctionText, utils } from '../utils/utils';
+
 declare const mp: MP;
+declare const ctx: CTX;
 
 export const init = () => {
 	mp.makeEventSource(
 		'_onHit',
-		`
-    ctx.sp.on("hit", (e) => {
-      if (!ctx.sp.Actor.from(e.target)) return;
-      if (e.source && ctx.sp.Spell.from(e.source)) return;
+		getFunctionText(() => {
+			ctx.sp.on('hit', (e: any) => {
+				if (!ctx.sp.Actor.from(e.target)) return;
+				if (e.source && ctx.sp.Spell.from(e.source)) return;
 
-      const target = ctx.getFormIdInServerFormat(e.target.getFormId());
-      const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());
-      ctx.sendEvent({
-        isPowerAttack: e.isPowerAttack,
-        isSneakAttack: e.isSneakAttack,
-        isBashAttack: e.isBashAttack,
-        isHitBlocked: e.isHitBlocked,
-        target: target,
-        agressor: agressor,
-        source: e.source ? e.source.getFormId() : 0,
-      });
-    });
-  `
+				const target = ctx.getFormIdInServerFormat(e.target.getFormId());
+				const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());
+				ctx.sendEvent({
+					isPowerAttack: e.isPowerAttack,
+					isSneakAttack: e.isSneakAttack,
+					isBashAttack: e.isBashAttack,
+					isHitBlocked: e.isHitBlocked,
+					target: target,
+					agressor: agressor,
+					source: e.source ? e.source.getFormId() : 0,
+				});
+			});
+		})
 	);
 
 	utils.hook('_onHit', (pcFormId: number, eventData: any) => {

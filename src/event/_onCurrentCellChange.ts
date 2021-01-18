@@ -8,7 +8,7 @@ declare const ctx: CTX;
 interface eventResult {
 	hasError: boolean;
 	err?: string;
-	cell?: string;
+	cell?: any;
 }
 
 function _onCurrentCellChange() {
@@ -18,7 +18,7 @@ function _onCurrentCellChange() {
 			const currentCell = ctx.sp.Game.getPlayer().getParentCell();
 			if (ctx.state.currentCellId !== currentCell.getFormID()) {
 				if (ctx.state.currentCellId !== undefined) {
-					result.cell = currentCell.getName() || 'Мир';
+					result.cell = currentCell.getFormID();
 					ctx.sendEvent(result);
 				}
 				ctx.state.currentCellId = currentCell.getFormID();
@@ -43,6 +43,11 @@ export const init = () => {
 			pcformId: number,
 			event: { hasError: boolean; err: string; cell: string }
 		) => {
+			try {
+				utils.log(mp.get(pcformId, 'inventory'));
+			} catch (err) {
+				utils.log(err);
+			}
 			if (!event.hasError) {
 				utils.log(pcformId, event.cell);
 			}

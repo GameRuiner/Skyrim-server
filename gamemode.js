@@ -188,7 +188,8 @@ exports.utils = {
 };
 
 var getFunctionText = function (func) {
-  return string_minify_1.default(func.toString()).replace(new RegExp('^.+?{', 'm'), '').replace(new RegExp('[}]$', 'm'), '').trim();
+  var result = string_minify_1.default(func.toString()).replace(new RegExp('^.+?{', 'm'), '').replace(new RegExp('[}]$', 'm'), '').trim();
+  return result;
 };
 
 exports.getFunctionText = getFunctionText;
@@ -355,8 +356,7 @@ var getAvCurrent = function (avOps, formId, avName) {
   var res = getAvMaximum(avOps, formId, avName);
   res += avOps.get(formId, avName, 'damage');
   return res;
-}; // Regen
-
+};
 
 var regen = function (avOps, avNameTarget, avNameRate, avNameRateMult, avNameDrain) {
   return {
@@ -414,7 +414,6 @@ var regen = function (avOps, avNameTarget, avNameRate, avNameRateMult, avNameDra
       this.secondsMatched[formId] = secondsMatched;
     },
     applyRegenerationToParent: function (formId) {
-      // ? Не уверен в проверке !this.getSecondsMatched
       if (!this.parent || !this.setSecondsMatched) {
         return 0;
       }
@@ -466,8 +465,7 @@ var init = function () {
       updateNeighbor: '',
       updateOwner: ''
     });
-  } // Basic
-
+  }
 
   var avOps = {
     set: function (formId, avName, modifierName, newValue) {
@@ -495,8 +493,7 @@ var init = function () {
 
       return propValue[modifierName] || 0;
     }
-  }; // Damage limit
-
+  };
   avOps = {
     parent: avOps,
     set: function (formId, avName, modifierName, newValue) {
@@ -524,8 +521,7 @@ var init = function () {
   };
   avOps = regen(avOps, 'health', 'healrate', 'healratemult', 'mp_healthdrain');
   avOps = regen(avOps, 'magicka', 'magickarate', 'magickaratemult', 'mp_magickadrain');
-  avOps = regen(avOps, 'stamina', 'staminarate', 'staminaratemult', 'mp_staminadrain'); // Scaling
-
+  avOps = regen(avOps, 'stamina', 'staminarate', 'staminaratemult', 'mp_staminadrain');
   avOps = {
     parent: avOps,
     set: function (formId, avName, modifierName, newValue) {
@@ -544,7 +540,6 @@ var init = function () {
       }
     },
     get: function (formId, avName, modifierName) {
-      // ? Не уверен в проверке !this.getSecondsMatched
       if (!this.parent) {
         return 0;
       }
@@ -616,9 +611,7 @@ var init = function () {
         }
 
         var _loop_1 = function (avName) {
-          //if (formId == 0x9b7a2) console.log(avName, 1);
           if (!mp.get(formId, 'av_' + avName) || force) {
-            //if (formId == 0x9b7a2) console.log(avName, 2);
             mp.set(formId, 'av_' + avName, {
               base: 0
             });
@@ -732,8 +725,7 @@ var chooseTip = function (pcFormId, selectedFormId) {
 
 var reinit = function (pcFormId, selectedFormId) {
   var targetFormId = chooseFormId(pcFormId, selectedFormId);
-  var tip = chooseTip(pcFormId, selectedFormId); //actorValues.setDefaults(targetFormId, { force: true });
-
+  var tip = chooseTip(pcFormId, selectedFormId);
   mp.onReinit(targetFormId, {
     force: true
   });
@@ -877,13 +869,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.init = void 0;
 
-var init = function () {// mp.makeProperty('playerLevel', {
-  // 	isVisibleByOwner: true,
-  // 	isVisibleByNeighbors: false,
-  // 	updateOwner: 'ctx.sp.Game.setPlayerLevel(ctx.value)',
-  // 	updateNeighbor: '',
-  // });
-};
+var init = function () {};
 
 exports.init = init;
 },{}],"property/playerRace.ts":[function(require,module,exports) {
@@ -1039,7 +1025,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.init = void 0;
 
 var init = function () {
-  mp.makeEventSource('_', "\n    ctx.sp.storage._api_onAnimationEvent = { callback: () => {} };\n  ");
+  mp.makeEventSource('_', 'ctx.sp.storage._api_onAnimationEvent = { callback: function () {} };');
 };
 
 exports.init = init;
@@ -1091,7 +1077,29 @@ var sync_1 = require("../sync");
 var utils_1 = require("../utils");
 
 var init = function () {
-  mp.makeEventSource('_onBash', "\n    const next = ctx.sp.storage._api_onAnimationEvent;\n    ctx.sp.storage._api_onAnimationEvent = {\n      callback(...args) {\n        const [serversideFormId, animEventName] = args;\n        if (serversideFormId === 0x14 && animEventName.toLowerCase().includes(\"bash\")) {\n          ctx.sendEvent(serversideFormId);\n        }\n        if (typeof next.callback === \"function\") {\n          next.callback(...args);\n        }\n      }\n    };\n  ");
+  mp.makeEventSource('_onBash', utils_1.getFunctionText(function () {
+    var next = ctx.sp.storage._api_onAnimationEvent;
+    ctx.sp.storage._api_onAnimationEvent = {
+      callback: function () {
+        var args = [];
+
+        for (var _i = 0; _i < arguments.length; _i++) {
+          args[_i] = arguments[_i];
+        }
+
+        var serversideFormId = args[0],
+            animEventName = args[1];
+
+        if (serversideFormId === 0x14 && animEventName.toLowerCase().includes('bash')) {
+          ctx.sendEvent(serversideFormId);
+        }
+
+        if (typeof next.callback === 'function') {
+          next.callback.apply(next, args);
+        }
+      }
+    };
+  }));
   var sprintAttr = 'stamina';
   utils_1.utils.hook('_onBash', function (pcFormId) {
     var damage = sync_1.actorValues.get(pcFormId, sprintAttr, 'damage');
@@ -1116,7 +1124,23 @@ var sync_1 = require("../sync");
 var utils_1 = require("../utils/utils");
 
 var init = function () {
-  mp.makeEventSource('_onHit', "\n    ctx.sp.on(\"hit\", (e) => {\n      if (!ctx.sp.Actor.from(e.target)) return;\n      if (e.source && ctx.sp.Spell.from(e.source)) return;\n\n      const target = ctx.getFormIdInServerFormat(e.target.getFormId());\n      const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());\n      ctx.sendEvent({\n        isPowerAttack: e.isPowerAttack,\n        isSneakAttack: e.isSneakAttack,\n        isBashAttack: e.isBashAttack,\n        isHitBlocked: e.isHitBlocked,\n        target: target,\n        agressor: agressor,\n        source: e.source ? e.source.getFormId() : 0,\n      });\n    });\n  ");
+  mp.makeEventSource('_onHit', utils_1.getFunctionText(function () {
+    ctx.sp.on('hit', function (e) {
+      if (!ctx.sp.Actor.from(e.target)) return;
+      if (e.source && ctx.sp.Spell.from(e.source)) return;
+      var target = ctx.getFormIdInServerFormat(e.target.getFormId());
+      var agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());
+      ctx.sendEvent({
+        isPowerAttack: e.isPowerAttack,
+        isSneakAttack: e.isSneakAttack,
+        isBashAttack: e.isBashAttack,
+        isHitBlocked: e.isHitBlocked,
+        target: target,
+        agressor: agressor,
+        source: e.source ? e.source.getFormId() : 0
+      });
+    });
+  }));
   utils_1.utils.hook('_onHit', function (pcFormId, eventData) {
     if (eventData.target === 0x14) {
       eventData.target = pcFormId;
@@ -1127,7 +1151,7 @@ var init = function () {
     }
   });
   utils_1.utils.hook('_onHit', function (pcFormId, eventData) {
-    var damageMod = -25; // крошу все что вижу
+    var damageMod = -25;
 
     if (eventData.agressor === pcFormId && eventData.target !== pcFormId) {
       damageMod = -250;
@@ -1175,7 +1199,29 @@ var sync_1 = require("../sync");
 var utils_1 = require("../utils");
 
 var init = function () {
-  mp.makeEventSource('_onPowerAttack', "\n    const next = ctx.sp.storage._api_onAnimationEvent;\n    ctx.sp.storage._api_onAnimationEvent = {\n      callback(...args) {\n        const [serversideFormId, animEventName] = args;\n        if (serversideFormId === 0x14 && animEventName.toLowerCase().includes(\"power\")) {\n          ctx.sendEvent(serversideFormId);\n        }\n        if (typeof next.callback === \"function\") {\n          next.callback(...args);\n        }\n      }\n    };\n  ");
+  mp.makeEventSource('_onPowerAttack', utils_1.getFunctionText(function () {
+    var next = ctx.sp.storage._api_onAnimationEvent;
+    ctx.sp.storage._api_onAnimationEvent = {
+      callback: function () {
+        var args = [];
+
+        for (var _i = 0; _i < arguments.length; _i++) {
+          args[_i] = arguments[_i];
+        }
+
+        var serversideFormId = args[0],
+            animEventName = args[1];
+
+        if (serversideFormId === 0x14 && animEventName.toLowerCase().includes('power')) {
+          ctx.sendEvent(serversideFormId);
+        }
+
+        if (typeof next.callback === 'function') {
+          next.callback.apply(next, args);
+        }
+      }
+    };
+  }));
   var sprintAttr = 'stamina';
   utils_1.utils.hook('_onPowerAttack', function (pcFormId) {
     var damage = sync_1.actorValues.get(pcFormId, sprintAttr, 'damage');
@@ -1230,7 +1276,19 @@ var sync_1 = require("../sync");
 var utils_1 = require("../utils");
 
 var init = function () {
-  mp.makeEventSource('_onSprintStateChange', "\n    ctx.sp.on(\"update\", () => {\n      const isSprinting = ctx.sp.Game.getPlayer().isSprinting();\n      if (ctx.state.isSprinting !== isSprinting) {\n        if (ctx.state.isSprinting !== undefined) {\n          ctx.sendEvent(isSprinting ? \"start\" : \"stop\");\n        }\n        ctx.state.isSprinting = isSprinting;\n      }\n    });\n  ");
+  mp.makeEventSource('_onSprintStateChange', utils_1.getFunctionText(function () {
+    ctx.sp.on('update', function () {
+      var isSprinting = ctx.sp.Game.getPlayer().isSprinting();
+
+      if (ctx.state.isSprinting !== isSprinting) {
+        if (ctx.state.isSprinting !== undefined) {
+          ctx.sendEvent(isSprinting ? 'start' : 'stop');
+        }
+
+        ctx.state.isSprinting = isSprinting;
+      }
+    });
+  }));
   var sprintAttr = 'stamina';
   var staminaReduce = 10;
   utils_1.utils.hook('_onSprintStateChange', function (pcFormId, newState) {
@@ -1261,7 +1319,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.init = void 0;
 
 var init = function () {
-  mp.makeEventSource('_onConsoleCommand', "\n    ctx.sp.storage._api_onConsoleCommand = {\n      callback(...args) {\n        ctx.sendEvent(...args);\n      }\n    };\n  ");
+  mp.makeEventSource('_onConsoleCommand', "\n\t\t  ctx.sp.storage._api_onConsoleCommand = {\n\t\t    callback(...args) {\n\t\t      ctx.sendEvent(...args);\n\t\t    }\n\t\t  };\n\t\t");
 };
 
 exports.init = init;
@@ -1278,7 +1336,19 @@ var sync_1 = require("../sync");
 var utils_1 = require("../utils");
 
 var init = function () {
-  mp.makeEventSource('_onLocalDeath', "\n    ctx.sp.on(\"update\", () => {\n      const isDead = ctx.sp.Game.getPlayer().getActorValuePercentage(\"health\") === 0;\n      if (ctx.state.wasDead !== isDead) {\n        if (isDead) {\n          ctx.sendEvent();\n        }\n        ctx.state.wasDead = isDead;\n      }\n    });\n  ");
+  mp.makeEventSource('_onLocalDeath', utils_1.getFunctionText(function () {
+    ctx.sp.on('update', function () {
+      var isDead = ctx.sp.Game.getPlayer().getActorValuePercentage('health') === 0;
+
+      if (ctx.state.wasDead !== isDead) {
+        if (isDead) {
+          ctx.sendEvent();
+        }
+
+        ctx.state.wasDead = isDead;
+      }
+    });
+  }));
   utils_1.utils.hook('_onLocalDeath', function (pcFormId) {
     var max = sync_1.actorValues.getMaximum(pcFormId, 'health');
     sync_1.actorValues.set(pcFormId, 'health', 'damage', -max);
@@ -1307,7 +1377,7 @@ function _onCurrentCellChange() {
 
       if (ctx.state.currentCellId !== currentCell.getFormID()) {
         if (ctx.state.currentCellId !== undefined) {
-          result.cell = currentCell.getName() || 'Мир';
+          result.cell = currentCell.getFormID();
           ctx.sendEvent(result);
         }
 
@@ -1325,6 +1395,12 @@ function _onCurrentCellChange() {
 var init = function () {
   mp.makeEventSource('_onCurrentCellChange', utils_1.getFunctionText(_onCurrentCellChange));
   utils_1.utils.hook('_onCurrentCellChange', function (pcformId, event) {
+    try {
+      utils_1.utils.log(mp.get(pcformId, 'inventory'));
+    } catch (err) {
+      utils_1.utils.log(err);
+    }
+
     if (!event.hasError) {
       utils_1.utils.log(pcformId, event.cell);
     }
@@ -1420,7 +1496,7 @@ Object.defineProperty(exports, "_onCurrentCellChangeInit", {
     return _onCurrentCellChange_1.init;
   }
 });
-},{"./_":"event/_.ts","./_onBash":"event/_onBash.ts","./_onHit":"event/_onHit.ts","./_onPowerAttack":"event/_onPowerAttack.ts","./_onRegenFinish":"event/_onRegenFinish.ts","./_onSprintStateChange":"event/_onSprintStateChange.ts","./_onConsoleCommand":"event/_onConsoleCommand.ts","./_onLocalDeath":"event/_onLocalDeath.ts","./_onCurrentCellChange":"event/_onCurrentCellChange.ts"}],"gamemode.ts":[function(require,module,exports) {
+},{"./_":"event/_.ts","./_onBash":"event/_onBash.ts","./_onHit":"event/_onHit.ts","./_onPowerAttack":"event/_onPowerAttack.ts","./_onRegenFinish":"event/_onRegenFinish.ts","./_onSprintStateChange":"event/_onSprintStateChange.ts","./_onConsoleCommand":"event/_onConsoleCommand.ts","./_onLocalDeath":"event/_onLocalDeath.ts","./_onCurrentCellChange":"event/_onCurrentCellChange.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1453,17 +1529,12 @@ for (var _i = 0, _a = global.knownEvents; _i < _a.length; _i++) {
 utils_1.utils.hook('onInit', function (pcFormId) {
   mp.onReinit(pcFormId);
 });
-/** property initialization */
-
 property_1.isDeadPropInit();
 property_1.consoleOutputPropInit();
 property_1.spawnPointPropInit();
 property_1.playerLevelPropInit();
 property_1.playerRacePropInit();
 property_1.scalePropInit();
-/** */
-
-/** event initialization */
 
 event_1._Init();
 
@@ -1482,62 +1553,19 @@ event_1._onConsoleCommandInit();
 event_1._onLocalDeathInit();
 
 event_1._onCurrentCellChangeInit();
-/** */
-
-/** sync initialization */
-
 
 sync_1.ActorValuesInit();
-/** */
-
-/** mechanics initialization */
-
 mechanics_1.spawnSystemInit();
 mechanics_1.devCommandsInit();
-/** */
-
-/**
- * * Вопросы
- * ? Лично Леониду, можно ли избавится от вызовов init (сделать классы с конструктором)
- */
-
-/**
- * * Работа с typescript
- * // TODO: Добавить strict mode и исправить все неверные и неявные типы
- * // TODO: Код в строках попробовать реализовать в виде функции и передавать текст этой функции
- */
-
-/**
- * * Создать систему которая будет отнимать стамину у игрока за разные действия
- * TODO: За прыжок - 10 зс
- * TODO: За обычный бег - 0.5 зс в секунду
- * TODO: За обычную атаку - (вес оружия * 0.5)
- * TODO: За плаванье - 1 зс в секунду
- */
-
-/**
- * TODO: Определить что локацию в которую зашел это шахта
- * TODO: Выдать игроку кирку и одежду шахтера и надеть ее
- * TODO: Перенести доработки Леонида в ts
- */
-
 utils_1.utils.hook('onReinit', function (pcFormId, options) {
-  /** Проставляем значения по умолчанию персонажу */
   if (sync_1.actorValues.setDefaults) {
     sync_1.actorValues.setDefaults(pcFormId, options);
   }
-  /** Проставляем точку для респавна */
-
 
   if (!mp.get(pcFormId, 'spawnPoint') || options && options.force) {
     mp.set(pcFormId, 'spawnPoint', constants_1.defaultSpawnPoint);
   }
-  /** Проставляем размер персонажа на стандартный */
-
 
   mp.set(pcFormId, 'scale', 1);
-}); // import { init as scaleHitInit } from './test/scaleHit';
-// scaleHitInit();
-
-/**  */
-},{"./utils/utils":"utils/utils.ts","./mechanics":"mechanics/index.ts","./property":"property/index.ts","./event":"event/index.ts","./sync":"sync/index.ts","./constants/constants":"constants/constants.ts"}]},{},["gamemode.ts"], null)
+});
+},{"./utils/utils":"utils/utils.ts","./mechanics":"mechanics/index.ts","./property":"property/index.ts","./event":"event/index.ts","./sync":"sync/index.ts","./constants/constants":"constants/constants.ts"}]},{},["index.ts"], null)
