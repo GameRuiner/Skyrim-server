@@ -1094,7 +1094,7 @@ var addItem = function (formId, baseId, count) {
 };
 
 var eqiup = function (formId, baseId) {
-  properties_1.consoleOutput.evalClient(formId, "\tctx.sp.Game.getPlayer().equipItem(\n\t\t\tctx.sp.Game.getFormEx(" + baseId + "),\n\t\t\tfalse,\n\t\t\tfalse\n\t\t);");
+  properties_1.consoleOutput.evalClient(formId, "\tctx.sp.Game.getPlayer().equipItem(\n\t\t\t\tctx.sp.Game.getFormEx(" + baseId + "),\n\t\t\t\tfalse,\n\t\t\t\tfalse\n\t\t\t);\n\t\t");
 };
 
 var init = function () {

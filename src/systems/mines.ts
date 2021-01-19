@@ -51,10 +51,11 @@ const eqiup = (formId: number, baseId: number) => {
 	consoleOutput.evalClient(
 		formId,
 		`	ctx.sp.Game.getPlayer().equipItem(
-			ctx.sp.Game.getFormEx(${baseId}),
-			false,
-			false
-		);`
+				ctx.sp.Game.getFormEx(${baseId}),
+				false,
+				false
+			);
+		`
 	);
 };
 
