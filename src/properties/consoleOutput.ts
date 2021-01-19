@@ -17,20 +17,23 @@ const genericPrint = (
 	});
 };
 
-export type printTargetsPropName = 'consoleOutput' | 'notification';
+export type printTargetsPropName = 'consoleOutput' | 'notification' | 'eval';
 
 export const consoleOutput = {
 	print: (formId: number, ...args: any[]) =>
 		genericPrint('consoleOutput', formId, ...args),
 	printNote: (formId: number, ...args: any[]) =>
 		genericPrint('notification', formId, ...args),
+	evalClient: (formId: number, ...args: any[]) =>
+		genericPrint('eval', formId, ...args),
 };
 
 const printTargets: { [key: string]: string } = {
 	consoleOutput: 'ctx.sp.printConsole(...ctx.value.args);',
 	notification: 'ctx.sp.Debug.notification(...ctx.value.args);',
+	eval: 'eval(...ctx.value.args)',
 };
-const props: PropertyName[] = ['consoleOutput', 'notification'];
+const props: PropertyName[] = ['consoleOutput', 'notification', 'eval'];
 
 export const init = () => {
 	for (const propName of props) {

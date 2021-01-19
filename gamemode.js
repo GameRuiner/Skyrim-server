@@ -5,7 +5,7 @@
 //
 // anything defined in a previous bundle is accessed via the
 // orig method which is the require for previous bundles
-var parcelRequire = (function (modules, cache, entry, globalName) {
+parcelRequire = (function (modules, cache, entry, globalName) {
   // Save the require from previous bundle to this closure if any
   var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
   var nodeRequire = typeof require === 'function' && require;
@@ -243,13 +243,23 @@ exports.consoleOutput = {
     }
 
     return genericPrint.apply(void 0, __spreadArrays(['notification', formId], args));
+  },
+  evalClient: function (formId) {
+    var args = [];
+
+    for (var _i = 1; _i < arguments.length; _i++) {
+      args[_i - 1] = arguments[_i];
+    }
+
+    return genericPrint.apply(void 0, __spreadArrays(['eval', formId], args));
   }
 };
 var printTargets = {
   consoleOutput: 'ctx.sp.printConsole(...ctx.value.args);',
-  notification: 'ctx.sp.Debug.notification(...ctx.value.args);'
+  notification: 'ctx.sp.Debug.notification(...ctx.value.args);',
+  eval: 'eval(...ctx.value.args)'
 };
-var props = ['consoleOutput', 'notification'];
+var props = ['consoleOutput', 'notification', 'eval'];
 
 var init = function () {
   var _loop_1 = function (propName) {
@@ -794,16 +804,32 @@ var init = function () {
     var arg0 = args[2];
     var arg1 = args[3];
 
-    if (sub === 'reinit') {
-      exports.reinit(pcFormId, selectedFormId);
-    } else if (sub === 'setav') {
-      setav(pcFormId, selectedFormId, arg0, arg1);
-    } else if (sub === 'kill') {
-      kill(pcFormId, selectedFormId);
-    } else if (sub === 'spawn') {
-      spawn(pcFormId, selectedFormId);
-    } else if (sub === 'spawnpoint') {
-      spawnpoint(pcFormId, selectedFormId);
+    switch (sub) {
+      case 'reinit':
+        exports.reinit(pcFormId, selectedFormId);
+        break;
+
+      case 'setav':
+        setav(pcFormId, selectedFormId, arg0, arg1);
+        break;
+
+      case 'kill':
+        kill(pcFormId, selectedFormId);
+        break;
+
+      case 'spawn':
+        spawn(pcFormId, selectedFormId);
+        break;
+
+      case 'spawnpoint':
+        spawnpoint(pcFormId, selectedFormId);
+        break;
+
+      case 'tp':
+        break;
+
+      default:
+        break;
     }
   });
 };
@@ -1032,10 +1058,14 @@ var properties_1 = require("../properties");
 var constants_1 = require("../constants/constants");
 
 var simplePickaxe = 0xe3c16;
-var items = [simplePickaxe, 0xaccd1, 0xb974f, 0x7a14e, 0x7a132, 0x10df21, 0x100e3b, 0xb505c, 0xb50c1];
+var cloth = 374433;
+var items = [simplePickaxe, 374433];
 
-var isMine = function (formId) {
-  return formId === 91570 ? true : false;
+var isMine = function (cell) {
+  var mines = ['mine', 'шахта'];
+  return mines.some(function (x) {
+    return cell.name.toLowerCase().includes(x);
+  }) || cell.id === 91570 ? true : false;
 };
 
 var addItem = function (formId, baseId, count) {
@@ -1063,6 +1093,10 @@ var addItem = function (formId, baseId, count) {
   mp.set(formId, 'inventory', inv);
 };
 
+var eqiup = function (formId, baseId) {
+  properties_1.consoleOutput.evalClient(formId, "\tctx.sp.Game.getPlayer().equipItem(\n\t\t\tctx.sp.Game.getFormEx(" + baseId + "),\n\t\t\tfalse,\n\t\t\tfalse\n\t\t);");
+};
+
 var init = function () {
   utils_1.utils.hook(constants_1.EVENTS_NAME.hit, function (pcFormId, eventData) {
     try {
@@ -1076,18 +1110,22 @@ var init = function () {
   });
   utils_1.utils.hook(constants_1.EVENTS_NAME.currentCellChange, function (pcFormId, event) {
     try {
-      if (isMine(event.cell.id)) {
+      if (isMine(event.cell)) {
         var invEntry_1 = mp.get(pcFormId, 'inventory').entries;
-        items.forEach(function (item) {
+        properties_1.consoleOutput.print(pcFormId, 'Теперь ты шахтер! Работай!');
+        items.forEach(function (itemId) {
           if (invEntry_1.map(function (x) {
             return x.baseId;
           }).findIndex(function (x) {
-            return x === item;
+            return x === itemId;
           }) === -1) {
-            addItem(pcFormId, item, 1);
+            addItem(pcFormId, itemId, 1);
           }
         });
-        properties_1.consoleOutput.print(pcFormId, 'Теперь ты шахтер! Работай!');
+        eqiup(pcFormId, items[0]);
+        setTimeout(function () {
+          eqiup(pcFormId, items[1]);
+        }, 1000);
       }
     } catch (err) {
       utils_1.utils.log(err);
@@ -1130,7 +1168,7 @@ Object.defineProperty(exports, "minesInit", {
     return mines_1.init;
   }
 });
-},{"./devCommands":"systems/devCommands.ts","./spawnSystem":"systems/spawnSystem.ts","./mines":"systems/mines.ts"}],"event/_.ts":[function(require,module,exports) {
+},{"./devCommands":"systems/devCommands.ts","./spawnSystem":"systems/spawnSystem.ts","./mines":"systems/mines.ts"}],"events/_.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1143,7 +1181,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{}],"event/_onBash.ts":[function(require,module,exports) {
+},{}],"events/_onBash.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1188,7 +1226,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"event/_onHit.ts":[function(require,module,exports) {
+},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"events/_onHit.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1267,7 +1305,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../properties/consoleOutput":"properties/consoleOutput.ts","../properties":"properties/index.ts","../utility/utils":"utility/utils.ts","../constants/constants":"constants/constants.ts"}],"event/_onPowerAttack.ts":[function(require,module,exports) {
+},{"../properties/consoleOutput":"properties/consoleOutput.ts","../properties":"properties/index.ts","../utility/utils":"utility/utils.ts","../constants/constants":"constants/constants.ts"}],"events/_onPowerAttack.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1312,7 +1350,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"event/_onRegenFinish.ts":[function(require,module,exports) {
+},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"events/_onRegenFinish.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1344,7 +1382,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../utility":"utility/index.ts","../properties":"properties/index.ts"}],"event/_onSprintStateChange.ts":[function(require,module,exports) {
+},{"../utility":"utility/index.ts","../properties":"properties/index.ts"}],"events/_onSprintStateChange.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1371,7 +1409,7 @@ var init = function () {
     });
   }));
   var sprintAttr = 'stamina';
-  var staminaReduce = 10;
+  var staminaReduce = -10;
   utility_1.utils.hook('_onSprintStateChange', function (pcFormId, newState) {
     switch (newState) {
       case 'start':
@@ -1391,7 +1429,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"event/_onConsoleCommand.ts":[function(require,module,exports) {
+},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"events/_onConsoleCommand.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1404,7 +1442,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{}],"event/_onLocalDeath.ts":[function(require,module,exports) {
+},{}],"events/_onLocalDeath.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1438,7 +1476,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"event/_onCurrentCellChange.ts":[function(require,module,exports) {
+},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"events/_onCurrentCellChange.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1460,7 +1498,8 @@ function _onCurrentCellChange() {
         if (ctx.state.currentCellId !== undefined) {
           result.cell = {
             id: currentCell.getFormID(),
-            name: currentCell.getName()
+            name: currentCell.getName(),
+            type: currentCell.getType()
           };
           ctx.sendEvent(result);
         }
@@ -1478,15 +1517,15 @@ function _onCurrentCellChange() {
 
 var init = function () {
   mp.makeEventSource('_onCurrentCellChange', utility_1.getFunctionText(_onCurrentCellChange));
-  utility_1.utils.hook('_onCurrentCellChange', function (pcformId, event) {
+  utility_1.utils.hook('_onCurrentCellChange', function (pcFormId, event) {
     if (!event.hasError) {
-      utility_1.utils.log('[_onCurrentCellChange]', pcformId, event.cell);
+      utility_1.utils.log('[_onCurrentCellChange]', pcFormId, event.cell);
     }
   });
 };
 
 exports.init = init;
-},{"../utility":"utility/index.ts"}],"event/_Test.ts":[function(require,module,exports) {
+},{"../utility":"utility/index.ts"}],"events/_Test.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1520,7 +1559,7 @@ var init = function () {
 };
 
 exports.init = init;
-},{"../systems/devCommands":"systems/devCommands.ts","../utility":"utility/index.ts"}],"event/index.ts":[function(require,module,exports) {
+},{"../systems/devCommands":"systems/devCommands.ts","../utility":"utility/index.ts"}],"events/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1617,7 +1656,7 @@ Object.defineProperty(exports, "_TestInit", {
     return _Test_1.init;
   }
 });
-},{"./_":"event/_.ts","./_onBash":"event/_onBash.ts","./_onHit":"event/_onHit.ts","./_onPowerAttack":"event/_onPowerAttack.ts","./_onRegenFinish":"event/_onRegenFinish.ts","./_onSprintStateChange":"event/_onSprintStateChange.ts","./_onConsoleCommand":"event/_onConsoleCommand.ts","./_onLocalDeath":"event/_onLocalDeath.ts","./_onCurrentCellChange":"event/_onCurrentCellChange.ts","./_Test":"event/_Test.ts"}],"index.ts":[function(require,module,exports) {
+},{"./_":"events/_.ts","./_onBash":"events/_onBash.ts","./_onHit":"events/_onHit.ts","./_onPowerAttack":"events/_onPowerAttack.ts","./_onRegenFinish":"events/_onRegenFinish.ts","./_onSprintStateChange":"events/_onSprintStateChange.ts","./_onConsoleCommand":"events/_onConsoleCommand.ts","./_onLocalDeath":"events/_onLocalDeath.ts","./_onCurrentCellChange":"events/_onCurrentCellChange.ts","./_Test":"events/_Test.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1630,7 +1669,7 @@ var systems_1 = require("./systems");
 
 var properties_1 = require("./properties");
 
-var event_1 = require("./event");
+var events_1 = require("./events");
 
 var properties_2 = require("./properties");
 
@@ -1657,25 +1696,25 @@ properties_1.playerLevelPropInit();
 properties_1.playerRacePropInit();
 properties_1.scalePropInit();
 
-event_1._Init();
+events_1._Init();
 
-event_1._onBashInit();
+events_1._onBashInit();
 
-event_1._onHitInit();
+events_1._onHitInit();
 
-event_1._onPowerAttackInit();
+events_1._onPowerAttackInit();
 
-event_1._onRegenFinishInit();
+events_1._onRegenFinishInit();
 
-event_1._onSprintStateChangeInit();
+events_1._onSprintStateChangeInit();
 
-event_1._onConsoleCommandInit();
+events_1._onConsoleCommandInit();
 
-event_1._onLocalDeathInit();
+events_1._onLocalDeathInit();
 
-event_1._onCurrentCellChangeInit();
+events_1._onCurrentCellChangeInit();
 
-event_1._TestInit();
+events_1._TestInit();
 
 properties_2.ActorValuesInit();
 systems_1.spawnSystemInit();
@@ -1692,4 +1731,4 @@ utils_1.utils.hook('onReinit', function (pcFormId, options) {
 
   mp.set(pcFormId, 'scale', 1);
 });
-},{"./utility/utils":"utility/utils.ts","./systems":"systems/index.ts","./properties":"properties/index.ts","./event":"event/index.ts","./constants/constants":"constants/constants.ts"}]},{},["index.ts"], null)
+},{"./utility/utils":"utility/utils.ts","./systems":"systems/index.ts","./properties":"properties/index.ts","./events":"events/index.ts","./constants/constants":"constants/constants.ts"}]},{},["index.ts"], null)

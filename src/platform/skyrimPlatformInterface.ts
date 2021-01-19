@@ -5,6 +5,7 @@ import { Game } from './Game';
 import { Input } from './Input';
 import { Spell } from './Spell';
 import { Utility } from './Utility';
+import { Sound } from './Sound';
 
 export type SkyrimEventName =
 	| 'update'
@@ -200,7 +201,7 @@ export interface SkyrimPlatform {
 	ShaderParticleGeometry: skyrimPlatform.ShaderParticleGeometry;
 	Shout: skyrimPlatform.Shout;
 	SoulGem: skyrimPlatform.SoulGem;
-	Sound: skyrimPlatform.Sound;
+	Sound: Sound;
 	SoundCategory: skyrimPlatform.SoundCategory;
 	SoundDescriptor: skyrimPlatform.SoundDescriptor;
 	TESModPlatform: skyrimPlatform.TESModPlatform;

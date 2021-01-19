@@ -3,9 +3,11 @@ import { consoleOutput } from '../properties/consoleOutput';
 import { actorValues } from '../properties/ActorValues';
 import { spawnSystem } from './spawnSystem';
 import { AttrAll } from '../types/Attr';
-import { MP } from '../platform';
 import { currentActor } from '../constants/constants';
+import { CTX, MP } from '../platform';
+
 declare const mp: MP;
+declare const ctx: CTX;
 
 const chooseFormId = (pcFormId: number, selectedFormId?: number) => {
 	return selectedFormId ? selectedFormId : pcFormId;
@@ -87,16 +89,27 @@ export const init = () => {
 		const sub = args[1];
 		const arg0 = args[2];
 		const arg1 = args[3];
-		if (sub === 'reinit') {
-			reinit(pcFormId, selectedFormId);
-		} else if (sub === 'setav') {
-			setav(pcFormId, selectedFormId, arg0, arg1);
-		} else if (sub === 'kill') {
-			kill(pcFormId, selectedFormId);
-		} else if (sub === 'spawn') {
-			spawn(pcFormId, selectedFormId);
-		} else if (sub === 'spawnpoint') {
-			spawnpoint(pcFormId, selectedFormId);
+		switch (sub) {
+			case 'reinit':
+				reinit(pcFormId, selectedFormId);
+				break;
+			case 'setav':
+				setav(pcFormId, selectedFormId, arg0, arg1);
+				break;
+			case 'kill':
+				kill(pcFormId, selectedFormId);
+				break;
+			case 'spawn':
+				spawn(pcFormId, selectedFormId);
+				break;
+			case 'spawnpoint':
+				spawnpoint(pcFormId, selectedFormId);
+				break;
+			case 'tp':
+				break;
+
+			default:
+				break;
 		}
 	});
 };

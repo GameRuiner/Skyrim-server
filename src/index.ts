@@ -21,7 +21,7 @@ import {
 	_onLocalDeathInit,
 	_onCurrentCellChangeInit,
 	_TestInit,
-} from './event';
+} from './events';
 
 import { actorValues, ActorValuesInit } from './properties';
 

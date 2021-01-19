@@ -34,7 +34,7 @@ export const init = () => {
 	);
 
 	const sprintAttr: Attr = 'stamina';
-	const staminaReduce = 10;
+	const staminaReduce = -10;
 	utils.hook('_onSprintStateChange', (pcFormId: number, newState: any) => {
 		switch (newState) {
 			case 'start':

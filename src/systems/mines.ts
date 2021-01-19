@@ -1,23 +1,15 @@
-import { utils } from '../utility/utils';
-import { MP } from '../platform';
+import { getFunctionText, utils } from '../utility/utils';
+import { CTX, MP } from '../platform';
 import { consoleOutput } from '../properties';
 import { currentActor, EVENTS_NAME } from '../constants/constants';
 import { CellChangeEvent } from '../types/Events';
 
 declare const mp: MP;
+declare const ctx: CTX;
 
 const simplePickaxe = 0xe3c16;
-const items = [
-	simplePickaxe,
-	0xaccd1,
-	0xb974f,
-	0x7a14e,
-	0x7a132,
-	0x10df21,
-	0x100e3b,
-	0xb505c,
-	0xb50c1,
-];
+const cloth = 374433;
+const items = [simplePickaxe, 374433];
 interface Inventar {
 	baseId: number;
 	count: number;
@@ -26,12 +18,15 @@ interface Inventar {
 
 /**
  * Определение того, что игрок вошел в шахту
- * пока костыльно по ИД 91570 (Дом Серой Гривы)
  * TODO: Понять как правильно определить что игрок в шахте
- * @param formId
+ * @param cell
  */
-const isMine = (formId: number): boolean => {
-	return formId === 91570 ? true : false;
+const isMine = (cell: any): boolean => {
+	const mines = ['mine', 'шахта'];
+	return mines.some((x) => (cell.name as string).toLowerCase().includes(x)) ||
+		cell.id === 91570
+		? true
+		: false;
 };
 
 const addItem = (formId: number, baseId: number, count: number) => {
@@ -52,6 +47,17 @@ const addItem = (formId: number, baseId: number, count: number) => {
 	mp.set(formId, 'inventory', inv);
 };
 
+const eqiup = (formId: number, baseId: number) => {
+	consoleOutput.evalClient(
+		formId,
+		`	ctx.sp.Game.getPlayer().equipItem(
+			ctx.sp.Game.getFormEx(${baseId}),
+			false,
+			false
+		);`
+	);
+};
+
 export const init = () => {
 	utils.hook(EVENTS_NAME.hit, (pcFormId: number, eventData: any) => {
 		try {
@@ -67,16 +73,23 @@ export const init = () => {
 		EVENTS_NAME.currentCellChange,
 		(pcFormId: number, event: CellChangeEvent) => {
 			try {
-				if (isMine(event.cell.id)) {
+				if (isMine(event.cell)) {
 					const invEntry: any[] = mp.get(pcFormId, 'inventory').entries;
-					items.forEach((item) => {
+					consoleOutput.print(pcFormId, 'Теперь ты шахтер! Работай!');
+					items.forEach((itemId) => {
 						if (
-							invEntry.map((x) => x.baseId).findIndex((x) => x === item) === -1
+							invEntry.map((x) => x.baseId).findIndex((x) => x === itemId) ===
+							-1
 						) {
-							addItem(pcFormId, item, 1);
+							addItem(pcFormId, itemId, 1);
 						}
 					});
-					consoleOutput.print(pcFormId, 'Теперь ты шахтер! Работай!');
+					// не выдает в цикле две вещи сразу
+					// пока сделал костыль
+					eqiup(pcFormId, items[0]);
+					setTimeout(() => {
+						eqiup(pcFormId, items[1]);
+					}, 1000);
 				}
 			} catch (err) {
 				utils.log(err);

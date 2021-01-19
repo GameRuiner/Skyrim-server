@@ -6,8 +6,9 @@
 	"scripts": {
 		"start": ".\\skymp5-server.exe",
 		"launch": "..\\SkyMPLauncher.exe",
-		"game": "..\\skse64_loader.exe",
+		"game": "'..\\The Elder Scrolls V Skyrim - Special Edition\\skse64_loader.exe'",
 		"serve": "parcel serve src/index.ts --out-dir ./ --out-file gamemode.js --no-source-maps --no-cache --target node",
+		"serve:gamemode": "parcel serve skymp5-gamemode/index.ts --out-dir ./ --out-file gamemode.js --no-source-maps --no-cache --target node",
 		"build": "parcel build src/index.ts --out-dir ./ --out-file gamemode.js --no-source-maps --no-minify --no-cache --target node",
 		"postbuild": "node fix.js",
 		"prebuild:html": "rimraf ./html/www",
