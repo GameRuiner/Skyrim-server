@@ -6,10 +6,15 @@ declare const mp: MP;
 declare const ctx: CTX;
 
 export const initHitStatic = () => {
+	/**
+	 * event hit trigger only when the target isn't Actor
+	 */
 	mp.makeEventSource(
 		'_onHitStatic',
 		genClientFunction(() => {
 			ctx.sp.on('hit', (e: any) => {
+				if (ctx.sp.Actor.from(e.target)) return;
+
 				const target = ctx.getFormIdInServerFormat(e.target.getFormId());
 				const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());
 				ctx.sendEvent({

@@ -1587,6 +1587,7 @@ var utility_1 = require("../utility");
 var initHitStatic = function () {
   mp.makeEventSource('_onHitStatic', utility_1.genClientFunction(function () {
     ctx.sp.on('hit', function (e) {
+      if (ctx.sp.Actor.from(e.target)) return;
       var target = ctx.getFormIdInServerFormat(e.target.getFormId());
       var agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());
       ctx.sendEvent({
