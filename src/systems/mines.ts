@@ -1,25 +1,17 @@
 import { utils } from '../utility';
-import { CTX } from '../platform';
 import { consoleOutput } from '../properties';
 import { currentActor } from '../constants';
 import { CellChangeEvent, MP } from '../types';
 import { inventorySystem } from './inventorySystem';
 
 declare const mp: MP;
-declare const ctx: CTX;
 
 const simplePickaxe = 0xe3c16;
 const cloth = 374433;
 const items = [simplePickaxe, cloth];
-interface Inventar {
-	baseId: number;
-	count: number;
-	added?: boolean;
-}
 
 /**
- * Определение того, что игрок вошел в шахту
- * TODO: Понять как правильно определить что игрок в шахте
+ * Return true if Actor came to mine
  * @param cell
  */
 const isMine = (cell: any): boolean => {
@@ -56,8 +48,7 @@ export const minesInit = () => {
 							inventorySystem.addItem(pcFormId, itemId, 1);
 						}
 					});
-					// не выдает в цикле две вещи сразу
-					// пока сделал костыль
+					// TODO: don't use settimeout
 					inventorySystem.eqiupItem(pcFormId, items[0]);
 					setTimeout(() => {
 						inventorySystem.eqiupItem(pcFormId, items[1]);

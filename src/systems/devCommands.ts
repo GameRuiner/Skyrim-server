@@ -4,9 +4,11 @@ import { AttrAll, MP } from '../types';
 import { currentActor } from '../constants/constants';
 import { spawnSystem } from './spawnSystem';
 import { actorValues } from '../properties';
+import { CTX } from '../platform';
 
 ////////////////////////////////////////////////
 declare const mp: MP;
+declare const ctx: CTX;
 ////////////////////////////////////////////////
 
 const chooseFormId = (pcFormId: number, selectedFormId?: number) => {
@@ -82,6 +84,14 @@ const spawnpoint = (pcFormId: number, selectedFormId: number) => {
 	);
 };
 
+const tp = (pcFormId: number, selectedFormId: number) => {
+	const targetFormId = chooseFormId(pcFormId, selectedFormId);
+	//const tip = chooseTip(pcFormId, selectedFormId);
+
+	const p = mp.get(targetFormId, 'pos');
+	mp.set(pcFormId, 'pos', p);
+};
+
 export const initDevCommands = () => {
 	utils.hook('_onConsoleCommand', (pcFormId: number, ...args: any[]) => {
 		const selectedFormId = args[0] !== currentActor ? args[0] : pcFormId;
@@ -105,6 +115,7 @@ export const initDevCommands = () => {
 				spawnpoint(pcFormId, selectedFormId);
 				break;
 			case 'tp':
+				tp(pcFormId, 1104283);
 				break;
 
 			default:

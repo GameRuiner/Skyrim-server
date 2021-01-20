@@ -21,6 +21,7 @@ type CustomEventName =
 	| '_onHitScale'
 	| '_onInputTest'
 	| '_onAnimationEvent'
-	| '_onHitStatic';
+	| '_onHitStatic'
+	| '_onActivationEvent';
 
 export type EventName = SystemEventName | CustomEventName;

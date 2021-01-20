@@ -955,6 +955,12 @@ var spawnpoint = function (pcFormId, selectedFormId) {
   consoleOutput_1.consoleOutput.print(targetFormId, "Spawnpoint has been updated for " + targetFormId.toString(16) + " " + tip);
 };
 
+var tp = function (pcFormId, selectedFormId) {
+  var targetFormId = chooseFormId(pcFormId, selectedFormId);
+  var p = mp.get(targetFormId, 'pos');
+  mp.set(pcFormId, 'pos', p);
+};
+
 var initDevCommands = function () {
   utils_1.utils.hook('_onConsoleCommand', function (pcFormId) {
     var args = [];
@@ -990,6 +996,7 @@ var initDevCommands = function () {
         break;
 
       case 'tp':
+        tp(pcFormId, 1104283);
         break;
 
       default:
@@ -1012,6 +1019,9 @@ var properties_1 = require("../properties");
 var utility_1 = require("../utility");
 
 exports.inventorySystem = {
+  get: function (formId) {
+    return mp.get(formId, 'inventory');
+  },
   addItem: function (formId, baseId, count) {
     if (count <= 0) return;
     var inv = mp.get(formId, 'inventory');
@@ -1160,14 +1170,14 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.initBashEvent = void 0;
 
-var constants_1 = require("../constants/constants");
-
 var properties_1 = require("../properties");
 
-var utils_1 = require("../utility/utils");
+var utility_1 = require("../utility");
+
+var currentActor = 0x14;
 
 var initBashEvent = function () {
-  mp.makeEventSource('_onBash', utils_1.genClientFunction(function () {
+  mp.makeEventSource('_onBash', utility_1.genClientFunction(function () {
     var next = ctx.sp.storage._api_onAnimationEvent;
     ctx.sp.storage._api_onAnimationEvent = {
       callback: function () {
@@ -1180,7 +1190,7 @@ var initBashEvent = function () {
         var serversideFormId = args[0],
             animEventName = args[1];
 
-        if (serversideFormId === constants_1.currentActor && animEventName.toLowerCase().includes('bash')) {
+        if (serversideFormId === currentActor && animEventName.toLowerCase().includes('bash')) {
           ctx.sendEvent(serversideFormId);
         }
 
@@ -1190,10 +1200,10 @@ var initBashEvent = function () {
       }
     };
   }, {
-    currentActor: constants_1.currentActor
+    currentActor: currentActor
   }));
   var sprintAttr = 'stamina';
-  utils_1.utils.hook('_onBash', function (pcFormId) {
+  utility_1.utils.hook('_onBash', function (pcFormId) {
     var damage = properties_1.actorValues.get(pcFormId, sprintAttr, 'damage');
     var damageMod = -35;
     properties_1.actorValues.set(pcFormId, sprintAttr, 'damage', damage + damageMod);
@@ -1201,7 +1211,7 @@ var initBashEvent = function () {
 };
 
 exports.initBashEvent = initBashEvent;
-},{"../constants/constants":"constants/constants.ts","../properties":"properties/index.ts","../utility/utils":"utility/utils.ts"}],"events/_onHit.ts":[function(require,module,exports) {
+},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"events/_onHit.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1490,7 +1500,8 @@ var init = function () {
   }));
   utility_1.utils.hook('_onCurrentCellChange', function (pcFormId, event) {
     if (!event.hasError) {
-      utility_1.utils.log('[_onCurrentCellChange]', pcFormId, event.cell);
+      utility_1.utils.log('[CELL_CHANGE]', pcFormId, event.cell);
+      utility_1.utils.log('[CELL_CHANGE]', mp.get(pcFormId, 'worldOrCellDesc'));
     }
   });
 };
@@ -1596,7 +1607,9 @@ var initHitStatic = function () {
       });
     });
   }, {}));
-  utility_1.utils.hook('_onHitStatic', function (pcFormId, eventData) {});
+  utility_1.utils.hook('_onHitStatic', function (pcFormId, eventData) {
+    utility_1.utils.log('[_onHitStatic]', eventData);
+  });
 };
 
 exports.initHitStatic = initHitStatic;

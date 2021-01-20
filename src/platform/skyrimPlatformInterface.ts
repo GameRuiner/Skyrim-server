@@ -6,6 +6,7 @@ import { Input } from './Input';
 import { Spell } from './Spell';
 import { Utility } from './Utility';
 import { Sound } from './Sound';
+import { ObjectReference } from './ObjectReference';
 
 export type SkyrimEventName =
 	| 'update'
@@ -133,7 +134,7 @@ export interface SkyrimPlatform {
 	Action: skyrimPlatform.Action;
 	Activator: skyrimPlatform.Activator;
 	ActiveMagicEffect: skyrimPlatform.ActiveMagicEffect;
-	ObjectReference: skyrimPlatform.ObjectReference;
+	ObjectReference: ObjectReference;
 	Actor: Actor;
 	ActorBase: skyrimPlatform.ActorBase;
 	ActorValueInfo: skyrimPlatform.ActorValueInfo;

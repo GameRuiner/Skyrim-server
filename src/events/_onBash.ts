@@ -1,8 +1,6 @@
-import { currentActor } from '../constants/constants';
 import { actorValues } from '../properties';
-import { MP } from '../types';
-import { Attr } from '../types/Attr';
-import { genClientFunction, utils } from '../utility/utils';
+import { MP, Attr } from '../types';
+import { genClientFunction, utils } from '../utility';
 import { CTX } from '../platform';
 
 ////////////////////////////////////////////////
@@ -13,6 +11,7 @@ declare const ctx: CTX;
 /**
  * init bash events
  */
+const currentActor = 0x14;
 export const initBashEvent = () => {
 	mp.makeEventSource(
 		'_onBash',

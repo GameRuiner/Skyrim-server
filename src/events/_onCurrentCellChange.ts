@@ -37,7 +37,8 @@ export const init = () => {
 		'_onCurrentCellChange',
 		(pcFormId: number, event: CellChangeEvent) => {
 			if (!event.hasError) {
-				utils.log('[_onCurrentCellChange]', pcFormId, event.cell);
+				utils.log('[CELL_CHANGE]', pcFormId, event.cell);
+				utils.log('[CELL_CHANGE]', mp.get(pcFormId, 'worldOrCellDesc'));
 			}
 		}
 	);

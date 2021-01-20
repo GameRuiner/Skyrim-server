@@ -10,7 +10,7 @@ declare const ctx: CTX;
 ////////////////////////////////////////////////
 
 /**
- * init bash events
+ * init animation events
  */
 export const initAnimationEvent = () => {
 	if (TRACE_ANIMATION) {

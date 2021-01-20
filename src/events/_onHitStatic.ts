@@ -26,6 +26,6 @@ export const initHitStatic = () => {
 	);
 
 	utils.hook('_onHitStatic', (pcFormId: number, eventData: any) => {
-		//utils.log('[_onHitStatic]', eventData);
+		utils.log('[_onHitStatic]', eventData);
 	});
 };
