@@ -1,13 +1,13 @@
-import { utils } from './utility/utils';
-import { initDevCommands, minesInit } from './systems';
+import { utils } from './utility';
+import { initDevCommands, minesInit, spawnSystem } from './systems';
 
 import {
 	consoleOutputPropInit,
 	isDeadPropInit,
 	spawnPointPropInit,
-	playerLevelPropInit,
-	playerRacePropInit,
 	scalePropInit,
+	actorValues,
+	ActorValuesInit,
 } from './properties';
 
 import {
@@ -22,14 +22,12 @@ import {
 	_onCurrentCellChangeInit,
 	_TestInit,
 	initAnimationEvent,
+	initHitStatic,
 } from './events';
 
-import { actorValues, ActorValuesInit } from './properties';
+import { MP } from './types';
 
-import { MP } from './types/mp';
-
-import { defaultSpawnPoint } from './constants/constants';
-import { spawnSystem } from './systems/spawnSystem';
+import { defaultSpawnPoint } from './constants';
 
 ////////////////////////////////////////////////
 declare const mp: MP;
@@ -68,8 +66,6 @@ utils.hook('onDeath', (pcFormId: number) => {
 isDeadPropInit();
 consoleOutputPropInit();
 spawnPointPropInit();
-playerLevelPropInit();
-playerRacePropInit();
 scalePropInit();
 /** */
 
@@ -85,6 +81,7 @@ _onLocalDeathInit();
 _onCurrentCellChangeInit();
 _TestInit();
 initAnimationEvent();
+initHitStatic();
 /** */
 
 /** sync initialization */

@@ -20,6 +20,7 @@ type CustomEventName =
 	| '_onSprintStateChange'
 	| '_onHitScale'
 	| '_onInputTest'
-	| '_onAnimationEvent';
+	| '_onAnimationEvent'
+	| '_onHitStatic';
 
 export type EventName = SystemEventName | CustomEventName;

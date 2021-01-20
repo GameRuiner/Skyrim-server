@@ -9,3 +9,4 @@ export { init as _onLocalDeathInit } from './_onLocalDeath';
 export { init as _onCurrentCellChangeInit } from './_onCurrentCellChange';
 export { init as _TestInit } from './_Test';
 export * from './onAnimationEvent';
+export * from './_onHitStatic';
