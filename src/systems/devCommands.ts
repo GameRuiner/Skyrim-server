@@ -1,13 +1,13 @@
 import { utils } from '../utility/utils';
 import { consoleOutput } from '../properties/consoleOutput';
-import { actorValues } from '../properties/ActorValues';
-import { spawnSystem } from './spawnSystem';
-import { AttrAll } from '../types/Attr';
+import { AttrAll, MP } from '../types';
 import { currentActor } from '../constants/constants';
-import { CTX, MP } from '../platform';
+import { spawnSystem } from './spawnSystem';
+import { actorValues } from '../properties';
 
+////////////////////////////////////////////////
 declare const mp: MP;
-declare const ctx: CTX;
+////////////////////////////////////////////////
 
 const chooseFormId = (pcFormId: number, selectedFormId?: number) => {
 	return selectedFormId ? selectedFormId : pcFormId;
@@ -21,7 +21,6 @@ export const reinit = (pcFormId: number, selectedFormId?: number) => {
 	const targetFormId = chooseFormId(pcFormId, selectedFormId);
 	const tip = chooseTip(pcFormId, selectedFormId);
 
-	//actorValues.setDefaults(targetFormId, { force: true });
 	mp.onReinit(targetFormId, { force: true });
 
 	consoleOutput.print(
@@ -83,7 +82,7 @@ const spawnpoint = (pcFormId: number, selectedFormId: number) => {
 	);
 };
 
-export const init = () => {
+export const initDevCommands = () => {
 	utils.hook('_onConsoleCommand', (pcFormId: number, ...args: any[]) => {
 		const selectedFormId = args[0] !== currentActor ? args[0] : pcFormId;
 		const sub = args[1];

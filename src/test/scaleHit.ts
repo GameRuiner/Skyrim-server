@@ -1,5 +1,6 @@
-import { CTX, MP } from '../platform';
-import { HitEvent } from '../platform/skyrimPlatform';
+import { CTX } from '../platform';
+import { HitEvent } from '../platform';
+import { MP } from '../types';
 import { getFunctionText, utils } from '../utility';
 
 declare const mp: MP;

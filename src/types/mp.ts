@@ -18,10 +18,34 @@ interface MakePropertyOptions {
 }
 
 export interface MP {
+	/**
+	 * Create property on server
+	 * @param propertyName property name
+	 * @param options options for property
+	 */
 	makeProperty(propertyName: PropertyName, options: MakePropertyOptions): void;
+	/**
+	 * Create event on server
+	 * @param eventName event name
+	 * @param functionBody function that trigger when event call
+	 */
 	makeEventSource(eventName: EventName, functionBody: string): void;
+	/**
+	 * Get the value from property by name
+	 * @param formId unique identifier
+	 * @param propertyName property name
+	 */
 	get(formId: number, propertyName: PropertyName): any;
+	/**
+	 * Set the new value to the property
+	 * @param formId unique identifier
+	 * @param propertyName property name
+	 * @param newValue new value for property
+	 */
 	set(formId: number, propertyName: PropertyName, newValue: any): void;
+	/**
+	 * clear
+	 */
 	clear(): void;
 	[key: string]: (...args: any[]) => void;
 }

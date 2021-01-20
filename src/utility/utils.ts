@@ -1,17 +1,35 @@
-import { MP } from '../platform';
 import minify from 'string-minify';
-import { EventName } from '../types/EventName';
+import { MP, EventName } from '../types';
 
-declare var global: any;
+////////////////////////////////////////////////
 declare const mp: MP;
+declare const global: any;
+////////////////////////////////////////////////
 
+/**
+ * UTILITIES
+ */
 export const utils = {
+	/**
+	 * print text in server side
+	 * @param args arguments
+	 */
 	log: (...args: any) => {
 		console.log.call(console, '[GM]', ...args);
 	},
+	/**
+	 * return true if object is Actor
+	 * @param formId unique identifier
+	 */
 	isActor: (formId: number) => {
 		return mp.get(formId, 'type') === 'MpActor';
 	},
+	/**
+	 * executing a function on the server side
+	 * when an event is triggered on the client side
+	 * @param eventName name of event
+	 * @param callback function
+	 */
 	hook: (eventName: EventName, callback: (...args: any[]) => void) => {
 		if (!global.knownEvents.includes(eventName)) {
 			global.knownEvents.push(eventName);
@@ -33,11 +51,26 @@ export const utils = {
 	},
 };
 
+/**
+ * return function text as text
+ * @param func source function
+ */
 export const getFunctionText = (func: Function): string => {
-	const result = minify(func.toString())
+	return minify(func.toString())
 		.replace(new RegExp('^.+?{', 'm'), '')
 		.replace(new RegExp('[}]$', 'm'), '')
 		.trim();
+};
 
+/**
+ * generate function for client
+ * @param func generated function
+ * @param args params
+ */
+export const genClientFunction = (func: Function, args?: any) => {
+	let result = getFunctionText(func);
+	for (let name in args) {
+		result = `const ${name} = ${args[name]};` + result;
+	}
 	return result;
 };

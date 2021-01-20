@@ -1,4 +1,5 @@
-import { CTX, MP } from '../platform';
+import { CTX } from '../platform';
+import { MP } from '../types';
 
 declare const mp: MP;
 declare const ctx: CTX;

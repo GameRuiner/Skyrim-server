@@ -1,34 +1,46 @@
 import { currentActor } from '../constants/constants';
-import { CTX, MP } from '../platform';
 import { actorValues } from '../properties';
+import { MP } from '../types';
 import { Attr } from '../types/Attr';
-import { getFunctionText, utils } from '../utility';
+import { genClientFunction, utils } from '../utility/utils';
+import { CTX } from '../platform';
 
+////////////////////////////////////////////////
 declare const mp: MP;
 declare const ctx: CTX;
+////////////////////////////////////////////////
 
-export const init = () => {
+/**
+ * init bash events
+ */
+export const initBashEvent = () => {
 	mp.makeEventSource(
 		'_onBash',
-		getFunctionText(() => {
-			const next = ctx.sp.storage._api_onAnimationEvent;
-			ctx.sp.storage._api_onAnimationEvent = {
-				callback(...args: any[]) {
-					const [serversideFormId, animEventName] = args;
-					if (
-						serversideFormId === 0x14 &&
-						animEventName.toLowerCase().includes('bash')
-					) {
-						ctx.sendEvent(serversideFormId);
-					}
-					if (typeof next.callback === 'function') {
-						next.callback(...args);
-					}
-				},
-			};
-		})
+		genClientFunction(
+			() => {
+				const next = ctx.sp.storage._api_onAnimationEvent;
+				ctx.sp.storage._api_onAnimationEvent = {
+					callback(...args: any[]) {
+						const [serversideFormId, animEventName] = args;
+						if (
+							serversideFormId === currentActor &&
+							animEventName.toLowerCase().includes('bash')
+						) {
+							ctx.sendEvent(serversideFormId);
+						}
+						if (typeof next.callback === 'function') {
+							next.callback(...args);
+						}
+					},
+				};
+			},
+			{ currentActor }
+		)
 	);
 
+	/**
+	 * on trigger bash event reduce actor stamina
+	 */
 	const sprintAttr: Attr = 'stamina';
 	utils.hook('_onBash', (pcFormId: number) => {
 		const damage = actorValues.get(pcFormId, sprintAttr, 'damage');

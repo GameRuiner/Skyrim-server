@@ -1,4 +1,4 @@
-import { MP } from '../platform';
+import { MP } from '../types';
 import { PropertyName } from '../types/PropertyName';
 
 declare const mp: MP;

@@ -1,8 +1,8 @@
 import { utils } from '../utility/utils';
-import { actorValues } from '../properties/ActorValues';
-import { MP } from '../platform';
-import { defaultSpawnPoint } from '../constants/constants';
-import { PropertyName } from '../types/PropertyName';
+import { actorValues } from '../properties';
+import { defaultSpawnPoint } from '../constants';
+import { PropertyName, MP } from '../types';
+
 declare const mp: MP;
 
 export const spawnSystem = {
@@ -10,7 +10,11 @@ export const spawnSystem = {
 	spawn: (targetFormId: number) => {
 		const spawnPoint = mp.get(targetFormId, 'spawnPoint');
 		for (const propName of Object.keys(spawnPoint || defaultSpawnPoint)) {
-			mp.set(targetFormId, propName as PropertyName, (spawnPoint || defaultSpawnPoint)[propName]);
+			mp.set(
+				targetFormId,
+				propName as PropertyName,
+				(spawnPoint || defaultSpawnPoint)[propName]
+			);
 		}
 		actorValues.set(targetFormId, 'health', 'damage', 0);
 		actorValues.set(targetFormId, 'magicka', 'damage', 0);
@@ -27,12 +31,4 @@ export const spawnSystem = {
 			worldOrCellDesc: mp.get(targetFormId, 'worldOrCellDesc'),
 		});
 	},
-};
-
-export const init = () => {
-	utils.hook('onDeath', (pcFormId: number) => {
-		setTimeout(() => {
-			spawnSystem.spawn(pcFormId);
-		}, spawnSystem.timeToRespawn);
-	});
 };

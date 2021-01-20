@@ -1,8 +1,7 @@
-import { Attr } from '../types/Attr';
-import { MP } from '../platform';
+import { Attr, MP, EventName } from '../types';
 import { utils } from '../utility';
 import { actorValues } from '../properties';
-import { EventName } from '../types/EventName';
+
 declare const mp: MP;
 
 export const init = () => {

@@ -1,5 +1,6 @@
-import { CTX, MP } from '../platform';
-import { reinit } from '../systems/devCommands';
+import { CTX } from '../platform';
+import { reinit } from '../systems';
+import { MP } from '../types';
 import { getFunctionText, utils } from '../utility';
 
 declare const mp: MP;

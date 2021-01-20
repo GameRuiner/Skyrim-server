@@ -1,15 +1,15 @@
-import { getFunctionText, utils } from '../utility/utils';
-import { CTX, MP } from '../platform';
+import { utils } from '../utility';
+import { CTX } from '../platform';
 import { consoleOutput } from '../properties';
-import { currentActor, EVENTS_NAME } from '../constants/constants';
-import { CellChangeEvent } from '../types/Events';
+import { currentActor } from '../constants';
+import { CellChangeEvent, MP } from '../types';
 
 declare const mp: MP;
 declare const ctx: CTX;
 
 const simplePickaxe = 0xe3c16;
 const cloth = 374433;
-const items = [simplePickaxe, 374433];
+const items = [simplePickaxe, cloth];
 interface Inventar {
 	baseId: number;
 	count: number;
@@ -24,7 +24,7 @@ interface Inventar {
 const isMine = (cell: any): boolean => {
 	const mines = ['mine', 'шахта'];
 	return mines.some((x) => (cell.name as string).toLowerCase().includes(x)) ||
-		cell.id === 91570
+		cell.id === 91570 // Дом серой гривы
 		? true
 		: false;
 };
@@ -50,6 +50,13 @@ const addItem = (formId: number, baseId: number, count: number) => {
 const eqiup = (formId: number, baseId: number) => {
 	consoleOutput.evalClient(
 		formId,
+		// () => {
+		// 	ctx.sp.Game.getPlayer().equipItem(
+		// 		ctx.sp.Game.getFormEx(baseId),
+		// 		false,
+		// 		false
+		// 	);
+		// }
 		`	ctx.sp.Game.getPlayer().equipItem(
 				ctx.sp.Game.getFormEx(${baseId}),
 				false,
@@ -59,8 +66,8 @@ const eqiup = (formId: number, baseId: number) => {
 	);
 };
 
-export const init = () => {
-	utils.hook(EVENTS_NAME.hit, (pcFormId: number, eventData: any) => {
+export const minesInit = () => {
+	utils.hook('_onHit', (pcFormId: number, eventData: any) => {
 		try {
 			if (eventData.agressor === pcFormId) {
 				consoleOutput.printNote(pcFormId, 'Эй, не стукай!');
@@ -71,7 +78,7 @@ export const init = () => {
 		}
 	});
 	utils.hook(
-		EVENTS_NAME.currentCellChange,
+		'_onCurrentCellChange',
 		(pcFormId: number, event: CellChangeEvent) => {
 			try {
 				if (isMine(event.cell)) {

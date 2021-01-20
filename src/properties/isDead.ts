@@ -1,5 +1,6 @@
-import { MP } from '../platform';
-import { utils } from '../utility/utils';
+import { MP } from '../types';
+import { utils } from '../utility';
+
 declare const mp: MP;
 
 const updateNeighbor = `

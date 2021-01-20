@@ -19,6 +19,7 @@ type CustomEventName =
 	| '_onActorValueFlushRequiredmagicka'
 	| '_onSprintStateChange'
 	| '_onHitScale'
-	| '_onInputTest';
+	| '_onInputTest'
+	| '_onAnimationEvent';
 
 export type EventName = SystemEventName | CustomEventName;
