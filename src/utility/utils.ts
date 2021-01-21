@@ -1,10 +1,8 @@
-import minify from 'string-minify';
-import { MP, EventName } from '../types';
+import { MP } from '../types';
+import { EventName } from '../types/EventName';
 
-////////////////////////////////////////////////
 declare const mp: MP;
 declare const global: any;
-////////////////////////////////////////////////
 
 /**
  * UTILITIES
@@ -37,7 +35,7 @@ export const utils = {
 		const prev = mp[eventName];
 		mp[eventName] = (...args: any[]) => {
 			try {
-				const prevRes = prev ? prev(...args) : undefined;
+				var prevRes = prev ? prev(...args) : undefined;
 				const callbackRes = callback(...args);
 				return callbackRes !== undefined ? callbackRes : prevRes;
 			} catch (e) {
@@ -56,10 +54,8 @@ export const utils = {
  * @param func source function
  */
 export const getFunctionText = (func: Function): string => {
-	return minify(func.toString())
-		.replace(new RegExp('^.+?{', 'm'), '')
-		.replace(new RegExp('[}]$', 'm'), '')
-		.trim();
+	const funcString = func.toString().substring(0, func.length - 1);
+	return funcString.replace(new RegExp('^.+?{', 'm'), '').trim();
 };
 
 /**
@@ -73,4 +69,14 @@ export const genClientFunction = (func: Function, args?: any) => {
 		result = `const ${name} = ${args[name]};` + result;
 	}
 	return result;
+};
+
+export const initUtils = () => {
+	utils.log('Gamemode init');
+	if (!Array.isArray(global.knownEvents)) {
+		global.knownEvents = [];
+	}
+	for (const eventName of global.knownEvents) {
+		delete mp[eventName];
+	}
 };

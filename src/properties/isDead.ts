@@ -51,7 +51,7 @@ if (value !== ctx.state.value) {
 }
 `;
 
-export const init = () => {
+export const initIsDead = () => {
 	mp.makeProperty('isDead', {
 		isVisibleByOwner: true,
 		isVisibleByNeighbors: true,

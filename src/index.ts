@@ -1,94 +1,68 @@
-import { utils } from './utility';
-import { initDevCommands, minesInit, spawnSystem } from './systems';
+import { MP } from './types';
+import { initUtils, utils } from './utility';
 
+// import init functions
+import { initActorValue, initConsoleOutput, initIsDead, initSpawnPoint } from './properties';
 import {
-	consoleOutputPropInit,
-	isDeadPropInit,
-	spawnPointPropInit,
-	scalePropInit,
-	actorValues,
-	ActorValuesInit,
-} from './properties';
-
-import {
-	_Init,
-	initBashEvent,
-	_onHitInit,
-	_onPowerAttackInit,
-	_onRegenFinishInit,
-	_onSprintStateChangeInit,
-	_onConsoleCommandInit,
-	_onLocalDeathInit,
-	_onCurrentCellChangeInit,
-	_TestInit,
 	initAnimationEvent,
+	initActorValueFlushRequiredEvent,
+	initBashEvent,
+	initConsoleCommandEvent,
+	initHitEvent,
+	initPowerAttacksEvent,
+	initSprintStateChangeEvent,
+	initCurrentCellChangeEvent,
+	initEmptyAnimationEvent,
 	initHitStatic,
 } from './events';
+import { initDevCommands, initMines } from './systems';
 
-import { MP } from './types';
-
-import { defaultSpawnPoint } from './constants';
-
-////////////////////////////////////////////////
 declare const mp: MP;
-declare const global: any;
-////////////////////////////////////////////////
 
-utils.log('Gamemode init');
-if (!Array.isArray(global.knownEvents)) {
-	global.knownEvents = [];
-}
-for (const eventName of global.knownEvents) {
-	delete mp[eventName];
-}
+// init creates events, properties
+// "utility/utils",
+initUtils();
+// "events/onHit",
+initHitEvent();
+
+// "properties/isDead",
+initIsDead();
+
+// "events/onSprintStateChange",
+initSprintStateChangeEvent();
+
+// "events/onPowerAttack",
+initPowerAttacksEvent();
+
+// "events/onBash",
+initBashEvent();
+
+// "properties/consoleOutput",
+initConsoleOutput();
+
+// "properties/actorValues",
+initActorValue();
+
+// "events/onActorValueFlushRequired",
+initActorValueFlushRequiredEvent();
+
+// "properties/spawnSystem",
+initSpawnPoint();
+
+// "events/onConsoleCommand",
+initConsoleCommandEvent();
+
+// "systems/developerCommands"
+initDevCommands();
+
+// "events/onAnimationEvent"
+initAnimationEvent();
+
+initMines();
+initCurrentCellChangeEvent();
+initEmptyAnimationEvent();
+initHitStatic();
+
 utils.hook('onInit', (pcFormId: number) => {
 	mp.onReinit(pcFormId);
 });
-utils.hook('onReinit', (pcFormId: number, options: any) => {
-	/** set default value to Actor */
-	if (actorValues.setDefaults) {
-		actorValues.setDefaults(pcFormId, options);
-	}
-	/** set respawn point */
-	if (!mp.get(pcFormId, 'spawnPoint') || (options && options.force)) {
-		mp.set(pcFormId, 'spawnPoint', defaultSpawnPoint);
-	}
-	/** set scale of Actor to default */
-	mp.set(pcFormId, 'scale', 1);
-});
-utils.hook('onDeath', (pcFormId: number) => {
-	setTimeout(() => {
-		spawnSystem.spawn(pcFormId);
-	}, spawnSystem.timeToRespawn);
-});
-
-/** property initialization */
-isDeadPropInit();
-consoleOutputPropInit();
-spawnPointPropInit();
-scalePropInit();
-/** */
-
-/** event initialization */
-_Init();
-initBashEvent();
-_onHitInit();
-_onPowerAttackInit();
-_onRegenFinishInit();
-_onSprintStateChangeInit();
-_onConsoleCommandInit();
-_onLocalDeathInit();
-_onCurrentCellChangeInit();
-_TestInit();
-initAnimationEvent();
-initHitStatic();
-/** */
-
-/** sync initialization */
-ActorValuesInit();
-/** */
-
-/** mechanics initialization */
-initDevCommands();
-minesInit();
-/** */

@@ -2,34 +2,17 @@ import * as skyrimPlatform from './skyrimPlatform';
 
 export interface ObjectReference {
 	from: (form: skyrimPlatform.Form) => ObjectReference;
-	activate: (
-		akActivator: ObjectReference,
-		abDefaultProcessingOnly: boolean
-	) => boolean;
-	addDependentAnimatedObjectReference: (
-		akDependent: ObjectReference
-	) => boolean;
+	activate: (akActivator: ObjectReference, abDefaultProcessingOnly: boolean) => boolean;
+	addDependentAnimatedObjectReference: (akDependent: ObjectReference) => boolean;
 	addInventoryEventFilter: (akFilter: skyrimPlatform.Form) => void;
-	addItem: (
-		akItemToAdd: skyrimPlatform.Form,
-		aiCount: number,
-		abSilent: boolean
-	) => void;
+	addItem: (akItemToAdd: skyrimPlatform.Form, aiCount: number, abSilent: boolean) => void;
 	addToMap: (abAllowFastTravel: boolean) => void;
-	applyHavokImpulse: (
-		afX: number,
-		afY: number,
-		afZ: number,
-		afMagnitude: number
-	) => Promise<void>;
+	applyHavokImpulse: (afX: number, afY: number, afZ: number, afMagnitude: number) => Promise<void>;
 	blockActivation: (abBlocked: boolean) => void;
 	calculateEncounterLevel: (aiDifficulty: number) => number;
 	canFastTravelToMarker: () => boolean;
 	clearDestruction: () => void;
-	createDetectionEvent: (
-		akOwner: skyrimPlatform.Actor,
-		aiSoundLevel: number
-	) => void;
+	createDetectionEvent: (akOwner: skyrimPlatform.Actor, aiSoundLevel: number) => void;
 	createEnchantment: (
 		maxCharge: number,
 		effects: object[],
@@ -41,10 +24,7 @@ export interface ObjectReference {
 	delete: () => Promise<void>;
 	disable: (abFadeOut: boolean) => Promise<void>;
 	disableNoWait: (abFadeOut: boolean) => void;
-	dropObject: (
-		akObject: skyrimPlatform.Form,
-		aiCount: number
-	) => Promise<ObjectReference>;
+	dropObject: (akObject: skyrimPlatform.Form, aiCount: number) => Promise<ObjectReference>;
 	enable: (abFadeIn: boolean) => Promise<void>;
 	enableFastTravel: (abEnable: boolean) => void;
 	enableNoWait: (abFadeIn: boolean) => void;
@@ -109,10 +89,7 @@ export interface ObjectReference {
 	isDeleted: () => boolean;
 	isDisabled: () => boolean;
 	isFurnitureInUse: (abIgnoreReserved: boolean) => boolean;
-	isFurnitureMarkerInUse: (
-		aiMarker: number,
-		abIgnoreReserved: boolean
-	) => boolean;
+	isFurnitureMarkerInUse: (aiMarker: number, abIgnoreReserved: boolean) => boolean;
 	isHarvested: () => boolean;
 	isIgnoringFriendlyHits: () => boolean;
 	isInDialogueWithPlayer: () => boolean;
@@ -144,15 +121,8 @@ export interface ObjectReference {
 		abInitiallyDisabled: boolean
 	) => ObjectReference;
 	playAnimation: (asAnimation: string) => boolean;
-	playAnimationAndWait: (
-		asAnimation: string,
-		asEventName: string
-	) => Promise<boolean>;
-	playGamebryoAnimation: (
-		asAnimation: string,
-		abStartOver: boolean,
-		afEaseInTime: number
-	) => boolean;
+	playAnimationAndWait: (asAnimation: string, asEventName: string) => Promise<boolean>;
+	playGamebryoAnimation: (asAnimation: string, abStartOver: boolean, afEaseInTime: number) => boolean;
 	playImpactEffect: (
 		akImpactEffect: skyrimPlatform.ImpactDataSet,
 		asNodeName: string,
@@ -170,15 +140,8 @@ export interface ObjectReference {
 		asAnimation2: string,
 		asEvent2: string
 	) => Promise<boolean>;
-	playSyncedAnimationSS: (
-		asAnimation1: string,
-		akObj2: ObjectReference,
-		asAnimation2: string
-	) => boolean;
-	playTerrainEffect: (
-		asEffectModelName: string,
-		asAttachBoneName: string
-	) => void;
+	playSyncedAnimationSS: (asAnimation1: string, akObj2: ObjectReference, asAnimation2: string) => boolean;
+	playTerrainEffect: (asEffectModelName: string, asAttachBoneName: string) => void;
 	processTrapHit: (
 		akTrap: ObjectReference,
 		afDamage: number,
@@ -192,19 +155,10 @@ export interface ObjectReference {
 		aeMaterial: number,
 		afStagger: number
 	) => void;
-	pushActorAway: (
-		akActorToPush: skyrimPlatform.Actor,
-		aiKnockbackForce: number
-	) => void;
+	pushActorAway: (akActorToPush: skyrimPlatform.Actor, aiKnockbackForce: number) => void;
 	removeAllInventoryEventFilters: () => void;
-	removeAllItems: (
-		akTransferTo: ObjectReference,
-		abKeepOwnership: boolean,
-		abRemoveQuestItems: boolean
-	) => void;
-	removeDependentAnimatedObjectReference: (
-		akDependent: ObjectReference
-	) => boolean;
+	removeAllItems: (akTransferTo: ObjectReference, abKeepOwnership: boolean, abRemoveQuestItems: boolean) => void;
+	removeDependentAnimatedObjectReference: (akDependent: ObjectReference) => boolean;
 	removeInventoryEventFilter: (akFilter: skyrimPlatform.Form) => void;
 	removeItem: (
 		akItemToRemove: skyrimPlatform.Form,
@@ -222,36 +176,20 @@ export interface ObjectReference {
 	sendStealAlarm: (akThief: skyrimPlatform.Actor) => void;
 	setActorCause: (akActor: skyrimPlatform.Actor) => void;
 	setActorOwner: (akActorBase: skyrimPlatform.ActorBase) => void;
-	setAngle: (
-		afXAngle: number,
-		afYAngle: number,
-		afZAngle: number
-	) => Promise<void>;
-	setAnimationVariableBool: (
-		arVariableName: string,
-		abNewValue: boolean
-	) => void;
-	setAnimationVariableFloat: (
-		arVariableName: string,
-		afNewValue: number
-	) => void;
+	setAngle: (afXAngle: number, afYAngle: number, afZAngle: number) => Promise<void>;
+	setAnimationVariableBool: (arVariableName: string, abNewValue: boolean) => void;
+	setAnimationVariableFloat: (arVariableName: string, afNewValue: number) => void;
 	setAnimationVariableInt: (arVariableName: string, aiNewValue: number) => void;
 	setDestroyed: (abDestroyed: boolean) => void;
 	setDisplayName: (name: string, force: boolean) => boolean;
-	setEnchantment: (
-		source: skyrimPlatform.Enchantment,
-		maxCharge: number
-	) => void;
+	setEnchantment: (source: skyrimPlatform.Enchantment, maxCharge: number) => void;
 	setFactionOwner: (akFaction: skyrimPlatform.Faction) => void;
 	setHarvested: (harvested: boolean) => void;
 	setItemCharge: (charge: number) => void;
 	setItemHealthPercent: (health: number) => void;
 	setItemMaxCharge: (maxCharge: number) => void;
 	setLockLevel: (aiLockLevel: number) => void;
-	setMotionType: (
-		aeMotionType: skyrimPlatform.MotionType,
-		abAllowActivate: boolean
-	) => Promise<void>;
+	setMotionType: (aeMotionType: skyrimPlatform.MotionType, abAllowActivate: boolean) => Promise<void>;
 	setNoFavorAllowed: (abNoFavor: boolean) => void;
 	setOpen: (abOpen: boolean) => void;
 	setPosition: (afX: number, afY: number, afZ: number) => Promise<void>;

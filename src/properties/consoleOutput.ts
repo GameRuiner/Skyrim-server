@@ -1,13 +1,8 @@
-import { MP } from '../types';
-import { PropertyName } from '../types/PropertyName';
+import { MP, PropertyName } from '../types';
 
 declare const mp: MP;
 
-const genericPrint = (
-	propName: PropertyName,
-	formId: number,
-	...printConsoleArgs: any[]
-) => {
+const genericPrint = (propName: PropertyName, formId: number, ...printConsoleArgs: any[]) => {
 	const prev = mp.get(formId, propName);
 	const n = prev ? prev.n : 0;
 	mp.set(formId, propName, {
@@ -20,12 +15,9 @@ const genericPrint = (
 export type printTargetsPropName = 'consoleOutput' | 'notification' | 'eval';
 
 export const consoleOutput = {
-	print: (formId: number, ...args: any[]) =>
-		genericPrint('consoleOutput', formId, ...args),
-	printNote: (formId: number, ...args: any[]) =>
-		genericPrint('notification', formId, ...args),
-	evalClient: (formId: number, ...args: any[]) =>
-		genericPrint('eval', formId, ...args),
+	print: (formId: number, ...args: any[]) => genericPrint('consoleOutput', formId, ...args),
+	printNote: (formId: number, ...args: any[]) => genericPrint('notification', formId, ...args),
+	evalClient: (formId: number, ...args: any[]) => genericPrint('eval', formId, ...args),
 };
 
 const printTargets: { [key: string]: string } = {
@@ -35,7 +27,7 @@ const printTargets: { [key: string]: string } = {
 };
 const props: PropertyName[] = ['consoleOutput', 'notification', 'eval'];
 
-export const init = () => {
+export const initConsoleOutput = () => {
 	for (const propName of props) {
 		const updateOwner = () => `
       if (ctx.state.n${propName} === ctx.value.n) return;

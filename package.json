@@ -34,5 +34,13 @@
 	},
 	"dependencies": {
 		"string-minify": "^1.0.1"
+	},
+	"prettier": {
+		"bracketSpacing": true,
+		"printWidth": 120,
+		"semi": true,
+		"singleQuote": true,
+		"tabWidth": 2,
+		"useTabs": true
 	}
 }

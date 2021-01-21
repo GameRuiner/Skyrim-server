@@ -1,4 +1,4 @@
-import { utils } from '../utility/utils';
+import { utils } from '../utility';
 import { actorValues } from '../properties';
 import { defaultSpawnPoint } from '../constants';
 import { PropertyName, MP } from '../types';
@@ -10,11 +10,7 @@ export const spawnSystem = {
 	spawn: (targetFormId: number) => {
 		const spawnPoint = mp.get(targetFormId, 'spawnPoint');
 		for (const propName of Object.keys(spawnPoint || defaultSpawnPoint)) {
-			mp.set(
-				targetFormId,
-				propName as PropertyName,
-				(spawnPoint || defaultSpawnPoint)[propName]
-			);
+			mp.set(targetFormId, propName as PropertyName, (spawnPoint || defaultSpawnPoint)[propName]);
 		}
 		actorValues.set(targetFormId, 'health', 'damage', 0);
 		actorValues.set(targetFormId, 'magicka', 'damage', 0);

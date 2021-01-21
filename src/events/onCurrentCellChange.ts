@@ -5,7 +5,7 @@ import { getFunctionText, utils } from '../utility';
 declare const mp: MP;
 declare const ctx: CTX;
 
-export const init = () => {
+export const initCurrentCellChangeEvent = () => {
 	mp.makeEventSource(
 		'_onCurrentCellChange',
 		getFunctionText(() => {
@@ -33,13 +33,10 @@ export const init = () => {
 			});
 		})
 	);
-	utils.hook(
-		'_onCurrentCellChange',
-		(pcFormId: number, event: CellChangeEvent) => {
-			if (!event.hasError) {
-				utils.log('[CELL_CHANGE]', pcFormId, event.cell);
-				utils.log('[CELL_CHANGE]', mp.get(pcFormId, 'worldOrCellDesc'));
-			}
+	utils.hook('_onCurrentCellChange', (pcFormId: number, event: CellChangeEvent) => {
+		if (!event.hasError) {
+			utils.log('[CELL_CHANGE]', pcFormId, event.cell);
+			utils.log('[CELL_CHANGE]', mp.get(pcFormId, 'worldOrCellDesc'));
 		}
-	);
+	});
 };

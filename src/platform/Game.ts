@@ -43,19 +43,9 @@ export interface Game {
 		abJournalTabs: boolean,
 		aiDisablePOVType: number
 	) => void;
-	fadeOutGame: (
-		abFadingOut: boolean,
-		abBlackFade: boolean,
-		afSecsBeforeFade: number,
-		afFadeDuration: number
-	) => void;
+	fadeOutGame: (abFadingOut: boolean, abBlackFade: boolean, afSecsBeforeFade: number, afFadeDuration: number) => void;
 	fastTravel: (akDestination: skyrimPlatform.ObjectReference) => void;
-	findClosestActor: (
-		afX: number,
-		afY: number,
-		afZ: number,
-		afRadius: number
-	) => skyrimPlatform.Actor;
+	findClosestActor: (afX: number, afY: number, afZ: number, afRadius: number) => skyrimPlatform.Actor;
 	findClosestReferenceOfAnyTypeInList: (
 		arBaseObjects: skyrimPlatform.FormList,
 		afX: number,
@@ -70,12 +60,7 @@ export interface Game {
 		afZ: number,
 		afRadius: number
 	) => skyrimPlatform.ObjectReference;
-	findRandomActor: (
-		afX: number,
-		afY: number,
-		afZ: number,
-		afRadius: number
-	) => skyrimPlatform.Actor;
+	findRandomActor: (afX: number, afY: number, afZ: number, afRadius: number) => skyrimPlatform.Actor;
 	findRandomReferenceOfAnyTypeInList: (
 		arBaseObjects: skyrimPlatform.FormList,
 		afX: number,
@@ -99,10 +84,7 @@ export interface Game {
 	getExperienceForLevel: (currentLevel: number) => number;
 	getForm: (aiFormID: number) => skyrimPlatform.Form;
 	getFormEx: (formId: number) => skyrimPlatform.Form;
-	getFormFromFile: (
-		aiFormID: number,
-		asFilename: string
-	) => skyrimPlatform.Form;
+	getFormFromFile: (aiFormID: number, asFilename: string) => skyrimPlatform.Form;
 	getGameSettingFloat: (asGameSetting: string) => number;
 	getGameSettingInt: (asGameSetting: string) => number;
 	getGameSettingString: (asGameSetting: string) => Promise<string>;
@@ -187,11 +169,7 @@ export interface Game {
 	setGameSettingInt: (setting: string, value: number) => void;
 	setGameSettingString: (setting: string, value: string) => void;
 	setHudCartMode: (abSetCartMode: boolean) => void;
-	setInChargen: (
-		abDisableSaving: boolean,
-		abDisableWaiting: boolean,
-		abShowControlsDisabledMessage: boolean
-	) => void;
+	setInChargen: (abDisableSaving: boolean, abDisableWaiting: boolean, abShowControlsDisabledMessage: boolean) => void;
 	setMiscStat: (name: string, value: number) => void;
 	setNthTintMaskColor: (n: number, color: number) => void;
 	setNthTintMaskTexturePath: (path: string, n: number) => void;
@@ -202,9 +180,7 @@ export interface Game {
 	setPlayerReportCrime: (abReportCrime: boolean) => void;
 	setPlayersLastRiddenHorse: (horse: skyrimPlatform.Actor) => void;
 	setSittingRotation: (afValue: number) => void;
-	setSunGazeImageSpaceModifier: (
-		apImod: skyrimPlatform.ImageSpaceModifier
-	) => void;
+	setSunGazeImageSpaceModifier: (apImod: skyrimPlatform.ImageSpaceModifier) => void;
 	setTintMaskColor: (color: number, type: number, index: number) => void;
 	setTintMaskTexturePath: (path: string, type: number, index: number) => void;
 	showFirstPersonGeometry: (abShow: boolean) => void;
@@ -222,14 +198,6 @@ export interface Game {
 	updateTintMaskColors: () => void;
 	usingGamepad: () => boolean;
 	getPlayer: () => skyrimPlatform.Actor;
-	shakeCamera: (
-		akSource: skyrimPlatform.ObjectReference,
-		afStrength: number,
-		afDuration: number
-	) => void;
-	shakeController: (
-		afSmallMotorStrength: number,
-		afBigMotorStreangth: number,
-		afDuration: number
-	) => void;
+	shakeCamera: (akSource: skyrimPlatform.ObjectReference, afStrength: number, afDuration: number) => void;
+	shakeController: (afSmallMotorStrength: number, afBigMotorStreangth: number, afDuration: number) => void;
 }

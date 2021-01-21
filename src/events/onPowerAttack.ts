@@ -6,32 +6,15 @@ import { Attr, MP } from '../types';
 declare const mp: MP;
 declare const ctx: CTX;
 
-export const init = () => {
+export const initPowerAttacksEvent = () => {
 	mp.makeEventSource(
 		'_onPowerAttack',
-		// 	`
-		//   const next = ctx.sp.storage._api_onAnimationEvent;
-		//   ctx.sp.storage._api_onAnimationEvent = {
-		//     callback(...args) {
-		//       const [serversideFormId, animEventName] = args;
-		//       if (serversideFormId === 0x14 && animEventName.toLowerCase().includes("power")) {
-		//         ctx.sendEvent(serversideFormId);
-		//       }
-		//       if (typeof next.callback === "function") {
-		//         next.callback(...args);
-		//       }
-		//     }
-		//   };
-		// `
 		getFunctionText(() => {
 			const next = ctx.sp.storage._api_onAnimationEvent;
 			ctx.sp.storage._api_onAnimationEvent = {
 				callback(...args: any[]) {
 					const [serversideFormId, animEventName] = args;
-					if (
-						serversideFormId === 0x14 &&
-						animEventName.toLowerCase().includes('power')
-					) {
+					if (serversideFormId === 0x14 && animEventName.toLowerCase().includes('power')) {
 						ctx.sendEvent(serversideFormId);
 					}
 					if (typeof next.callback === 'function') {

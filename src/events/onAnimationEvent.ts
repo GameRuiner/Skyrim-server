@@ -1,17 +1,12 @@
 import { MP } from '../types';
-import { genClientFunction, utils } from '../utility/utils';
+import { genClientFunction, utils } from '../utility';
 import { CTX } from '../platform';
-import { consoleOutput } from '../properties/consoleOutput';
+import { consoleOutput } from '../properties';
 import { currentActor, TRACE_ANIMATION } from '../constants';
 
-////////////////////////////////////////////////
 declare const mp: MP;
 declare const ctx: CTX;
-////////////////////////////////////////////////
 
-/**
- * init animation events
- */
 export const initAnimationEvent = () => {
 	if (TRACE_ANIMATION) {
 		mp.makeEventSource(
@@ -33,12 +28,9 @@ export const initAnimationEvent = () => {
 		/**
 		 * on trigger animation event print animation name
 		 */
-		utils.hook(
-			'_onAnimationEvent',
-			(pcFormId, serversideFormId, animEventName) => {
-				if (serversideFormId !== currentActor) return;
-				consoleOutput.print(pcFormId, animEventName);
-			}
-		);
+		utils.hook('_onAnimationEvent', (pcFormId, serversideFormId, animEventName) => {
+			if (serversideFormId !== currentActor) return;
+			consoleOutput.print(pcFormId, animEventName);
+		});
 	}
 };

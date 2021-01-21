@@ -7,7 +7,7 @@ import { MP } from '../types';
 declare const mp: MP;
 declare const ctx: CTX;
 
-export const init = () => {
+export const initHitEvent = () => {
 	mp.makeEventSource(
 		'_onHit',
 		getFunctionText(() => {
@@ -42,10 +42,6 @@ export const init = () => {
 
 	utils.hook('_onHit', (pcFormId: number, eventData: any) => {
 		let damageMod = -25;
-		// крошу все что вижу
-		if (eventData.agressor === pcFormId && eventData.target !== pcFormId) {
-			damageMod = -250;
-		}
 		const avName = 'health';
 
 		const damage = actorValues.get(eventData.target, avName, 'damage');

@@ -4,7 +4,7 @@ import { actorValues } from '../properties';
 
 declare const mp: MP;
 
-export const init = () => {
+export const initActorValueFlushRequiredEvent = () => {
 	for (const attr of ['health', 'magicka', 'stamina'] as Attr[]) {
 		mp.makeEventSource(
 			('_onActorValueFlushRequired' + attr) as EventName,
@@ -30,11 +30,8 @@ export const init = () => {
 	}
 
 	for (const attr of ['health', 'magicka', 'stamina'] as Attr[]) {
-		utils.hook(
-			('_onActorValueFlushRequired' + attr) as EventName,
-			(pcFormId: number) => {
-				actorValues.flushRegen(pcFormId, attr);
-			}
-		);
+		utils.hook(('_onActorValueFlushRequired' + attr) as EventName, (pcFormId: number) => {
+			actorValues.flushRegen(pcFormId, attr);
+		});
 	}
 };

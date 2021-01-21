@@ -1,17 +1,7 @@
 import fs from 'fs';
 
-import { utils } from '../utility';
-import {
-	Attr,
-	AttrRate,
-	AttrRateMult,
-	AttrDrain,
-	AttrRelated,
-	AttrAll,
-	Modifier,
-	MP,
-	PropertyName,
-} from '../types';
+import { utils } from '../../utility';
+import { Attr, AttrRate, AttrRateMult, AttrDrain, AttrRelated, AttrAll, Modifier, MP, PropertyName } from '../../types';
 
 declare const mp: MP;
 export interface SecondsMatched {
@@ -19,12 +9,7 @@ export interface SecondsMatched {
 }
 
 export interface ActorValues {
-	set: (
-		formId: number,
-		avName: AttrAll,
-		modifierName: Modifier,
-		newValue: any
-	) => void;
+	set: (formId: number, avName: AttrAll, modifierName: Modifier, newValue: any) => void;
 	get: (formId: number, avName: AttrAll, modifierName: Modifier) => number;
 	getMaximum: (formId: number, avName: Attr) => number;
 	getCurrent: (formId: number, avName: Attr) => number;
@@ -33,12 +18,7 @@ export interface ActorValues {
 }
 export interface AvOps {
 	parent?: AvOps;
-	set: (
-		formId: number,
-		avName: AttrAll,
-		modifierName: Modifier,
-		newValue: any
-	) => void;
+	set: (formId: number, avName: AttrAll, modifierName: Modifier, newValue: any) => void;
 	get: (formId: number, avName: AttrAll, modifierName: Modifier) => number;
 	applyRegenerationToParent?: (formId: number) => void;
 	secondsMatched?: SecondsMatched;
@@ -134,9 +114,7 @@ const updateAttributeCommon = (attr: Attr) => `
 `;
 
 const updateAttributeNeighbor = (attr: Attr) => {
-	return attr === 'health'
-		? updateAttributeCommon(attr) + `ac.setActorValue("${attr}", 9999);`
-		: '';
+	return attr === 'health' ? updateAttributeCommon(attr) + `ac.setActorValue("${attr}", 9999);` : '';
 };
 
 const updateAttributeOwner = (attr: Attr) => {
@@ -154,11 +132,7 @@ const avs: AttrAll[] = [
 	'mp_magickadrain',
 	'mp_staminadrain',
 ];
-const relatedPropNames: AttrRelated[] = [
-	'healthNumChanges',
-	'magickaNumChanges',
-	'staminaNumChanges',
-];
+const relatedPropNames: AttrRelated[] = ['healthNumChanges', 'magickaNumChanges', 'staminaNumChanges'];
 
 const getAvMaximum = (avOps: AvOps, formId: number, avName: AttrAll) => {
 	let sum = 0;
@@ -184,25 +158,10 @@ let regen = (
 ): AvOps => {
 	return {
 		parent: avOps,
-		set(
-			formId: number,
-			avName: AttrAll,
-			modifierName: Modifier,
-			newValue: any
-		) {
-			let dangerousAvNames = [
-				avNameTarget,
-				avNameRate,
-				avNameRateMult,
-				avNameDrain,
-			];
-			dangerousAvNames = dangerousAvNames.map(
-				(x) => x.toLowerCase() as AttrAll
-			);
-			if (
-				dangerousAvNames.includes(avName.toLowerCase() as AttrAll) &&
-				this.applyRegenerationToParent
-			) {
+		set(formId: number, avName: AttrAll, modifierName: Modifier, newValue: any) {
+			let dangerousAvNames = [avNameTarget, avNameRate, avNameRateMult, avNameDrain];
+			dangerousAvNames = dangerousAvNames.map((x) => x.toLowerCase() as AttrAll);
+			if (dangerousAvNames.indexOf(avName.toLowerCase() as AttrAll) !== -1 && this.applyRegenerationToParent) {
 				this.applyRegenerationToParent(formId);
 			}
 			this.parent?.set(formId, avName, modifierName, newValue);
@@ -217,8 +176,7 @@ let regen = (
 			if (avName.toLowerCase() === avNameTarget.toLowerCase()) {
 				if (modifierName === 'damage') {
 					const avMax = getAvMaximum(this.parent, formId, avName);
-					const regenDuration =
-						timeSource.getSecondsPassed() - this.getSecondsMatched(formId);
+					const regenDuration = timeSource.getSecondsPassed() - this.getSecondsMatched(formId);
 					const rate = getAvCurrent(this.parent, formId, avNameRate);
 					const rateMult = getAvCurrent(this.parent, formId, avNameRateMult);
 					let damageMod = realValue;
@@ -266,7 +224,7 @@ const timeSource = {
 
 export let actorValues: ActorValues;
 
-export const init = () => {
+export const initActorValue = () => {
 	for (const attr of ['health', 'magicka', 'stamina'] as Attr[]) {
 		mp.makeProperty(('av_' + attr) as PropertyName, {
 			isVisibleByOwner: true,
@@ -296,17 +254,12 @@ export const init = () => {
 
 	// Basic
 	let avOps: AvOps = {
-		set(
-			formId: number,
-			avName: AttrAll,
-			modifierName: Modifier,
-			newValue: number
-		) {
+		set(formId: number, avName: AttrAll, modifierName: Modifier, newValue: number) {
 			const propName = ('av_' + avName.toLowerCase()) as PropertyName;
 			const value = mp.get(formId, propName);
 			value[modifierName] = newValue;
 			mp.set(formId, propName, value);
-			if (['health', 'magicka', 'stamina'].includes(avName.toLowerCase())) {
+			if (['health', 'magicka', 'stamina'].indexOf(avName.toLowerCase()) !== -1) {
 				const propName = `${avName.toLowerCase()}NumChanges` as PropertyName;
 				mp.set(formId, propName, 1 + (mp.get(formId, propName) || 0));
 			}
@@ -325,12 +278,7 @@ export const init = () => {
 	// Damage limit
 	avOps = {
 		parent: avOps,
-		set(
-			formId: number,
-			avName: AttrAll,
-			modifierName: Modifier,
-			newValue: number
-		) {
+		set(formId: number, avName: AttrAll, modifierName: Modifier, newValue: number) {
 			if (!this.parent) {
 				return;
 			}
@@ -353,30 +301,13 @@ export const init = () => {
 	};
 
 	avOps = regen(avOps, 'health', 'healrate', 'healratemult', 'mp_healthdrain');
-	avOps = regen(
-		avOps,
-		'magicka',
-		'magickarate',
-		'magickaratemult',
-		'mp_magickadrain'
-	);
-	avOps = regen(
-		avOps,
-		'stamina',
-		'staminarate',
-		'staminaratemult',
-		'mp_staminadrain'
-	);
+	avOps = regen(avOps, 'magicka', 'magickarate', 'magickaratemult', 'mp_magickadrain');
+	avOps = regen(avOps, 'stamina', 'staminarate', 'staminaratemult', 'mp_staminadrain');
 
 	// Scaling
 	avOps = {
 		parent: avOps,
-		set(
-			formId: number,
-			avName: AttrAll,
-			modifierName: Modifier,
-			newValue: any
-		) {
+		set(formId: number, avName: AttrAll, modifierName: Modifier, newValue: any) {
 			if (!this.parent) {
 				return;
 			}
@@ -409,18 +340,11 @@ export const init = () => {
 	};
 
 	actorValues = {
-		set: (
-			formId: number,
-			avName: AttrAll,
-			modifierName: Modifier,
-			newValue: any
-		) => avOps.set(formId, avName, modifierName, newValue),
-		get: (formId: number, avName: AttrAll, modifierName: Modifier) =>
-			avOps.get(formId, avName, modifierName),
-		getMaximum: (formId: number, avName: Attr) =>
-			getAvMaximum(avOps, formId, avName),
-		getCurrent: (formId: number, avName: Attr) =>
-			getAvCurrent(avOps, formId, avName),
+		set: (formId: number, avName: AttrAll, modifierName: Modifier, newValue: any) =>
+			avOps.set(formId, avName, modifierName, newValue),
+		get: (formId: number, avName: AttrAll, modifierName: Modifier) => avOps.get(formId, avName, modifierName),
+		getMaximum: (formId: number, avName: Attr) => getAvMaximum(avOps, formId, avName),
+		getCurrent: (formId: number, avName: Attr) => getAvCurrent(avOps, formId, avName),
 		flushRegen: (formId: number, avName: Attr) => {
 			const damageModAfterRegen = avOps.get(formId, avName, 'damage');
 			avOps.set(formId, avName, 'damage', damageModAfterRegen);
@@ -441,35 +365,20 @@ export const init = () => {
 						mp.set(formId, ('av_' + avName) as PropertyName, { base: 5 });
 					}
 				}
-				for (const avName of [
-					'healratemult',
-					'magickaratemult',
-					'staminaratemult',
-				]) {
+				for (const avName of ['healratemult', 'magickaratemult', 'staminaratemult']) {
 					if (!mp.get(formId, ('av_' + avName) as PropertyName) || force) {
 						mp.set(formId, ('av_' + avName) as PropertyName, { base: 100 });
 					}
 				}
-				for (const avName of [
-					'mp_healthdrain',
-					'mp_magickadrain',
-					'mp_staminadrain',
-				]) {
+				for (const avName of ['mp_healthdrain', 'mp_magickadrain', 'mp_staminadrain']) {
 					//if (formId == 0x9b7a2) console.log(avName, 1);
 					if (!mp.get(formId, ('av_' + avName) as PropertyName) || force) {
 						//if (formId == 0x9b7a2) console.log(avName, 2);
 						mp.set(formId, ('av_' + avName) as PropertyName, { base: 0 });
-						if (formId == 0x9b7a2)
-							fs.writeFileSync(
-								'kekekek',
-								'' + mp.get(formId, ('av_' + avName) as PropertyName)
-							);
+						if (formId == 0x9b7a2) fs.writeFileSync('kekekek', '' + mp.get(formId, ('av_' + avName) as PropertyName));
 						if (formId == 0x9b7a2) {
 							setTimeout(() => {
-								fs.writeFileSync(
-									'kekekek1',
-									'' + mp.get(formId, ('av_' + avName) as PropertyName)
-								);
+								fs.writeFileSync('kekekek1', '' + mp.get(formId, ('av_' + avName) as PropertyName));
 							}, 100);
 						}
 					}
@@ -477,4 +386,13 @@ export const init = () => {
 			}
 		},
 	};
+
+	utils.hook('onReinit', (pcFormId: number, options: any) => {
+		/** set default value to Actor */
+		if (actorValues.setDefaults) {
+			actorValues.setDefaults(pcFormId, options);
+		}
+		/** set scale of Actor to default */
+		mp.set(pcFormId, 'scale', 1);
+	});
 };

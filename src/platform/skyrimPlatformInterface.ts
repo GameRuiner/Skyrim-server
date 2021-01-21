@@ -58,12 +58,7 @@ export type SkyrimEvent =
 export interface SkyrimPlatform {
 	printConsole: (...args: any[]) => void;
 	writeScript: (scriptName: string, src: string) => void;
-	callNative: (
-		className: string,
-		functionName: string,
-		self?: object,
-		...args: any
-	) => any;
+	callNative: (className: string, functionName: string, self?: object, ...args: any) => any;
 	getJsMemoryUsage: () => number;
 	getPluginSourceCode: (pluginName: string) => string;
 	writePlugin: (pluginName: string, newSources: string) => string;
@@ -72,12 +67,7 @@ export interface SkyrimPlatform {
 	settings: any;
 	Face: skyrimPlatform.Face;
 	ChangeFormNpc: skyrimPlatform.ChangeFormNpc;
-	loadGame: (
-		pos: number[],
-		angle: number[],
-		worldOrCell: number,
-		changeFormNpc?: skyrimPlatform.ChangeFormNpc
-	) => void;
+	loadGame: (pos: number[], angle: number[], worldOrCell: number, changeFormNpc?: skyrimPlatform.ChangeFormNpc) => void;
 	worldPointToScreenPoint: (...args: number[][]) => number[][];
 	PacketType: skyrimPlatform.PacketType;
 	Browser: skyrimPlatform.Browser;
@@ -93,9 +83,7 @@ export interface SkyrimPlatform {
 	ExtraWornLeft: skyrimPlatform.ExtraWornLeft;
 	BaseExtraList: skyrimPlatform.BaseExtraList;
 	InventoryChangesEntry: skyrimPlatform.InventoryChangesEntry;
-	getExtraContainerChanges: (
-		objectReferenceId: number
-	) => skyrimPlatform.InventoryChangesEntry[];
+	getExtraContainerChanges: (objectReferenceId: number) => skyrimPlatform.InventoryChangesEntry[];
 	InventoryEntry: skyrimPlatform.InventoryEntry;
 	getContainer: (baseId: number) => skyrimPlatform.InventoryEntry[];
 	ActivateEvent: skyrimPlatform.ActivateEvent;
@@ -118,14 +106,8 @@ export interface SkyrimPlatform {
 	ActiveEffectApplyRemoveEvent: skyrimPlatform.ActiveEffectApplyRemoveEvent;
 	MagicEffectApplyEvent: skyrimPlatform.MagicEffectApplyEvent;
 
-	on: (
-		eventName: SkyrimEventName,
-		callback: (event?: SkyrimEvent) => void
-	) => void;
-	once: (
-		eventName: SkyrimEventName,
-		callback: (event?: SkyrimEvent) => void
-	) => void;
+	on: (eventName: SkyrimEventName, callback: (event?: SkyrimEvent) => void) => void;
+	once: (eventName: SkyrimEventName, callback: (event?: SkyrimEvent) => void) => void;
 
 	Hooks: skyrimPlatform.Hooks;
 	HttpResponse: skyrimPlatform.HttpResponse;

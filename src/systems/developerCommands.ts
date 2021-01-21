@@ -1,15 +1,10 @@
-import { utils } from '../utility/utils';
-import { consoleOutput } from '../properties/consoleOutput';
+import { utils } from '../utility';
+import { consoleOutput, actorValues } from '../properties';
 import { AttrAll, MP } from '../types';
-import { currentActor } from '../constants/constants';
+import { currentActor } from '../constants';
 import { spawnSystem } from './spawnSystem';
-import { actorValues } from '../properties';
-import { CTX } from '../platform';
 
-////////////////////////////////////////////////
 declare const mp: MP;
-declare const ctx: CTX;
-////////////////////////////////////////////////
 
 const chooseFormId = (pcFormId: number, selectedFormId?: number) => {
 	return selectedFormId ? selectedFormId : pcFormId;
@@ -25,18 +20,10 @@ export const reinit = (pcFormId: number, selectedFormId?: number) => {
 
 	mp.onReinit(targetFormId, { force: true });
 
-	consoleOutput.print(
-		targetFormId,
-		`Reinit ${targetFormId.toString(16)} ${tip}`
-	);
+	consoleOutput.print(targetFormId, `Reinit ${targetFormId.toString(16)} ${tip}`);
 };
 
-const setav = (
-	pcFormId: number,
-	selectedFormId: number,
-	avName: AttrAll,
-	newValueStr: string
-) => {
+const setav = (pcFormId: number, selectedFormId: number, avName: AttrAll, newValueStr: string) => {
 	let newValue = parseFloat(newValueStr);
 	newValue = isFinite(newValue) ? newValue : 1;
 
@@ -66,10 +53,7 @@ const spawn = (pcFormId: number, selectedFormId: number) => {
 
 	spawnSystem.spawn(targetFormId);
 
-	consoleOutput.print(
-		targetFormId,
-		`Teleporting to the spawnpoint ${targetFormId.toString(16)} ${tip}`
-	);
+	consoleOutput.print(targetFormId, `Teleporting to the spawnpoint ${targetFormId.toString(16)} ${tip}`);
 };
 
 const spawnpoint = (pcFormId: number, selectedFormId: number) => {
@@ -78,10 +62,7 @@ const spawnpoint = (pcFormId: number, selectedFormId: number) => {
 
 	spawnSystem.updateSpawnPoint(targetFormId);
 
-	consoleOutput.print(
-		targetFormId,
-		`Spawnpoint has been updated for ${targetFormId.toString(16)} ${tip}`
-	);
+	consoleOutput.print(targetFormId, `Spawnpoint has been updated for ${targetFormId.toString(16)} ${tip}`);
 };
 
 const tp = (pcFormId: number, selectedFormId: number) => {

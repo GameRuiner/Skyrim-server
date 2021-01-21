@@ -1,17 +1,12 @@
+import { currentActor } from '../constants';
 import { actorValues } from '../properties';
 import { MP, Attr } from '../types';
 import { genClientFunction, utils } from '../utility';
 import { CTX } from '../platform';
 
-////////////////////////////////////////////////
 declare const mp: MP;
 declare const ctx: CTX;
-////////////////////////////////////////////////
 
-/**
- * init bash events
- */
-const currentActor = 0x14;
 export const initBashEvent = () => {
 	mp.makeEventSource(
 		'_onBash',
@@ -21,10 +16,7 @@ export const initBashEvent = () => {
 				ctx.sp.storage._api_onAnimationEvent = {
 					callback(...args: any[]) {
 						const [serversideFormId, animEventName] = args;
-						if (
-							serversideFormId === currentActor &&
-							animEventName.toLowerCase().includes('bash')
-						) {
+						if (serversideFormId === currentActor && animEventName.toLowerCase().includes('bash')) {
 							ctx.sendEvent(serversideFormId);
 						}
 						if (typeof next.callback === 'function') {

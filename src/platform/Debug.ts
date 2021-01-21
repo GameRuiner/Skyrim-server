@@ -16,10 +16,7 @@ export interface Debug {
 	openUserLog: (param1: string) => boolean;
 	playerMoveToAndWait: (param1: string) => Promise<number>;
 	quitGame: () => void;
-	sendAnimationEvent: (
-		param1: skyrimPlatform.ObjectReference,
-		param2: string
-	) => void;
+	sendAnimationEvent: (param1: skyrimPlatform.ObjectReference, param2: string) => void;
 	setFootIK: (param1: boolean) => void;
 	setGodMode: (param1: boolean) => void;
 	showRefPosition: (arRef: skyrimPlatform.ObjectReference) => void;
