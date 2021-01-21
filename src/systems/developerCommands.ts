@@ -1,10 +1,12 @@
-import { utils } from '../utility';
+import { genClientFunction, getFunctionText, utils } from '../utility';
 import { consoleOutput, actorValues } from '../properties';
 import { AttrAll, MP } from '../types';
 import { currentActor } from '../constants';
 import { spawnSystem } from './spawnSystem';
+import { CTX } from '../platform';
 
 declare const mp: MP;
+declare const ctx: CTX;
 
 const chooseFormId = (pcFormId: number, selectedFormId?: number) => {
 	return selectedFormId ? selectedFormId : pcFormId;
@@ -96,7 +98,16 @@ export const initDevCommands = () => {
 				spawnpoint(pcFormId, selectedFormId);
 				break;
 			case 'tp':
-				tp(pcFormId, 1104283);
+				tp(pcFormId, 132464);
+				break;
+			case 'msg':
+				const pos = mp.get(pcFormId, 'pos');
+				consoleOutput.evalClient(
+					pcFormId,
+					genClientFunction(() => {
+						ctx.sp.Scene
+					})
+				);
 				break;
 
 			default:

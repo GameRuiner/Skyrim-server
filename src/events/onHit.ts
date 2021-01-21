@@ -1,7 +1,7 @@
 import { CTX } from '../platform';
 import { consoleOutput, actorValues } from '../properties';
 import { getFunctionText, utils } from '../utility';
-import { currentActor } from '../constants';
+import { currentActor, PRODUCTION } from '../constants';
 import { MP } from '../types';
 
 declare const mp: MP;
@@ -42,6 +42,12 @@ export const initHitEvent = () => {
 
 	utils.hook('_onHit', (pcFormId: number, eventData: any) => {
 		let damageMod = -25;
+		if (!PRODUCTION) {
+			// help to kill enemies
+			if (eventData.agressor === pcFormId) {
+				damageMod = -250;
+			}
+		}
 		const avName = 'health';
 
 		const damage = actorValues.get(eventData.target, avName, 'damage');

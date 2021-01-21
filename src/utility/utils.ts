@@ -54,7 +54,7 @@ export const utils = {
  * @param func source function
  */
 export const getFunctionText = (func: Function): string => {
-	const funcString = func.toString().substring(0, func.length - 1);
+	const funcString = func.toString().substring(0, func.toString().length - 1);
 	return funcString.replace(new RegExp('^.+?{', 'm'), '').trim();
 };
 
@@ -62,11 +62,17 @@ export const getFunctionText = (func: Function): string => {
  * generate function for client
  * @param func generated function
  * @param args params
+ *
+ * TODO: Error when use array in param. Example - const pos = 21005.427734375,-7497.9853515625,-3611.7646484375;
+ * TODO: ts change variables name, Example - pos change to pos_1. Maybe use regex to find params with name ***_
  */
-export const genClientFunction = (func: Function, args?: any) => {
+export const genClientFunction = (func: Function, args?: any, log: boolean = false) => {
 	let result = getFunctionText(func);
 	for (let name in args) {
 		result = `const ${name} = ${args[name]};` + result;
+	}
+	if (log) {
+		utils.log('[DEBUG] Generated function\n', result);
 	}
 	return result;
 };

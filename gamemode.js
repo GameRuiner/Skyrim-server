@@ -5,7 +5,7 @@
 //
 // anything defined in a previous bundle is accessed via the
 // orig method which is the require for previous bundles
-var parcelRequire = (function (modules, cache, entry, globalName) {
+parcelRequire = (function (modules, cache, entry, globalName) {
   // Save the require from previous bundle to this closure if any
   var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
   var nodeRequire = typeof require === 'function' && require;
@@ -179,17 +179,25 @@ exports.utils = {
 };
 
 var getFunctionText = function (func) {
-  var funcString = func.toString().substring(0, func.length - 1);
+  var funcString = func.toString().substring(0, func.toString().length - 1);
   return funcString.replace(new RegExp('^.+?{', 'm'), '').trim();
 };
 
 exports.getFunctionText = getFunctionText;
 
-var genClientFunction = function (func, args) {
+var genClientFunction = function (func, args, log) {
+  if (log === void 0) {
+    log = false;
+  }
+
   var result = exports.getFunctionText(func);
 
   for (var name in args) {
     result = "const " + name + " = " + args[name] + ";" + result;
+  }
+
+  if (log) {
+    exports.utils.log('[DEBUG] Generated function\n', result);
   }
 
   return result;
@@ -703,7 +711,7 @@ exports.initIsDead = initIsDead;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.TRACE_ANIMATION = exports.defaultSpawnPoint = exports.currentActor = void 0;
+exports.PRODUCTION = exports.TRACE_ANIMATION = exports.defaultSpawnPoint = exports.currentActor = void 0;
 exports.currentActor = 0x14;
 exports.defaultSpawnPoint = {
   pos: [227, 239, 53],
@@ -711,6 +719,7 @@ exports.defaultSpawnPoint = {
   worldOrCellDesc: '165a7:Skyrim.esm'
 };
 exports.TRACE_ANIMATION = false;
+exports.PRODUCTION = false;
 },{}],"constants/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -842,6 +851,12 @@ var spawnpoint = function (pcFormId, selectedFormId) {
   properties_1.consoleOutput.print(targetFormId, "Spawnpoint has been updated for " + targetFormId.toString(16) + " " + tip);
 };
 
+var tp = function (pcFormId, selectedFormId) {
+  var targetFormId = chooseFormId(pcFormId, selectedFormId);
+  var p = mp.get(targetFormId, 'pos');
+  mp.set(pcFormId, 'pos', p);
+};
+
 var initDevCommands = function () {
   utility_1.utils.hook('_onConsoleCommand', function (pcFormId) {
     var args = [];
@@ -877,6 +892,14 @@ var initDevCommands = function () {
         break;
 
       case 'tp':
+        tp(pcFormId, 132464);
+        break;
+
+      case 'msg':
+        var pos = mp.get(pcFormId, 'pos');
+        properties_1.consoleOutput.evalClient(pcFormId, utility_1.genClientFunction(function () {
+          ctx.sp.Scene;
+        }));
         break;
 
       default:
@@ -886,7 +909,119 @@ var initDevCommands = function () {
 };
 
 exports.initDevCommands = initDevCommands;
-},{"../utility":"utility/index.ts","../properties":"properties/index.ts","../constants":"constants/index.ts","./spawnSystem":"systems/spawnSystem.ts"}],"systems/index.ts":[function(require,module,exports) {
+},{"../utility":"utility/index.ts","../properties":"properties/index.ts","../constants":"constants/index.ts","./spawnSystem":"systems/spawnSystem.ts"}],"systems/inventorySystem.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.inventorySystem = void 0;
+
+var properties_1 = require("../properties");
+
+var utility_1 = require("../utility");
+
+exports.inventorySystem = {
+  get: function (formId) {
+    return mp.get(formId, 'inventory');
+  },
+  addItem: function (formId, baseId, count) {
+    if (count <= 0) return;
+    var inv = mp.get(formId, 'inventory');
+    var added = false;
+
+    for (var _i = 0, inv_1 = inv; _i < inv_1.length; _i++) {
+      var value = inv_1[_i];
+
+      if (Object.keys(value).length == 2 && value.baseId == baseId) {
+        value.count += count;
+        added = true;
+        break;
+      }
+    }
+
+    if (!added) {
+      inv.entries.push({
+        baseId: baseId,
+        count: count
+      });
+    }
+
+    mp.set(formId, 'inventory', inv);
+  },
+  eqiupItem: function (formId, baseId) {
+    properties_1.consoleOutput.evalClient(formId, utility_1.genClientFunction(function () {
+      ctx.sp.Game.getPlayer().equipItem(ctx.sp.Game.getFormEx(baseId), false, false);
+    }, {
+      baseId: baseId
+    }));
+  }
+};
+},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"systems/mines.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initMines = void 0;
+
+var utility_1 = require("../utility");
+
+var properties_1 = require("../properties");
+
+var constants_1 = require("../constants");
+
+var inventorySystem_1 = require("./inventorySystem");
+
+var simplePickaxe = 0xe3c16;
+var cloth = 374433;
+var items = [simplePickaxe, cloth];
+
+var isMine = function (cell) {
+  var mines = ['mine', 'шахта'];
+  return mines.some(function (x) {
+    return cell.name.toLowerCase().includes(x);
+  }) || cell.id === 91570 ? true : false;
+};
+
+var initMines = function () {
+  utility_1.utils.hook('_onHit', function (pcFormId, eventData) {
+    try {
+      if (eventData.agressor === pcFormId) {
+        properties_1.consoleOutput.printNote(pcFormId, 'Эй, не стукай!');
+        utility_1.utils.log(constants_1.currentActor);
+      }
+    } catch (err) {
+      utility_1.utils.log(err);
+    }
+  });
+  utility_1.utils.hook('_onCurrentCellChange', function (pcFormId, event) {
+    try {
+      if (isMine(event.cell)) {
+        var invEntry_1 = mp.get(pcFormId, 'inventory').entries;
+        properties_1.consoleOutput.print(pcFormId, 'Теперь ты шахтер! Работай!');
+        items.forEach(function (itemId) {
+          if (invEntry_1.map(function (x) {
+            return x.baseId;
+          }).findIndex(function (x) {
+            return x === itemId;
+          }) === -1) {
+            inventorySystem_1.inventorySystem.addItem(pcFormId, itemId, 1);
+          }
+        });
+        inventorySystem_1.inventorySystem.eqiupItem(pcFormId, items[0]);
+        setTimeout(function () {
+          inventorySystem_1.inventorySystem.eqiupItem(pcFormId, items[1]);
+        }, 1000);
+      }
+    } catch (err) {
+      utility_1.utils.log(err);
+    }
+  });
+};
+
+exports.initMines = initMines;
+},{"../utility":"utility/index.ts","../properties":"properties/index.ts","../constants":"constants/index.ts","./inventorySystem":"systems/inventorySystem.ts"}],"systems/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -912,8 +1047,12 @@ Object.defineProperty(exports, "__esModule", {
 
 __exportStar(require("./developerCommands"), exports);
 
+__exportStar(require("./inventorySystem"), exports);
+
 __exportStar(require("./spawnSystem"), exports);
-},{"./developerCommands":"systems/developerCommands.ts","./spawnSystem":"systems/spawnSystem.ts"}],"properties/spawnPoint.ts":[function(require,module,exports) {
+
+__exportStar(require("./mines"), exports);
+},{"./developerCommands":"systems/developerCommands.ts","./inventorySystem":"systems/inventorySystem.ts","./spawnSystem":"systems/spawnSystem.ts","./mines":"systems/mines.ts"}],"properties/spawnPoint.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -947,7 +1086,34 @@ var initSpawnPoint = function () {
 };
 
 exports.initSpawnPoint = initSpawnPoint;
-},{"../constants":"constants/index.ts","../systems":"systems/index.ts","../utility":"utility/index.ts"}],"properties/index.ts":[function(require,module,exports) {
+},{"../constants":"constants/index.ts","../systems":"systems/index.ts","../utility":"utility/index.ts"}],"properties/scale.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initScale = void 0;
+
+var utility_1 = require("../utility");
+
+function setScale() {
+  if (ctx.value !== ctx.state.lastScale) {
+    ctx.state.lastScale = +ctx.value;
+    ctx.refr.setScale(+ctx.value);
+  }
+}
+
+var initScale = function () {
+  mp.makeProperty('scale', {
+    isVisibleByOwner: true,
+    isVisibleByNeighbors: true,
+    updateOwner: utility_1.getFunctionText(setScale),
+    updateNeighbor: utility_1.getFunctionText(setScale)
+  });
+};
+
+exports.initScale = initScale;
+},{"../utility":"utility/index.ts"}],"properties/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -978,7 +1144,22 @@ __exportStar(require("./consoleOutput"), exports);
 __exportStar(require("./isDead"), exports);
 
 __exportStar(require("./spawnPoint"), exports);
-},{"./actorValues":"properties/actorValues/index.ts","./consoleOutput":"properties/consoleOutput.ts","./isDead":"properties/isDead.ts","./spawnPoint":"properties/spawnPoint.ts"}],"events/onActorValueFlushRequired.ts":[function(require,module,exports) {
+
+__exportStar(require("./scale"), exports);
+},{"./actorValues":"properties/actorValues/index.ts","./consoleOutput":"properties/consoleOutput.ts","./isDead":"properties/isDead.ts","./spawnPoint":"properties/spawnPoint.ts","./scale":"properties/scale.ts"}],"events/_.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initEmptyAnimationEvent = void 0;
+
+var initEmptyAnimationEvent = function () {
+  mp.makeEventSource('_', 'ctx.sp.storage._api_onAnimationEvent = { callback: function () {} };');
+};
+
+exports.initEmptyAnimationEvent = initEmptyAnimationEvent;
+},{}],"events/onActorValueFlushRequired.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1068,6 +1249,8 @@ var properties_1 = require("../properties");
 
 var utility_1 = require("../utility");
 
+var currentActorParam = constants_1.currentActor;
+
 var initBashEvent = function () {
   mp.makeEventSource('_onBash', utility_1.genClientFunction(function () {
     var next = ctx.sp.storage._api_onAnimationEvent;
@@ -1082,7 +1265,7 @@ var initBashEvent = function () {
         var serversideFormId = args[0],
             animEventName = args[1];
 
-        if (serversideFormId === constants_1.currentActor && animEventName.toLowerCase().includes('bash')) {
+        if (serversideFormId === currentActorParam && animEventName.toLowerCase().includes('bash')) {
           ctx.sendEvent(serversideFormId);
         }
 
@@ -1092,7 +1275,7 @@ var initBashEvent = function () {
       }
     };
   }, {
-    currentActor: constants_1.currentActor
+    currentActorParam: currentActorParam
   }));
   var sprintAttr = 'stamina';
   utility_1.utils.hook('_onBash', function (pcFormId) {
@@ -1116,7 +1299,55 @@ var initConsoleCommandEvent = function () {
 };
 
 exports.initConsoleCommandEvent = initConsoleCommandEvent;
-},{}],"events/onHit.ts":[function(require,module,exports) {
+},{}],"events/onCurrentCellChange.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initCurrentCellChangeEvent = void 0;
+
+var utility_1 = require("../utility");
+
+var initCurrentCellChangeEvent = function () {
+  mp.makeEventSource('_onCurrentCellChange', utility_1.getFunctionText(function () {
+    ctx.sp.on('update', function () {
+      try {
+        var result = {
+          hasError: false
+        };
+        var currentCell = ctx.sp.Game.getPlayer().getParentCell();
+
+        if (ctx.state.currentCellId !== currentCell.getFormID()) {
+          if (ctx.state.currentCellId !== undefined) {
+            result.cell = {
+              id: currentCell.getFormID(),
+              name: currentCell.getName(),
+              type: currentCell.getType()
+            };
+            ctx.sendEvent(result);
+          }
+
+          ctx.state.currentCellId = currentCell.getFormID();
+        }
+      } catch (err) {
+        ctx.sendEvent({
+          hasError: true,
+          err: err.toString()
+        });
+      }
+    });
+  }));
+  utility_1.utils.hook('_onCurrentCellChange', function (pcFormId, event) {
+    if (!event.hasError) {
+      utility_1.utils.log('[CELL_CHANGE]', pcFormId, event.cell);
+      utility_1.utils.log('[CELL_CHANGE]', mp.get(pcFormId, 'worldOrCellDesc'));
+    }
+  });
+};
+
+exports.initCurrentCellChangeEvent = initCurrentCellChangeEvent;
+},{"../utility":"utility/index.ts"}],"events/onHit.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1159,6 +1390,13 @@ var initHitEvent = function () {
   });
   utility_1.utils.hook('_onHit', function (pcFormId, eventData) {
     var damageMod = -25;
+
+    if (!constants_1.PRODUCTION) {
+      if (eventData.agressor === pcFormId) {
+        damageMod = -250;
+      }
+    }
+
     var avName = 'health';
     var damage = properties_1.actorValues.get(eventData.target, avName, 'damage');
     var agressorDead = properties_1.actorValues.getCurrent(eventData.agressor, 'health') <= 0;
@@ -1188,7 +1426,35 @@ var initHitEvent = function () {
 };
 
 exports.initHitEvent = initHitEvent;
-},{"../properties":"properties/index.ts","../utility":"utility/index.ts","../constants":"constants/index.ts"}],"events/onPowerAttack.ts":[function(require,module,exports) {
+},{"../properties":"properties/index.ts","../utility":"utility/index.ts","../constants":"constants/index.ts"}],"events/onHitStatic.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initHitStatic = void 0;
+
+var utility_1 = require("../utility");
+
+var initHitStatic = function () {
+  mp.makeEventSource('_onHitStatic', utility_1.genClientFunction(function () {
+    ctx.sp.on('hit', function (e) {
+      if (ctx.sp.Actor.from(e.target)) return;
+      var target = ctx.getFormIdInServerFormat(e.target.getFormId());
+      var agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());
+      ctx.sendEvent({
+        target: target,
+        agressor: agressor
+      });
+    });
+  }, {}));
+  utility_1.utils.hook('_onHitStatic', function (pcFormId, eventData) {
+    utility_1.utils.log('[_onHitStatic]', eventData);
+  });
+};
+
+exports.initHitStatic = initHitStatic;
+},{"../utility":"utility/index.ts"}],"events/onPowerAttack.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1304,6 +1570,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+__exportStar(require("./_"), exports);
+
 __exportStar(require("./onActorValueFlushRequired"), exports);
 
 __exportStar(require("./onAnimationEvent"), exports);
@@ -1312,12 +1580,16 @@ __exportStar(require("./onBash"), exports);
 
 __exportStar(require("./onConsoleCommand"), exports);
 
+__exportStar(require("./onCurrentCellChange"), exports);
+
 __exportStar(require("./onHit"), exports);
+
+__exportStar(require("./onHitStatic"), exports);
 
 __exportStar(require("./onPowerAttack"), exports);
 
 __exportStar(require("./onSprintStateChange"), exports);
-},{"./onActorValueFlushRequired":"events/onActorValueFlushRequired.ts","./onAnimationEvent":"events/onAnimationEvent.ts","./onBash":"events/onBash.ts","./onConsoleCommand":"events/onConsoleCommand.ts","./onHit":"events/onHit.ts","./onPowerAttack":"events/onPowerAttack.ts","./onSprintStateChange":"events/onSprintStateChange.ts"}],"index.ts":[function(require,module,exports) {
+},{"./_":"events/_.ts","./onActorValueFlushRequired":"events/onActorValueFlushRequired.ts","./onAnimationEvent":"events/onAnimationEvent.ts","./onBash":"events/onBash.ts","./onConsoleCommand":"events/onConsoleCommand.ts","./onCurrentCellChange":"events/onCurrentCellChange.ts","./onHit":"events/onHit.ts","./onHitStatic":"events/onHitStatic.ts","./onPowerAttack":"events/onPowerAttack.ts","./onSprintStateChange":"events/onSprintStateChange.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1345,6 +1617,11 @@ properties_1.initSpawnPoint();
 events_1.initConsoleCommandEvent();
 systems_1.initDevCommands();
 events_1.initAnimationEvent();
+properties_1.initScale();
+systems_1.initMines();
+events_1.initCurrentCellChangeEvent();
+events_1.initEmptyAnimationEvent();
+events_1.initHitStatic();
 utility_1.utils.hook('onInit', function (pcFormId) {
   mp.onReinit(pcFormId);
 });

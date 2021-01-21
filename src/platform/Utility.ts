@@ -1,12 +1,13 @@
+import { Form } from './Form';
 import * as skyrimPlatform from './skyrimPlatform';
 
 export interface Utility {
-	from: (form: skyrimPlatform.Form) => Utility;
+	from: (form: Form) => Utility;
 	captureFrameRate: (numFrames: number) => string;
 	createAliasArray: (size: number, fill: skyrimPlatform.Alias) => object[];
 	createBoolArray: (size: number, fill: boolean) => boolean[];
 	createFloatArray: (size: number, fill: number) => number[];
-	createFormArray: (size: number, fill: skyrimPlatform.Form) => object[];
+	createFormArray: (size: number, fill: Form) => object[];
 	createIntArray: (size: number, fill: number) => number[];
 	createStringArray: (size: number, fill: string) => string[];
 	endFrameRateCapture: () => void;
@@ -31,7 +32,7 @@ export interface Utility {
 	resizeAliasArray: (source: object[], size: number, fill: skyrimPlatform.Alias) => object[];
 	resizeBoolArray: (source: boolean[], size: number, fill: boolean) => boolean[];
 	resizeFloatArray: (source: number[], size: number, fill: number) => number[];
-	resizeFormArray: (source: object[], size: number, fill: skyrimPlatform.Form) => object[];
+	resizeFormArray: (source: object[], size: number, fill: Form) => object[];
 	resizeIntArray: (source: number[], size: number, fill: number) => number[];
 	resizeStringArray: (source: string[], size: number, fill: string) => string[];
 	setINIBool: (ini: string, value: boolean) => void;

@@ -7,6 +7,9 @@ import { Spell } from './Spell';
 import { Utility } from './Utility';
 import { Sound } from './Sound';
 import { ObjectReference } from './ObjectReference';
+import { Form } from './Form';
+import { Message } from './Message';
+import { Quest } from './Quest';
 
 export type SkyrimEventName =
 	| 'update'
@@ -112,7 +115,7 @@ export interface SkyrimPlatform {
 	Hooks: skyrimPlatform.Hooks;
 	HttpResponse: skyrimPlatform.HttpResponse;
 	HttpClient: skyrimPlatform.HttpClient;
-	Form: skyrimPlatform.Form;
+	Form: Form;
 	Action: skyrimPlatform.Action;
 	Activator: skyrimPlatform.Activator;
 	ActiveMagicEffect: skyrimPlatform.ActiveMagicEffect;
@@ -166,7 +169,7 @@ export interface SkyrimPlatform {
 	LocationAlias: skyrimPlatform.LocationAlias;
 	LocationRefType: skyrimPlatform.LocationRefType;
 	MagicEffect: skyrimPlatform.MagicEffect;
-	Message: skyrimPlatform.Message;
+	Message: Message;
 	MusicType: skyrimPlatform.MusicType;
 	NetImmerse: skyrimPlatform.NetImmerse;
 	Outfit: skyrimPlatform.Outfit;
@@ -174,7 +177,7 @@ export interface SkyrimPlatform {
 	Package: skyrimPlatform.Package;
 	Perk: skyrimPlatform.Perk;
 	Potion: skyrimPlatform.Potion;
-	Quest: skyrimPlatform.Quest;
+	Quest: Quest;
 	Race: skyrimPlatform.Race;
 	ReferenceAlias: skyrimPlatform.ReferenceAlias;
 	Spell: Spell;

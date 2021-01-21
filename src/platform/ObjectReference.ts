@@ -1,11 +1,12 @@
+import { Form } from './Form';
 import * as skyrimPlatform from './skyrimPlatform';
 
-export interface ObjectReference {
-	from: (form: skyrimPlatform.Form) => ObjectReference;
+export interface ObjectReference extends Form {
+	from: (form: Form) => ObjectReference;
 	activate: (akActivator: ObjectReference, abDefaultProcessingOnly: boolean) => boolean;
 	addDependentAnimatedObjectReference: (akDependent: ObjectReference) => boolean;
-	addInventoryEventFilter: (akFilter: skyrimPlatform.Form) => void;
-	addItem: (akItemToAdd: skyrimPlatform.Form, aiCount: number, abSilent: boolean) => void;
+	addInventoryEventFilter: (akFilter: Form) => void;
+	addItem: (akItemToAdd: Form, aiCount: number, abSilent: boolean) => void;
 	addToMap: (abAllowFastTravel: boolean) => void;
 	applyHavokImpulse: (afX: number, afY: number, afZ: number, afMagnitude: number) => Promise<void>;
 	blockActivation: (abBlocked: boolean) => void;
@@ -24,7 +25,7 @@ export interface ObjectReference {
 	delete: () => Promise<void>;
 	disable: (abFadeOut: boolean) => Promise<void>;
 	disableNoWait: (abFadeOut: boolean) => void;
-	dropObject: (akObject: skyrimPlatform.Form, aiCount: number) => Promise<ObjectReference>;
+	dropObject: (akObject: Form, aiCount: number) => Promise<ObjectReference>;
 	enable: (abFadeIn: boolean) => Promise<void>;
 	enableFastTravel: (abEnable: boolean) => void;
 	enableNoWait: (abFadeIn: boolean) => void;
@@ -38,7 +39,7 @@ export interface ObjectReference {
 	getAnimationVariableBool: (arVariableName: string) => boolean;
 	getAnimationVariableFloat: (arVariableName: string) => number;
 	getAnimationVariableInt: (arVariableName: string) => number;
-	getBaseObject: () => skyrimPlatform.Form;
+	getBaseObject: () => Form;
 	getContainerForms: () => object[];
 	getCurrentDestructionStage: () => number;
 	getCurrentLocation: () => Location;
@@ -51,7 +52,7 @@ export interface ObjectReference {
 	getHeadingAngle: (akOther: ObjectReference) => number;
 	getHeight: () => number;
 	getItemCharge: () => number;
-	getItemCount: (akItem: skyrimPlatform.Form) => number;
+	getItemCount: (akItem: Form) => number;
 	getItemHealthPercent: () => number;
 	getItemMaxCharge: () => number;
 	getKey: () => skyrimPlatform.Key;
@@ -59,7 +60,7 @@ export interface ObjectReference {
 	getLinkedRef: (apKeyword: skyrimPlatform.Keyword) => ObjectReference;
 	getLockLevel: () => number;
 	getMass: () => number;
-	getNthForm: (index: number) => skyrimPlatform.Form;
+	getNthForm: (index: number) => Form;
 	getNthLinkedRef: (aiLinkedRef: number) => ObjectReference;
 	getNthReferenceAlias: (n: number) => skyrimPlatform.ReferenceAlias;
 	getNumItems: () => number;
@@ -115,7 +116,7 @@ export interface ObjectReference {
 		akZone: skyrimPlatform.EncounterZone
 	) => skyrimPlatform.Actor;
 	placeAtMe: (
-		akFormToPlace: skyrimPlatform.Form,
+		akFormToPlace: Form,
 		aiCount: number,
 		abForcePersist: boolean,
 		abInitiallyDisabled: boolean
@@ -159,13 +160,8 @@ export interface ObjectReference {
 	removeAllInventoryEventFilters: () => void;
 	removeAllItems: (akTransferTo: ObjectReference, abKeepOwnership: boolean, abRemoveQuestItems: boolean) => void;
 	removeDependentAnimatedObjectReference: (akDependent: ObjectReference) => boolean;
-	removeInventoryEventFilter: (akFilter: skyrimPlatform.Form) => void;
-	removeItem: (
-		akItemToRemove: skyrimPlatform.Form,
-		aiCount: number,
-		abSilent: boolean,
-		akOtherContainer: ObjectReference
-	) => void;
+	removeInventoryEventFilter: (akFilter: Form) => void;
+	removeItem: (akItemToRemove: Form, aiCount: number, abSilent: boolean, akOtherContainer: ObjectReference) => void;
 	reset: (akTarget: ObjectReference) => Promise<void>;
 	resetInventory: () => void;
 	say: (

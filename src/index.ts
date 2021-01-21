@@ -1,8 +1,8 @@
 import { MP } from './types';
-import { initUtils, utils } from './utility';
+import { getFunctionText, initUtils, utils } from './utility';
 
 // import init functions
-import { initActorValue, initConsoleOutput, initIsDead, initSpawnPoint } from './properties';
+import { initActorValue, initConsoleOutput, initIsDead, initScale, initSpawnPoint } from './properties';
 import {
 	initAnimationEvent,
 	initActorValueFlushRequiredEvent,
@@ -58,6 +58,7 @@ initDevCommands();
 // "events/onAnimationEvent"
 initAnimationEvent();
 
+initScale();
 initMines();
 initCurrentCellChangeEvent();
 initEmptyAnimationEvent();

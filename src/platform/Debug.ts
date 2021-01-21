@@ -1,7 +1,9 @@
+import { Form } from './Form';
+import { ObjectReference } from './ObjectReference';
 import * as skyrimPlatform from './skyrimPlatform';
 
 export interface Debug {
-	from: (form: skyrimPlatform.Form) => Debug;
+	from: (form: Form) => Debug;
 	centerOnCell: (param1: string) => void;
 	centerOnCellAndWait: (param1: string) => Promise<number>;
 	closeUserLog: (param1: string) => void;
@@ -16,10 +18,10 @@ export interface Debug {
 	openUserLog: (param1: string) => boolean;
 	playerMoveToAndWait: (param1: string) => Promise<number>;
 	quitGame: () => void;
-	sendAnimationEvent: (param1: skyrimPlatform.ObjectReference, param2: string) => void;
+	sendAnimationEvent: (param1: ObjectReference, param2: string) => void;
 	setFootIK: (param1: boolean) => void;
 	setGodMode: (param1: boolean) => void;
-	showRefPosition: (arRef: skyrimPlatform.ObjectReference) => void;
+	showRefPosition: (arRef: ObjectReference) => void;
 	startScriptProfiling: (param1: string) => void;
 	startStackProfiling: () => void;
 	stopScriptProfiling: (param1: string) => void;

@@ -1,7 +1,8 @@
+import { Form } from './Form';
 import * as skyrimPlatform from './skyrimPlatform';
 
 export interface Spell {
-	from: (form: skyrimPlatform.Form) => Spell;
+	from: (form: Form) => Spell;
 	cast: (akSource: skyrimPlatform.ObjectReference, akTarget: skyrimPlatform.ObjectReference) => Promise<void>;
 	getCastTime: () => number;
 	getCostliestEffectIndex: () => number;

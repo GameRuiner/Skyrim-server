@@ -7,6 +7,7 @@ import { CTX } from '../platform';
 declare const mp: MP;
 declare const ctx: CTX;
 
+const currentActorParam = currentActor;
 export const initBashEvent = () => {
 	mp.makeEventSource(
 		'_onBash',
@@ -16,7 +17,7 @@ export const initBashEvent = () => {
 				ctx.sp.storage._api_onAnimationEvent = {
 					callback(...args: any[]) {
 						const [serversideFormId, animEventName] = args;
-						if (serversideFormId === currentActor && animEventName.toLowerCase().includes('bash')) {
+						if (serversideFormId === currentActorParam && animEventName.toLowerCase().includes('bash')) {
 							ctx.sendEvent(serversideFormId);
 						}
 						if (typeof next.callback === 'function') {
@@ -25,7 +26,7 @@ export const initBashEvent = () => {
 					},
 				};
 			},
-			{ currentActor }
+			{ currentActorParam }
 		)
 	);
 

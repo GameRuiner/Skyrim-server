@@ -12,7 +12,7 @@ function setScale() {
 	}
 }
 
-export const init = () => {
+export const initScale = () => {
 	mp.makeProperty('scale', {
 		isVisibleByOwner: true,
 		isVisibleByNeighbors: true,
