@@ -50,8 +50,7 @@ export const init = () => {
 
 		const damage = actorValues.get(eventData.target, avName, 'damage');
 
-		const agressorDead =
-			actorValues.getCurrent(eventData.agressor, 'health') <= 0;
+		const agressorDead = actorValues.getCurrent(eventData.agressor, 'health') <= 0;
 		if (damageMod < 0 && agressorDead) {
 			utils.log("Dead characters can't hit");
 			return;
@@ -72,9 +71,7 @@ export const init = () => {
 		const newDamageModValue = damage + damageMod;
 		actorValues.set(eventData.target, avName, 'damage', newDamageModValue);
 
-		const wouldDie =
-			actorValues.getMaximum(eventData.target, 'health') + newDamageModValue <=
-			0;
+		const wouldDie = actorValues.getMaximum(eventData.target, 'health') + newDamageModValue <= 0;
 		if (wouldDie && !mp.get(eventData.target, 'isDead')) {
 			mp.onDeath(eventData.target);
 		}
