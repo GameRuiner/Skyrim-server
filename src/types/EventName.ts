@@ -12,16 +12,15 @@ type CustomEventName =
 	| '_onConsoleCommand'
 	| '_onCurrentCellChange'
 	| '_onHit'
-	| '_onLocalDeath'
 	| '_onPowerAttack'
 	| '_onActorValueFlushRequiredhealth'
 	| '_onActorValueFlushRequiredstamina'
 	| '_onActorValueFlushRequiredmagicka'
 	| '_onSprintStateChange'
 	| '_onHitScale'
-	| '_onInputTest'
 	| '_onActivate'
 	| '_onAnimationEvent'
-	| '_onHitStatic';
+	| '_onHitStatic'
+	| '_onInputF5';
 
 export type EventName = SystemEventName | CustomEventName;

@@ -8,3 +8,4 @@ export * from './onHit';
 export * from './onHitStatic';
 export * from './onPowerAttack';
 export * from './onSprintStateChange';
+export * from './onInput';

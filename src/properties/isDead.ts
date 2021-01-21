@@ -1,55 +1,57 @@
+import { CTX } from '../platform';
 import { MP } from '../types';
-import { utils } from '../utility';
+import { getFunctionText, utils } from '../utility';
 
 declare const mp: MP;
+declare const ctx: CTX;
 
-const updateNeighbor = `
-const ac = ctx.sp.Actor.from(ctx.refr);
-const isDead = ctx.value;
-if (isDead) {
-  ac.endDeferredKill();
-  ac.kill(null);
-}
-else {
-  ac.startDeferredKill();
-}
+const updateNeighbor = getFunctionText(() => {
+	const ac = ctx.sp.Actor.from(ctx.refr);
 
-if (!isDead && ac.isDead()) {
-  ctx.respawn();
-}
-`;
+	const isDead = ctx.value;
+	if (isDead) {
+		ac.endDeferredKill();
+		ac.kill(null);
+	} else {
+		ac.startDeferredKill();
+	}
 
-const updateOwner = `
-const ac = ctx.sp.Actor.from(ctx.refr);
-ac.startDeferredKill();
+	if (!isDead && ac.isDead()) {
+		ctx.sp.printConsole(ac.getBaseObject().getFormID());
+		ctx.respawn();
+	}
+});
 
-const value = ctx.value;
-if (value !== ctx.state.value) {
-  const die = !!value;
-  if (die) {
-    const pos = [
-      ac.getPositionX(), ac.getPositionY(), ac.getPositionZ()
-    ];
+const updateOwner = getFunctionText(() => {
+	const ac = ctx.sp.Actor.from(ctx.refr);
 
-    // Everyone should stop combat with us
-    for (let i = 0; i < 200; ++i) {
-      const randomActor = ctx.sp.Game.findRandomActor(pos[0], pos[1], pos[2], 10000);
-      if (!randomActor) continue;
-      const tgt = randomActor.getCombatTarget();
-      if (!tgt || tgt.getFormID() !== 0x14) continue;
-      randomActor.stopCombat();
-    }
+	ac.startDeferredKill();
 
-    ac.pushActorAway(ac, 0);
-  }
+	const value = ctx.value;
+	if (value !== ctx.state.value) {
+		const die = !!value;
+		if (die) {
+			const pos = [ac.getPositionX(), ac.getPositionY(), ac.getPositionZ()];
 
-  if (!die) {
-    ctx.sp.Debug.sendAnimationEvent(ac, "GetUpBegin");
-  }
+			// Everyone should stop combat with us
+			for (let i = 0; i < 200; ++i) {
+				const randomActor = ctx.sp.Game.findRandomActor(pos[0], pos[1], pos[2], 10000);
+				if (!randomActor) continue;
+				const tgt = randomActor.getCombatTarget();
+				if (!tgt || tgt.getFormID() !== 0x14) continue;
+				randomActor.stopCombat();
+			}
 
-  ctx.state.value = value;
-}
-`;
+			ac.pushActorAway(ac, 0);
+		}
+
+		if (!die) {
+			ctx.sp.Debug.sendAnimationEvent(ac, 'GetUpBegin');
+		}
+
+		ctx.state.value = value;
+	}
+});
 
 export const initIsDead = () => {
 	mp.makeProperty('isDead', {
@@ -60,7 +62,7 @@ export const initIsDead = () => {
 	});
 
 	utils.hook('onDeath', (pcFormId: number) => {
-		mp.set(pcFormId, 'isDead', true);
 		utils.log(`${pcFormId.toString(16)} died`);
+		mp.set(pcFormId, 'isDead', true);
 	});
 };

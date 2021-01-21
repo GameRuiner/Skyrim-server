@@ -1,5 +1,5 @@
 import { MP } from './types';
-import { getFunctionText, initUtils, utils } from './utility';
+import { initUtils, utils } from './utility';
 
 // import init functions
 import { initActorValue, initConsoleOutput, initIsDead, initScale, initSpawnPoint } from './properties';
@@ -14,7 +14,9 @@ import {
 	initCurrentCellChangeEvent,
 	initEmptyAnimationEvent,
 	initHitStatic,
+	initInputF5Event,
 } from './events';
+
 import { initDevCommands, initMines } from './systems';
 
 declare const mp: MP;
@@ -63,6 +65,7 @@ initMines();
 initCurrentCellChangeEvent();
 initEmptyAnimationEvent();
 initHitStatic();
+initInputF5Event();
 
 utils.hook('onInit', (pcFormId: number) => {
 	mp.onReinit(pcFormId);

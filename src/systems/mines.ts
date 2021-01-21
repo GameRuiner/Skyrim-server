@@ -34,7 +34,11 @@ export const initMines = () => {
 	});
 	utils.hook('_onCurrentCellChange', (pcFormId: number, event: CellChangeEvent) => {
 		try {
-			if (isMine(event.cell)) {
+			if (event.hasError) {
+				utils.log(event.err);
+				return;
+			}
+			if (isMine(event.currentCell)) {
 				const invEntry: any[] = mp.get(pcFormId, 'inventory').entries;
 				consoleOutput.print(pcFormId, 'Теперь ты шахтер! Работай!');
 				items.forEach((itemId) => {

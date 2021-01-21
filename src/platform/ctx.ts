@@ -1,3 +1,5 @@
+import { PropertyName } from '../types';
+import { Form } from './Form';
 import { Actor } from './skyrimPlatform';
 import { SkyrimPlatform } from './skyrimPlatformInterface';
 
@@ -9,7 +11,7 @@ export interface CTX {
 	/**
 	 * Current Actor
 	 */
-	refr: Actor;
+	refr: Form;
 	value: any;
 	/**
 	 * storage value
@@ -18,7 +20,7 @@ export interface CTX {
 	/**
 	 * Get the value form property by name
 	 */
-	get: (propertyName: string) => any;
+	get: (propertyName: PropertyName) => any;
 	/**
 	 * Get then ID of game object in server format
 	 */

@@ -1,3 +1,4 @@
+import { Actor } from './Actor';
 import { Form } from './Form';
 import * as skyrimPlatform from './skyrimPlatform';
 
@@ -13,7 +14,7 @@ export interface ObjectReference extends Form {
 	calculateEncounterLevel: (aiDifficulty: number) => number;
 	canFastTravelToMarker: () => boolean;
 	clearDestruction: () => void;
-	createDetectionEvent: (akOwner: skyrimPlatform.Actor, aiSoundLevel: number) => void;
+	createDetectionEvent: (akOwner: Actor, aiSoundLevel: number) => void;
 	createEnchantment: (
 		maxCharge: number,
 		effects: object[],
@@ -110,11 +111,7 @@ export interface ObjectReference extends Form {
 	moveToInteractionLocation: (akTarget: ObjectReference) => Promise<void>;
 	moveToMyEditorLocation: () => Promise<void>;
 	moveToNode: (akTarget: ObjectReference, asNodeName: string) => Promise<void>;
-	placeActorAtMe: (
-		akActorToPlace: skyrimPlatform.ActorBase,
-		aiLevelMod: number,
-		akZone: skyrimPlatform.EncounterZone
-	) => skyrimPlatform.Actor;
+	placeActorAtMe: (akActorToPlace: ActorBase, aiLevelMod: number, akZone: skyrimPlatform.EncounterZone) => Actor;
 	placeAtMe: (
 		akFormToPlace: Form,
 		aiCount: number,
@@ -156,7 +153,7 @@ export interface ObjectReference extends Form {
 		aeMaterial: number,
 		afStagger: number
 	) => void;
-	pushActorAway: (akActorToPush: skyrimPlatform.Actor, aiKnockbackForce: number) => void;
+	pushActorAway: (akActorToPush: Actor, aiKnockbackForce: number) => void;
 	removeAllInventoryEventFilters: () => void;
 	removeAllItems: (akTransferTo: ObjectReference, abKeepOwnership: boolean, abRemoveQuestItems: boolean) => void;
 	removeDependentAnimatedObjectReference: (akDependent: ObjectReference) => boolean;
@@ -164,13 +161,9 @@ export interface ObjectReference extends Form {
 	removeItem: (akItemToRemove: Form, aiCount: number, abSilent: boolean, akOtherContainer: ObjectReference) => void;
 	reset: (akTarget: ObjectReference) => Promise<void>;
 	resetInventory: () => void;
-	say: (
-		akTopicToSay: skyrimPlatform.Topic,
-		akActorToSpeakAs: skyrimPlatform.Actor,
-		abSpeakInPlayersHead: boolean
-	) => void;
-	sendStealAlarm: (akThief: skyrimPlatform.Actor) => void;
-	setActorCause: (akActor: skyrimPlatform.Actor) => void;
+	say: (akTopicToSay: skyrimPlatform.Topic, akActorToSpeakAs: Actor, abSpeakInPlayersHead: boolean) => void;
+	sendStealAlarm: (akThief: Actor) => void;
+	setActorCause: (akActor: Actor) => void;
 	setActorOwner: (akActorBase: skyrimPlatform.ActorBase) => void;
 	setAngle: (afXAngle: number, afYAngle: number, afZAngle: number) => Promise<void>;
 	setAnimationVariableBool: (arVariableName: string, abNewValue: boolean) => void;

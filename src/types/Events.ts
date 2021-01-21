@@ -1,5 +1,6 @@
 export interface CellChangeEvent {
 	hasError: boolean;
 	err?: string;
-	cell?: any;
+	currentCell?: any;
+	prevCell?: any;
 }

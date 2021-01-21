@@ -30,7 +30,7 @@ export const initAnimationEvent = () => {
 		 */
 		utils.hook('_onAnimationEvent', (pcFormId, serversideFormId, animEventName) => {
 			if (serversideFormId !== currentActor) return;
-			consoleOutput.print(pcFormId, animEventName);
+			utils.log('[ANIMATION TRACE]', animEventName);
 		});
 	}
 };

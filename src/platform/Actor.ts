@@ -140,7 +140,7 @@ export interface Actor extends ObjectReference {
 		afCatchUpRadius: number,
 		afFollowRadius: number
 	) => void;
-	kill: (akKiller: Actor) => void;
+	kill: (akKiller?: Actor | null) => void;
 	killSilent: (akKiller: Actor) => void;
 	modActorValue: (asValueName: string, afAmount: number) => void;
 	modFactionRank: (akFaction: skyrimPlatform.Faction, aiMod: number) => void;

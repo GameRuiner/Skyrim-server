@@ -98,7 +98,7 @@ export const initDevCommands = () => {
 				spawnpoint(pcFormId, selectedFormId);
 				break;
 			case 'tp':
-				tp(pcFormId, 132464);
+				tp(pcFormId, 127529);
 				break;
 			case 'msg':
 				const pos = mp.get(pcFormId, 'pos');

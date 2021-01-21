@@ -1,6 +1,6 @@
 import { CTX } from '../platform';
 import { MP, CellChangeEvent } from '../types';
-import { getFunctionText, utils } from '../utility';
+import { genClientFunction, utils } from '../utility';
 
 declare const mp: MP;
 declare const ctx: CTX;
@@ -8,35 +8,70 @@ declare const ctx: CTX;
 export const initCurrentCellChangeEvent = () => {
 	mp.makeEventSource(
 		'_onCurrentCellChange',
-		getFunctionText(() => {
-			ctx.sp.on('update', () => {
-				try {
-					let result: CellChangeEvent = { hasError: false };
-					const currentCell = ctx.sp.Game.getPlayer().getParentCell();
-					if (ctx.state.currentCellId !== currentCell.getFormID()) {
-						if (ctx.state.currentCellId !== undefined) {
-							result.cell = {
-								id: currentCell.getFormID(),
-								name: currentCell.getName(),
-								type: currentCell.getType(),
-							};
-							ctx.sendEvent(result);
+		genClientFunction(
+			() => {
+				ctx.sp.once('update', () => {
+					try {
+						let result: CellChangeEvent = { hasError: false };
+						const currentCell = ctx.sp.Game.getPlayer().getParentCell();
+						const currentCellData = {
+							id: currentCell.getFormID(),
+							name: currentCell.getName(),
+							type: currentCell.getType(),
+						};
+						if (ctx.state.currentCellId !== currentCellData.id) {
+							if (ctx.state.currentCellId !== undefined) {
+								result.currentCell = currentCellData;
+								ctx.sendEvent(result);
+							}
+							ctx.state.currentCellId = currentCell.getFormID();
+							ctx.state.currentCell = currentCellData;
 						}
-						ctx.state.currentCellId = currentCell.getFormID();
+					} catch (err) {
+						ctx.sendEvent({
+							hasError: true,
+							err: err.toString(),
+						});
 					}
-				} catch (err) {
-					ctx.sendEvent({
-						hasError: true,
-						err: err.toString(),
-					});
-				}
-			});
-		})
+				});
+			},
+			{},
+			true
+		)
 	);
 	utils.hook('_onCurrentCellChange', (pcFormId: number, event: CellChangeEvent) => {
 		if (!event.hasError) {
-			utils.log('[CELL_CHANGE]', pcFormId, event.cell);
+			utils.log('[CELL_CHANGE]', pcFormId, event.currentCell);
 			utils.log('[CELL_CHANGE]', mp.get(pcFormId, 'worldOrCellDesc'));
 		}
 	});
 };
+
+// ctx.sp.on('update', function () {
+// 	try {
+// 		var result = {
+// 			hasError: false
+// 		};
+// 		var currentCell = ctx.sp.Game.getPlayer().getParentCell();
+// 		var currentCellData = {
+// 			id: currentCell.getFormID(),
+// 			name: currentCell.getName(),
+// 			type: currentCell.getType()
+// 		};
+
+// 		if (ctx.state.currentCellId !== currentCellData.id) {
+// 			if (ctx.state.currentCellId !== undefined) {
+// 				result.currentCell = currentCellData;
+// 				ctx.sendEvent(result);
+// 			}
+
+// 			ctx.state.currentCellId = currentCell.getFormID();
+// 			ctx.state.currentCell = currentCellData;
+// 		}
+// 	} catch (err) {
+// 		ctx.sendEvent({
+// 			hasError: true,
+// 			err: err.toString()
+// 		});
+// 	}
+// });

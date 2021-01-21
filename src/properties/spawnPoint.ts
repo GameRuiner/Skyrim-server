@@ -14,9 +14,12 @@ export const initSpawnPoint = () => {
 	});
 
 	utils.hook('onDeath', (pcFormId: number) => {
-		setTimeout(() => {
-			spawnSystem.spawn(pcFormId);
-		}, spawnSystem.timeToRespawn);
+		// don't spawn npc
+		if (mp.get(pcFormId, 'baseDesc') === '7:Skyrim.esm') {
+			setTimeout(() => {
+				spawnSystem.spawn(pcFormId);
+			}, spawnSystem.timeToRespawn);
+		}
 	});
 
 	utils.hook('onReinit', (pcFormId: number, options: any) => {

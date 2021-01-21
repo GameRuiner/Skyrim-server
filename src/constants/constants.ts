@@ -15,5 +15,5 @@ export const defaultSpawnPoint = {
 /**
  * if true print all animation in console
  */
-export const TRACE_ANIMATION: boolean = false;
+export const TRACE_ANIMATION: boolean = true;
 export const PRODUCTION: boolean = false;

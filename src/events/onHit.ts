@@ -43,7 +43,8 @@ export const initHitEvent = () => {
 	utils.hook('_onHit', (pcFormId: number, eventData: any) => {
 		let damageMod = -25;
 		if (!PRODUCTION) {
-			// help to kill enemies
+			// help to kill enemies (godmode)
+			//damageMod = 0;
 			if (eventData.agressor === pcFormId) {
 				damageMod = -250;
 			}

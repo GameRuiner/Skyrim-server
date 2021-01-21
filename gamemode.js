@@ -688,8 +688,51 @@ exports.initIsDead = void 0;
 
 var utility_1 = require("../utility");
 
-var updateNeighbor = "\nconst ac = ctx.sp.Actor.from(ctx.refr);\nconst isDead = ctx.value;\nif (isDead) {\n  ac.endDeferredKill();\n  ac.kill(null);\n}\nelse {\n  ac.startDeferredKill();\n}\n\nif (!isDead && ac.isDead()) {\n  ctx.respawn();\n}\n";
-var updateOwner = "\nconst ac = ctx.sp.Actor.from(ctx.refr);\nac.startDeferredKill();\n\nconst value = ctx.value;\nif (value !== ctx.state.value) {\n  const die = !!value;\n  if (die) {\n    const pos = [\n      ac.getPositionX(), ac.getPositionY(), ac.getPositionZ()\n    ];\n\n    // Everyone should stop combat with us\n    for (let i = 0; i < 200; ++i) {\n      const randomActor = ctx.sp.Game.findRandomActor(pos[0], pos[1], pos[2], 10000);\n      if (!randomActor) continue;\n      const tgt = randomActor.getCombatTarget();\n      if (!tgt || tgt.getFormID() !== 0x14) continue;\n      randomActor.stopCombat();\n    }\n\n    ac.pushActorAway(ac, 0);\n  }\n\n  if (!die) {\n    ctx.sp.Debug.sendAnimationEvent(ac, \"GetUpBegin\");\n  }\n\n  ctx.state.value = value;\n}\n";
+var updateNeighbor = utility_1.getFunctionText(function () {
+  var ac = ctx.sp.Actor.from(ctx.refr);
+  var isDead = ctx.value;
+
+  if (isDead) {
+    ac.endDeferredKill();
+    ac.kill(null);
+  } else {
+    ac.startDeferredKill();
+  }
+
+  if (!isDead && ac.isDead()) {
+    ctx.sp.printConsole(ac.getBaseObject().getFormID());
+    ctx.respawn();
+  }
+});
+var updateOwner = utility_1.getFunctionText(function () {
+  var ac = ctx.sp.Actor.from(ctx.refr);
+  ac.startDeferredKill();
+  var value = ctx.value;
+
+  if (value !== ctx.state.value) {
+    var die = !!value;
+
+    if (die) {
+      var pos = [ac.getPositionX(), ac.getPositionY(), ac.getPositionZ()];
+
+      for (var i = 0; i < 200; ++i) {
+        var randomActor = ctx.sp.Game.findRandomActor(pos[0], pos[1], pos[2], 10000);
+        if (!randomActor) continue;
+        var tgt = randomActor.getCombatTarget();
+        if (!tgt || tgt.getFormID() !== 0x14) continue;
+        randomActor.stopCombat();
+      }
+
+      ac.pushActorAway(ac, 0);
+    }
+
+    if (!die) {
+      ctx.sp.Debug.sendAnimationEvent(ac, 'GetUpBegin');
+    }
+
+    ctx.state.value = value;
+  }
+});
 
 var initIsDead = function () {
   mp.makeProperty('isDead', {
@@ -699,8 +742,8 @@ var initIsDead = function () {
     updateOwner: updateOwner
   });
   utility_1.utils.hook('onDeath', function (pcFormId) {
-    mp.set(pcFormId, 'isDead', true);
     utility_1.utils.log(pcFormId.toString(16) + " died");
+    mp.set(pcFormId, 'isDead', true);
   });
 };
 
@@ -718,7 +761,7 @@ exports.defaultSpawnPoint = {
   angle: [0, 0, 0],
   worldOrCellDesc: '165a7:Skyrim.esm'
 };
-exports.TRACE_ANIMATION = false;
+exports.TRACE_ANIMATION = true;
 exports.PRODUCTION = false;
 },{}],"constants/index.ts":[function(require,module,exports) {
 "use strict";
@@ -892,7 +935,7 @@ var initDevCommands = function () {
         break;
 
       case 'tp':
-        tp(pcFormId, 132464);
+        tp(pcFormId, 127529);
         break;
 
       case 'msg':
@@ -997,7 +1040,12 @@ var initMines = function () {
   });
   utility_1.utils.hook('_onCurrentCellChange', function (pcFormId, event) {
     try {
-      if (isMine(event.cell)) {
+      if (event.hasError) {
+        utility_1.utils.log(event.err);
+        return;
+      }
+
+      if (isMine(event.currentCell)) {
         var invEntry_1 = mp.get(pcFormId, 'inventory').entries;
         properties_1.consoleOutput.print(pcFormId, 'Теперь ты шахтер! Работай!');
         items.forEach(function (itemId) {
@@ -1074,9 +1122,11 @@ var initSpawnPoint = function () {
     updateOwner: ''
   });
   utility_1.utils.hook('onDeath', function (pcFormId) {
-    setTimeout(function () {
-      systems_1.spawnSystem.spawn(pcFormId);
-    }, systems_1.spawnSystem.timeToRespawn);
+    if (mp.get(pcFormId, 'baseDesc') === '7:Skyrim.esm') {
+      setTimeout(function () {
+        systems_1.spawnSystem.spawn(pcFormId);
+      }, systems_1.spawnSystem.timeToRespawn);
+    }
   });
   utility_1.utils.hook('onReinit', function (pcFormId, options) {
     if (!mp.get(pcFormId, 'spawnPoint') || options && options.force) {
@@ -1201,8 +1251,6 @@ exports.initAnimationEvent = void 0;
 
 var utility_1 = require("../utility");
 
-var properties_1 = require("../properties");
-
 var constants_1 = require("../constants");
 
 var initAnimationEvent = function () {
@@ -1229,13 +1277,13 @@ var initAnimationEvent = function () {
     }, {}));
     utility_1.utils.hook('_onAnimationEvent', function (pcFormId, serversideFormId, animEventName) {
       if (serversideFormId !== constants_1.currentActor) return;
-      properties_1.consoleOutput.print(pcFormId, animEventName);
+      utility_1.utils.log('[ANIMATION TRACE]', animEventName);
     });
   }
 };
 
 exports.initAnimationEvent = initAnimationEvent;
-},{"../utility":"utility/index.ts","../properties":"properties/index.ts","../constants":"constants/index.ts"}],"events/onBash.ts":[function(require,module,exports) {
+},{"../utility":"utility/index.ts","../constants":"constants/index.ts"}],"events/onBash.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1310,25 +1358,27 @@ exports.initCurrentCellChangeEvent = void 0;
 var utility_1 = require("../utility");
 
 var initCurrentCellChangeEvent = function () {
-  mp.makeEventSource('_onCurrentCellChange', utility_1.getFunctionText(function () {
-    ctx.sp.on('update', function () {
+  mp.makeEventSource('_onCurrentCellChange', utility_1.genClientFunction(function () {
+    ctx.sp.once('update', function () {
       try {
         var result = {
           hasError: false
         };
         var currentCell = ctx.sp.Game.getPlayer().getParentCell();
+        var currentCellData = {
+          id: currentCell.getFormID(),
+          name: currentCell.getName(),
+          type: currentCell.getType()
+        };
 
-        if (ctx.state.currentCellId !== currentCell.getFormID()) {
+        if (ctx.state.currentCellId !== currentCellData.id) {
           if (ctx.state.currentCellId !== undefined) {
-            result.cell = {
-              id: currentCell.getFormID(),
-              name: currentCell.getName(),
-              type: currentCell.getType()
-            };
+            result.currentCell = currentCellData;
             ctx.sendEvent(result);
           }
 
           ctx.state.currentCellId = currentCell.getFormID();
+          ctx.state.currentCell = currentCellData;
         }
       } catch (err) {
         ctx.sendEvent({
@@ -1337,10 +1387,10 @@ var initCurrentCellChangeEvent = function () {
         });
       }
     });
-  }));
+  }, {}, true));
   utility_1.utils.hook('_onCurrentCellChange', function (pcFormId, event) {
     if (!event.hasError) {
-      utility_1.utils.log('[CELL_CHANGE]', pcFormId, event.cell);
+      utility_1.utils.log('[CELL_CHANGE]', pcFormId, event.currentCell);
       utility_1.utils.log('[CELL_CHANGE]', mp.get(pcFormId, 'worldOrCellDesc'));
     }
   });
@@ -1546,7 +1596,41 @@ var initSprintStateChangeEvent = function () {
 };
 
 exports.initSprintStateChangeEvent = initSprintStateChangeEvent;
-},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"events/index.ts":[function(require,module,exports) {
+},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"events/onInput.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initInputF5Event = void 0;
+
+var systems_1 = require("../systems");
+
+var utility_1 = require("../utility");
+
+var initInputF5Event = function () {
+  mp.makeEventSource('_onInputF5', utility_1.getFunctionText(function () {
+    var F5 = 0x3f;
+    ctx.sp.on('update', function () {
+      var isPressed = ctx.sp.Input.isKeyPressed(F5);
+
+      if (ctx.state.isPressed !== isPressed) {
+        if (ctx.state.isPressed !== undefined && isPressed === true) {
+          ctx.sendEvent();
+        }
+
+        ctx.state.isPressed = isPressed;
+      }
+    });
+  }));
+  utility_1.utils.hook('_onInputF5', function (pcFormId) {
+    systems_1.reinit(pcFormId);
+    utility_1.utils.log('Нажал F5');
+  });
+};
+
+exports.initInputF5Event = initInputF5Event;
+},{"../systems":"systems/index.ts","../utility":"utility/index.ts"}],"events/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -1589,7 +1673,9 @@ __exportStar(require("./onHitStatic"), exports);
 __exportStar(require("./onPowerAttack"), exports);
 
 __exportStar(require("./onSprintStateChange"), exports);
-},{"./_":"events/_.ts","./onActorValueFlushRequired":"events/onActorValueFlushRequired.ts","./onAnimationEvent":"events/onAnimationEvent.ts","./onBash":"events/onBash.ts","./onConsoleCommand":"events/onConsoleCommand.ts","./onCurrentCellChange":"events/onCurrentCellChange.ts","./onHit":"events/onHit.ts","./onHitStatic":"events/onHitStatic.ts","./onPowerAttack":"events/onPowerAttack.ts","./onSprintStateChange":"events/onSprintStateChange.ts"}],"index.ts":[function(require,module,exports) {
+
+__exportStar(require("./onInput"), exports);
+},{"./_":"events/_.ts","./onActorValueFlushRequired":"events/onActorValueFlushRequired.ts","./onAnimationEvent":"events/onAnimationEvent.ts","./onBash":"events/onBash.ts","./onConsoleCommand":"events/onConsoleCommand.ts","./onCurrentCellChange":"events/onCurrentCellChange.ts","./onHit":"events/onHit.ts","./onHitStatic":"events/onHitStatic.ts","./onPowerAttack":"events/onPowerAttack.ts","./onSprintStateChange":"events/onSprintStateChange.ts","./onInput":"events/onInput.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1622,6 +1708,7 @@ systems_1.initMines();
 events_1.initCurrentCellChangeEvent();
 events_1.initEmptyAnimationEvent();
 events_1.initHitStatic();
+events_1.initInputF5Event();
 utility_1.utils.hook('onInit', function (pcFormId) {
   mp.onReinit(pcFormId);
 });
