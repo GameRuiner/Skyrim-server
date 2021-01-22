@@ -45,13 +45,21 @@
 		// "baseUrl": "./src" /* Base directory to resolve non-absolute module names. */,
 		"paths": {
 			"@constants/*": ["./src/constants/*"],
+			"@constants": ["./src/constants"],
 			"@events/*": ["./src/events/*"],
+			"@events": ["./src/events"],
 			"@platform/*": ["./src/platform/*"],
+			"@platform": ["./src/platform"],
 			"@properties/*": ["./src/properties/*"],
+			"@properties": ["./src/properties"],
 			"@systems/*": ["./src/systems/*"],
+			"@systems": ["./src/systems"],
 			"@types/*": ["./src/types/*"],
+			"@types": ["./src/types"],
 			"@utility/*": ["./src/utility/*"],
-			"@test/*": ["./src/test/*"]
+			"@utility": ["./src/utility"],
+			"@test/*": ["./src/test/*"],
+			"@test": ["./src/test"]
 		} /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
 		// "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
 		// "typeRoots": [],                       /* List of folders to include type definitions from. */

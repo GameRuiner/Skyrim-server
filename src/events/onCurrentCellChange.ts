@@ -15,7 +15,7 @@ export const initCurrentCellChangeEvent = () => {
 	mp.makeEventSource(
 		'_onCurrentCellChange',
 		genClientFunction(() => {
-			ctx.sp.once('update', () => {
+			ctx.sp.on('update', () => {
 				try {
 					let result: CellChangeEvent = { hasError: false };
 					const currentCell = ctx.sp.Game.getPlayer().getParentCell();
@@ -25,7 +25,6 @@ export const initCurrentCellChangeEvent = () => {
 						type: currentCell.getType(),
 					};
 					if (ctx.state.currentCellId !== currentCellData.id) {
-						ctx.state.currentCell = currentCellData;
 						if (ctx.state.currentCellId !== undefined) {
 							result.prevCell = ctx.state.currentCell;
 							result.currentCell = currentCellData;
