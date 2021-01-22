@@ -1710,20 +1710,20 @@ var systems_1 = require("../../systems");
 
 var data_1 = require("./data");
 
-var farmItem = function (formId, withAnimation, duration, baseId, animations) {
-  if (withAnimation === void 0) {
-    withAnimation = false;
-  }
-
+var farmItem = function (formId, duration, baseId, animations) {
   if (duration === void 0) {
     duration = 5;
   }
 
-  if (withAnimation && animations) mp.set(formId, 'animation', {
-    animations: animations,
-    duration: duration
-  });
-  if (!animations) utility_1.utils.log('farmItem(): animations not found');
+  if (animations) {
+    mp.set(formId, 'animation', {
+      animations: animations,
+      duration: duration
+    });
+  } else {
+    utility_1.utils.log('farmItem(): animations not found');
+  }
+
   setTimeout(function () {
     return systems_1.inventorySystem.addItem(formId, baseId, 1);
   }, duration ? duration * 1000 : 1);
@@ -1742,7 +1742,7 @@ var initFarmSystem = function () {
           if (data) {
             switch (data.type) {
               case 'minerals':
-                farmItem(formId, true, 5, data.baseId, data_1.allAnimation.collector.miner);
+                farmItem(formId, 5, data.baseId, data_1.allAnimation.collector.miner);
                 break;
 
               default:
@@ -2564,56 +2564,7 @@ var initInputF5Event = function () {
 };
 
 exports.initInputF5Event = initInputF5Event;
-},{"../systems":"systems/index.ts","../utility":"utility/index.ts"}],"events/onFarm.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.initFarmEvent = void 0;
-
-var utility_1 = require("../utility");
-
-var initFarmEvent = function () {
-  mp.makeEventSource('_onFarm', utility_1.getFunctionText(function () {
-    ctx.sp.on('activate', function (e) {
-      try {
-        if (e.source && ctx.sp.Spell.from(e.source)) return;
-        var target = ctx.getFormIdInServerFormat(e.target.getFormId());
-        var data = e.target;
-        var objectName = data.getBaseObject().getName();
-
-        var sendAnimation_1 = function (name) {
-          ctx.sp.Debug.sendAnimationEvent(ctx.sp.Game.getPlayer(), name);
-        };
-
-        if (objectName === 'Железорудная жила' && !ctx.state.startAnimation) {
-          ctx.state.startAnimation = true;
-          ctx.sp.printConsole(ctx.state.startAnimation);
-          sendAnimation_1('idleplayer');
-          sendAnimation_1('idlepickaxetableenter');
-          ctx.sp.Utility.wait(5).then(function () {
-            sendAnimation_1('idlepickaxeexit');
-            sendAnimation_1('idlepickaxetableexit');
-            sendAnimation_1('idlechairexitstart');
-            ctx.state.startAnimation = false;
-            ctx.sp.printConsole(ctx.state.startAnimation);
-          });
-        }
-
-        ctx.sendEvent({
-          target: target,
-          mineralSource: objectName
-        });
-      } catch (e) {
-        ctx.sp.printConsole('Catch _onFarm', e);
-      }
-    });
-  }));
-};
-
-exports.initFarmEvent = initFarmEvent;
-},{"../utility":"utility/index.ts"}],"events/onActivate.ts":[function(require,module,exports) {
+},{"../systems":"systems/index.ts","../utility":"utility/index.ts"}],"events/onActivate.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2689,10 +2640,8 @@ __exportStar(require("./onSprintStateChange"), exports);
 
 __exportStar(require("./onInput"), exports);
 
-__exportStar(require("./onFarm"), exports);
-
 __exportStar(require("./onActivate"), exports);
-},{"./_":"events/_.ts","./onActorValueFlushRequired":"events/onActorValueFlushRequired.ts","./onAnimationEvent":"events/onAnimationEvent.ts","./onBash":"events/onBash.ts","./onConsoleCommand":"events/onConsoleCommand.ts","./onCurrentCellChange":"events/onCurrentCellChange.ts","./onHit":"events/onHit.ts","./onHitStatic":"events/onHitStatic.ts","./onPowerAttack":"events/onPowerAttack.ts","./onSprintStateChange":"events/onSprintStateChange.ts","./onInput":"events/onInput.ts","./onFarm":"events/onFarm.ts","./onActivate":"events/onActivate.ts"}],"index.ts":[function(require,module,exports) {
+},{"./_":"events/_.ts","./onActorValueFlushRequired":"events/onActorValueFlushRequired.ts","./onAnimationEvent":"events/onAnimationEvent.ts","./onBash":"events/onBash.ts","./onConsoleCommand":"events/onConsoleCommand.ts","./onCurrentCellChange":"events/onCurrentCellChange.ts","./onHit":"events/onHit.ts","./onHitStatic":"events/onHitStatic.ts","./onPowerAttack":"events/onPowerAttack.ts","./onSprintStateChange":"events/onSprintStateChange.ts","./onInput":"events/onInput.ts","./onActivate":"events/onActivate.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

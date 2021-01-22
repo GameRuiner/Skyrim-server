@@ -23,7 +23,6 @@ import {
 	initEmptyAnimationEvent,
 	initHitStatic,
 	initInputF5Event,
-	initFarmEvent,
 	initActivateEvent,
 } from './events';
 
@@ -79,7 +78,6 @@ initHitStatic();
 initInputF5Event();
 initActivateEvent();
 initFarmSystem();
-// initFarmEvent();
 // profession
 initMinesSystem();
 initActiveProfession();

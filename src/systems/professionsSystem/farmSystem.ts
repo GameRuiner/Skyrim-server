@@ -7,14 +7,12 @@ declare const mp: MP;
 /**
  * Add item to inventory with animation.
  * @param formId who should I eqiup the item to
- * @param withAnimation farm item with animation (default = false)
  * @param duration duration animation (default = 5)
  * @param baseId id of item
  * @param animations object with lists: start animations and end animations
  */
 const farmItem = (
 	formId: number,
-	withAnimation: boolean = false,
 	duration: number = 5,
 	baseId: number,
 	animations:
@@ -24,8 +22,11 @@ const farmItem = (
 		  }
 		| undefined
 ) => {
-	if (withAnimation && animations) mp.set(formId, 'animation', { animations, duration });
-	if (!animations) utils.log('farmItem(): animations not found');
+	if (animations) {
+		mp.set(formId, 'animation', { animations, duration });
+	} else {
+		utils.log('farmItem(): animations not found');
+	}
 
 	setTimeout(() => inventorySystem.addItem(formId, baseId, 1), duration ? duration * 1000 : 1);
 };
@@ -40,7 +41,7 @@ export const initFarmSystem = () => {
 					if (data) {
 						switch (data.type) {
 							case 'minerals':
-								farmItem(formId, true, 5, data.baseId, allAnimation.collector.miner);
+								farmItem(formId, 5, data.baseId, allAnimation.collector.miner);
 								break;
 							default:
 								break;

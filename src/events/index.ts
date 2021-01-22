@@ -9,5 +9,4 @@ export * from './onHitStatic';
 export * from './onPowerAttack';
 export * from './onSprintStateChange';
 export * from './onInput';
-export * from './onFarm';
 export * from './onActivate';
