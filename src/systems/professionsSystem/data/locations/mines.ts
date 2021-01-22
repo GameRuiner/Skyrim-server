@@ -1,11 +1,5 @@
-export interface Mine {
-	baseId: number;
-	name: string;
-	ruName: string;
-	worldId?: string;
-}
-
-export const MINES: Mine[] = [
+import { location } from './locationProp';
+const MINES: location[] = [
 	{
 		baseId: 0x2c778,
 		name: 'DawnstarIronBreakerMine',
@@ -113,3 +107,4 @@ export const MINES: Mine[] = [
 		worldId: '43fab:Skyrim.esm',
 	},
 ];
+export default MINES;

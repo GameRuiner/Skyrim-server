@@ -3,29 +3,28 @@ import { CellChangeEvent, MP } from '../../types';
 // import { proffessionNames, proffession } from './dataSystems/professions/index';
 import { professionSystem } from './professionSystem';
 import { getWorldOrCellDesc } from '../../properties';
-import { MINES } from './data/locations/mines';
-import { ProfessionNames, Profession, PROFESSIONS, ProfessionStaff, ProfessionStaffNames } from './data/professions';
-
+import { locations } from './data';
+import type { ProfessionNamesProp, ProfessionProp } from './data';
 declare const mp: MP;
 
 /** if true sell items */
 const IS_SELL = true;
 /** current profession name */
-const currentProfessionName: ProfessionNames = 'miner';
+const currentProfessionName: ProfessionNamesProp = 'miner';
 
 /**
  * Return true if Actor came to mine location
  * @param name Desc of cell
  */
 const isMine = (cellDesc: string): boolean => {
-	return MINES.find((el) => el.worldId === cellDesc) ? true : false;
+	return locations.mines.find((el) => el.worldId === cellDesc) ? true : false;
 };
 
 export const initMinesSystem = () => {
 	utils.hook('_onCurrentCellChange', (pcFormId: number, event: CellChangeEvent) => {
 		try {
 			if (isMine(getWorldOrCellDesc(pcFormId))) {
-				const myProfession: Profession = professionSystem.getFromServer(pcFormId);
+				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
 
 				if (myProfession === null) {
 					professionSystem.set(pcFormId, currentProfessionName);
@@ -35,7 +34,7 @@ export const initMinesSystem = () => {
 					}
 				}
 			} else {
-				const myProfession: Profession = professionSystem.getFromServer(pcFormId);
+				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
 				if (myProfession.name === currentProfessionName) {
 					if (myProfession.isActive) {
 						professionSystem.delete(pcFormId, currentProfessionName);

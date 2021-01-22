@@ -1,5 +1,4 @@
 var parcelRequire = undefined;
-var parcelRequire = undefined;
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -1111,44 +1110,112 @@ var initDevCommands = function () {
 };
 
 exports.initDevCommands = initDevCommands;
-},{"../utility":"utility/index.ts","../properties":"properties/index.ts","../constants":"constants/index.ts","./spawnSystem":"systems/spawnSystem.ts","./inventorySystem":"systems/inventorySystem.ts"}],"systems/professionsSystem/data/items/mineral.ts":[function(require,module,exports) {
+},{"../utility":"utility/index.ts","../properties":"properties/index.ts","../constants":"constants/index.ts","./spawnSystem":"systems/spawnSystem.ts","./inventorySystem":"systems/inventorySystem.ts"}],"systems/professionsSystem/data/resources.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.MINERALS = void 0;
-exports.MINERALS = [{
-  id: 0x71cf3,
+var MINERALS = [{
+  baseId: 0x71cf3,
   name: 'Железная руда',
   sourceName: 'Железорудная жила'
 }];
-},{}],"systems/professionsSystem/data/items/index.ts":[function(require,module,exports) {
+exports.default = {
+  mineral: MINERALS
+};
+},{}],"systems/professionsSystem/data/professions.ts":[function(require,module,exports) {
 "use strict";
 
-var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  Object.defineProperty(o, k2, {
-    enumerable: true,
-    get: function () {
-      return m[k];
-    }
-  });
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
+var PROFESSIONS = {
+  miner: {
+    tool: 0xe3c16,
+    clothes: 0x80697,
+    boots: 0x1be1b
+  },
+  herbalist: {},
+  woodsman: {}
+};
+exports.default = {
+  professions: PROFESSIONS
+};
+},{}],"systems/professionsSystem/data/index.ts":[function(require,module,exports) {
+"use strict";
 
-var __exportStar = this && this.__exportStar || function (m, exports) {
-  for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
 };
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.resourceProp = exports.ProfessionStaff = exports.ProfessionList = exports.ProfessionStaffNames = exports.ProfessionNames = exports.Profession = exports.professions = exports.resources = void 0;
 
-__exportStar(require("./mineral"), exports);
-},{"./mineral":"systems/professionsSystem/data/items/mineral.ts"}],"systems/professionsSystem/data/professions/index.ts":[function(require,module,exports) {
+var resources_1 = require("./resources");
+
+Object.defineProperty(exports, "resources", {
+  enumerable: true,
+  get: function () {
+    return __importDefault(resources_1).default;
+  }
+});
+
+var professions_1 = require("./professions");
+
+Object.defineProperty(exports, "professions", {
+  enumerable: true,
+  get: function () {
+    return __importDefault(professions_1).default;
+  }
+});
+
+var professions_2 = require("./professions");
+
+Object.defineProperty(exports, "Profession", {
+  enumerable: true,
+  get: function () {
+    return professions_2.Profession;
+  }
+});
+Object.defineProperty(exports, "ProfessionNames", {
+  enumerable: true,
+  get: function () {
+    return professions_2.ProfessionNames;
+  }
+});
+Object.defineProperty(exports, "ProfessionStaffNames", {
+  enumerable: true,
+  get: function () {
+    return professions_2.ProfessionStaffNames;
+  }
+});
+Object.defineProperty(exports, "ProfessionList", {
+  enumerable: true,
+  get: function () {
+    return professions_2.ProfessionList;
+  }
+});
+Object.defineProperty(exports, "ProfessionStaff", {
+  enumerable: true,
+  get: function () {
+    return professions_2.ProfessionStaff;
+  }
+});
+
+var resources_2 = require("./resources");
+
+Object.defineProperty(exports, "resourceProp", {
+  enumerable: true,
+  get: function () {
+    return resources_2.resourceProp;
+  }
+});
+},{"./resources":"systems/professionsSystem/data/resources.ts","./professions":"systems/professionsSystem/data/professions.ts"}],"systems/professionsSystem/data/professions/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1178,7 +1245,7 @@ var utility_1 = require("../../utility");
 
 var inventorySystem_1 = require("../inventorySystem");
 
-var items_1 = require("./data/items");
+var data_1 = require("./data");
 
 var professions_1 = require("./data/professions");
 
@@ -1278,7 +1345,7 @@ var sellItems = function (formId, items) {
   items.forEach(function (item) {
     var _a, _b;
 
-    var itemId = (_a = items_1.MINERALS.find(function (mineral) {
+    var itemId = (_a = data_1.resources.mineral.find(function (mineral) {
       return mineral.name === item.name;
     })) === null || _a === void 0 ? void 0 : _a.id;
 
@@ -1305,7 +1372,7 @@ exports.professionSystem = {
   addItems: addProfessionItems,
   sellItems: sellItems
 };
-},{"../../properties":"properties/index.ts","../../utility":"utility/index.ts","../inventorySystem":"systems/inventorySystem.ts","./data/items":"systems/professionsSystem/data/items/index.ts","./data/professions":"systems/professionsSystem/data/professions/index.ts"}],"systems/professionsSystem/data/locations/mines.ts":[function(require,module,exports) {
+},{"../../properties":"properties/index.ts","../../utility":"utility/index.ts","../inventorySystem":"systems/inventorySystem.ts","./data":"systems/professionsSystem/data/index.ts","./data/professions":"systems/professionsSystem/data/professions/index.ts"}],"systems/professionsSystem/data/locations/mines.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1472,23 +1539,24 @@ exports.initFarmSystem = void 0;
 
 var utility_1 = require("../../utility");
 
-var mineral_1 = require("./data/items/mineral");
-
 var systems_1 = require("../../systems");
 
-var initFarmSystem = function () {
-  utility_1.utils.hook('_onFarm', function (pcFormId, event) {
-    try {
-      var mineralFormId_1 = mineral_1.MINERALS.find(function (mineral) {
-        return mineral.sourceName === event.mineralSource;
-      });
+var data_1 = require("./data");
 
-      if (mineralFormId_1) {
-        setTimeout(function () {
-          return systems_1.inventorySystem.addItem(pcFormId, mineralFormId_1.id, 1);
-        }, 5000);
-      } else {
-        utility_1.utils.log('Mineral notFound', event);
+var initFarmSystem = function () {
+  utility_1.utils.hook('_onActivate', function (formId, target) {
+    try {
+      if (target === null || target === void 0 ? void 0 : target.baseId) {
+        var objectData_1 = data_1.resources.mineral.find(function (item) {
+          return item.sourceName === target.name;
+        });
+
+        if (objectData_1) {
+          mp.set(formId, 'animation', {});
+          setTimeout(function () {
+            return systems_1.inventorySystem.addItem(formId, objectData_1.baseId, 1);
+          }, 5000);
+        }
       }
     } catch (e) {
       utility_1.utils.log('_onFarm', e);
@@ -1497,7 +1565,7 @@ var initFarmSystem = function () {
 };
 
 exports.initFarmSystem = initFarmSystem;
-},{"../../utility":"utility/index.ts","./data/items/mineral":"systems/professionsSystem/data/items/mineral.ts","../../systems":"systems/index.ts"}],"systems/professionsSystem/index.ts":[function(require,module,exports) {
+},{"../../utility":"utility/index.ts","../../systems":"systems/index.ts","./data":"systems/professionsSystem/data/index.ts"}],"systems/professionsSystem/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -1776,6 +1844,30 @@ var initActiveProfession = function () {
 };
 
 exports.initActiveProfession = initActiveProfession;
+},{"../utility":"utility/index.ts"}],"properties/animation.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initAnimation = void 0;
+
+var utility_1 = require("../utility");
+
+function setAnimation() {
+  if (ctx.value !== ctx.state.animation) {}
+}
+
+var initAnimation = function () {
+  mp.makeProperty('animation', {
+    isVisibleByOwner: true,
+    isVisibleByNeighbors: true,
+    updateOwner: utility_1.getFunctionText(setAnimation),
+    updateNeighbor: ''
+  });
+};
+
+exports.initAnimation = initAnimation;
 },{"../utility":"utility/index.ts"}],"properties/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -1813,7 +1905,9 @@ __exportStar(require("./scale"), exports);
 __exportStar(require("./builtIn"), exports);
 
 __exportStar(require("./activeProfession"), exports);
-},{"./actorValues":"properties/actorValues/index.ts","./consoleOutput":"properties/consoleOutput.ts","./isDead":"properties/isDead.ts","./spawnPoint":"properties/spawnPoint.ts","./scale":"properties/scale.ts","./builtIn":"properties/builtIn.ts","./activeProfession":"properties/activeProfession.ts"}],"events/_.ts":[function(require,module,exports) {
+
+__exportStar(require("./animation"), exports);
+},{"./actorValues":"properties/actorValues/index.ts","./consoleOutput":"properties/consoleOutput.ts","./isDead":"properties/isDead.ts","./spawnPoint":"properties/spawnPoint.ts","./scale":"properties/scale.ts","./builtIn":"properties/builtIn.ts","./activeProfession":"properties/activeProfession.ts","./animation":"properties/animation.ts"}],"events/_.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2318,8 +2412,11 @@ var initActivateEvent = function () {
       try {
         if (e.source && ctx.sp.Spell.from(e.source)) return;
         var target = ctx.getFormIdInServerFormat(e.target.getFormId());
+        var data = e.target;
+        var objectReference = data.getBaseObject();
         ctx.sendEvent({
-          target: target
+          name: objectReference.getName(),
+          baseId: objectReference.getFormID()
         });
       } catch (e) {
         ctx.sp.printConsole('Catch _onActivate', e);
@@ -2420,4 +2517,3 @@ utility_1.utils.hook('onInit', function (pcFormId) {
   mp.onReinit(pcFormId);
 });
 },{"./utility":"utility/index.ts","./properties":"properties/index.ts","./events":"events/index.ts","./systems":"systems/index.ts"}]},{},["index.ts"], null)
-

@@ -2,8 +2,9 @@ import { consoleOutput, getInventar } from '../../properties';
 import { Inventar, MP } from '../../types';
 import { utils } from '../../utility';
 import { inventorySystem } from '../inventorySystem';
-import { MINERALS } from './data/items';
-import { ProfessionNames, Profession, PROFESSIONS, ProfessionStaff, ProfessionStaffNames } from './data/professions';
+import { resources } from './data';
+import { professions } from './data';
+import type { ProfessionNamesProp, ProfessionProp, ProfessionStaffProp, ProfessionStaffNamesProp } from './data';
 
 declare const mp: MP;
 
@@ -13,10 +14,10 @@ declare const mp: MP;
  * @param formId id of actor
  * @param professionName name of profession
  */
-const deleteProfessionItems = (formId: number, professionName: ProfessionNames): boolean => {
+const deleteProfessionItems = (formId: number, professionName: ProfessionNamesProp): boolean => {
 	utils.log('[PROFESSIONS]', 'deleteProfessionItems');
 
-	const currentProfStaff: ProfessionStaff = PROFESSIONS[professionName];
+	const currentProfStaff: ProfessionStaffProp = professions.collectors[professionName];
 
 	// profession NOT FOUND
 	if (!currentProfStaff) {
@@ -26,7 +27,7 @@ const deleteProfessionItems = (formId: number, professionName: ProfessionNames):
 
 	// if one of the staff return false profession can't end
 	const canEndProfession = Object.keys(currentProfStaff).every((key: string) => {
-		const staffName: ProfessionStaffNames = key as ProfessionStaffNames;
+		const staffName: ProfessionStaffNamesProp = key as ProfessionStaffNamesProp;
 		const staff = currentProfStaff[staffName];
 		if (!staff) return false;
 		return inventorySystem.isInInventory(formId, staff);
@@ -34,7 +35,7 @@ const deleteProfessionItems = (formId: number, professionName: ProfessionNames):
 
 	if (canEndProfession) {
 		Object.keys(currentProfStaff).forEach((key: string) => {
-			const staffName: ProfessionStaffNames = key as ProfessionStaffNames;
+			const staffName: ProfessionStaffNamesProp = key as ProfessionStaffNamesProp;
 			const staff = currentProfStaff[staffName];
 			if (!staff) return false;
 			const isDeletedEvent = inventorySystem.deleteItem(formId, staff, 1);
@@ -58,10 +59,10 @@ const deleteProfessionItems = (formId: number, professionName: ProfessionNames):
  * @param formId id of actor
  * @param professionName name of profession
  */
-const addProfessionItems = (formId: number, name: ProfessionNames): void => {
+const addProfessionItems = (formId: number, name: ProfessionNamesProp): void => {
 	utils.log('[PROFESSIONS]', 'addProfessionItems');
 
-	const currentProfStaff = PROFESSIONS[name];
+	const currentProfStaff = professions.collectors[name];
 
 	if (!currentProfStaff) {
 		utils.log('[PROFESSIONS]', 'Error: addProfessionItems() -  Cannot find profession:', name);
@@ -69,7 +70,7 @@ const addProfessionItems = (formId: number, name: ProfessionNames): void => {
 	}
 
 	Object.keys(currentProfStaff).forEach((key: string) => {
-		const staffName: ProfessionStaffNames = key as ProfessionStaffNames;
+		const staffName: ProfessionStaffNamesProp = key as ProfessionStaffNamesProp;
 		const staff = currentProfStaff[staffName];
 		if (!staff) return false;
 
@@ -82,10 +83,10 @@ const addProfessionItems = (formId: number, name: ProfessionNames): void => {
  * @param formId actor Id
  * @param professionName name of profession
  */
-const setProfession = (formId: number, professionName: ProfessionNames) => {
+const setProfession = (formId: number, professionName: ProfessionNamesProp) => {
 	utils.log('[PROFESSIONS]', 'setProfession');
 
-	const currentProfessionStaff = PROFESSIONS[professionName];
+	const currentProfessionStaff = professions.collectors[professionName];
 
 	addProfessionItems(formId, professionName);
 
@@ -104,7 +105,7 @@ const setProfession = (formId: number, professionName: ProfessionNames) => {
  * @param formId actor Id
  * @param profession profession
  */
-const changeProfessionOnServer = (formId: number, profession: Profession): void => {
+const changeProfessionOnServer = (formId: number, profession: ProfessionProp): void => {
 	mp.set(formId, 'activeProfession', profession);
 };
 
@@ -112,7 +113,7 @@ const changeProfessionOnServer = (formId: number, profession: Profession): void 
  * Get active profession from server
  * @param formId actor Id
  */
-const getProfessionFromServer = (formId: number): Profession => {
+const getProfessionFromServer = (formId: number): ProfessionProp => {
 	return mp.get(formId, 'activeProfession');
 };
 
@@ -121,7 +122,7 @@ const getProfessionFromServer = (formId: number): Profession => {
  * @param formId actor Id
  * @param professionName name of profession
  */
-const deleteProfession = (formId: number, professionName: ProfessionNames) => {
+const deleteProfession = (formId: number, professionName: ProfessionNamesProp) => {
 	utils.log('[PROFESSIONS]', 'deleteProfession');
 
 	const isDeleted = deleteProfessionItems(formId, professionName);
@@ -149,7 +150,7 @@ const sellItems = (formId: number, items: { name: string; price: number }[]): vo
 
 	items.forEach((item) => {
 		// TODO: use MINERALS is not correct. Each profession has different items
-		const itemId = MINERALS.find((mineral) => mineral.name === item.name)?.id;
+		const itemId = resources.minerals.find((mineral) => mineral.name === item.name)?.baseId;
 
 		if (itemId !== undefined) {
 			const itemCount = inv.entries.find((itemFind) => itemFind.baseId === itemId)?.count;

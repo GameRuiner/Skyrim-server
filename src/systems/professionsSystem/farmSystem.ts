@@ -1,14 +1,17 @@
 import { utils } from '../../utility';
-import { MINERALS } from './data/items/mineral';
 import { inventorySystem } from '../../systems';
+import { resources } from './data';
+import { MP } from '../../types';
+declare const mp: MP;
 export const initFarmSystem = () => {
-	utils.hook('_onFarm', (pcFormId: number, event: any) => {
+	utils.hook('_onActivate', (formId: number, target: { name: string; baseId: number }) => {
 		try {
-			const mineralFormId = MINERALS.find((mineral) => mineral.sourceName === event.mineralSource);
-			if (mineralFormId) {
-				setTimeout(() => inventorySystem.addItem(pcFormId, mineralFormId.id, 1), 5000);
-			} else {
-				utils.log('Mineral notFound', event);
+			if (target?.baseId) {
+				const objectData = resources.minerals.find((item) => item.sourceName === target.name);
+				if (objectData) {
+					mp.set(formId, 'animation', {});
+					setTimeout(() => inventorySystem.addItem(formId, objectData.baseId, 1), 5000);
+				}
 			}
 		} catch (e) {
 			utils.log('_onFarm', e);
