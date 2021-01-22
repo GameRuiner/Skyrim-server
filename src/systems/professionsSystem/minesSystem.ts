@@ -2,8 +2,8 @@ import { utils } from '../../utility';
 import { CellChangeEvent, MP } from '../../types';
 // import { proffessionNames, proffession } from './dataSystems/professions/index';
 import { professionSystem } from './professionSystem';
-import { getWorldOrCellDesc } from '@properties/builtIn';
-import { mines } from '../../mechanics/dataMechanics/locations/mines';
+import { getWorldOrCellDesc } from '../../properties';
+import { MINES } from './data/locations/mines';
 import { ProfessionNames, Profession, PROFESSIONS, ProfessionStaff, ProfessionStaffNames } from './data/professions';
 
 declare const mp: MP;
@@ -18,7 +18,7 @@ const currentProfessionName: ProfessionNames = 'miner';
  * @param name Desc of cell
  */
 const isMine = (cellDesc: string): boolean => {
-	return mines.find((el) => el.worldId === cellDesc) ? true : false;
+	return MINES.find((el) => el.worldId === cellDesc) ? true : false;
 };
 
 export const initMinesSystem = () => {

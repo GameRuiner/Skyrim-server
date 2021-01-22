@@ -1,5 +1,4 @@
-import { getInventar } from '@properties/builtIn';
-import { consoleOutput } from '../../properties';
+import { consoleOutput, getInventar } from '../../properties';
 import { Inventar, MP } from '../../types';
 import { utils } from '../../utility';
 import { inventorySystem } from '../inventorySystem';

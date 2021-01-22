@@ -1,5 +1,4 @@
-import { getEquipment, getInventar } from '@properties/builtIn';
-import { consoleOutput } from '@properties/consoleOutput';
+import { getEquipment, getInventar, consoleOutput } from '../properties';
 import { CTX } from '../platform';
 // import { consoleOutput, getEquipment, getInventar } from '../properties';
 import { Equipment, MP } from '../types';
