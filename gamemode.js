@@ -1713,6 +1713,25 @@ var systems_1 = require("../../systems");
 
 var data_1 = require("./data");
 
+var farmItem = function (formId, withAnimation, duration, baseId, animations) {
+  if (withAnimation === void 0) {
+    withAnimation = false;
+  }
+
+  if (duration === void 0) {
+    duration = 5;
+  }
+
+  if (withAnimation && animations) mp.set(formId, 'animation', {
+    animations: animations,
+    duration: duration
+  });
+  if (!animations) utility_1.utils.log('farmItem(): animations not found');
+  setTimeout(function () {
+    return systems_1.inventorySystem.addItem(formId, baseId, 1);
+  }, duration ? duration * 1000 : 1);
+};
+
 var initFarmSystem = function () {
   utility_1.utils.hook('_onActivate', function (formId, target) {
     try {
@@ -1726,14 +1745,7 @@ var initFarmSystem = function () {
           if (data) {
             switch (data.type) {
               case 'minerals':
-                var duration = 5;
-                mp.set(formId, 'animation', {
-                  animations: data_1.allAnimation.collector.miner,
-                  duration: duration
-                });
-                setTimeout(function () {
-                  return systems_1.inventorySystem.addItem(formId, data.baseId, 1);
-                }, duration * 1000);
+                farmItem(formId, true, 5, data.baseId, data_1.allAnimation.collector.miner);
                 break;
 
               default:
@@ -1858,7 +1870,6 @@ var utility_1 = require("../utility");
 function setScale() {
   if (ctx.value !== ctx.state.lastScale) {
     ctx.state.lastScale = +ctx.value;
-    ctx.refr.setScale(+ctx.value);
   }
 }
 
