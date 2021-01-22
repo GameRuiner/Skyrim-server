@@ -1,7 +1,8 @@
+import * as skyrimPlatform from './skyrimPlatform';
+
 import { Actor } from './Actor';
 import { Form } from './Form';
 import { ObjectReference } from './ObjectReference';
-import * as skyrimPlatform from './skyrimPlatform';
 
 export interface Game {
 	from: (form: Form) => Game;

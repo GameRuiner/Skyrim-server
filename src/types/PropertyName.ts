@@ -39,6 +39,7 @@ type CustomPropertyName =
 	| 'av_mp_staminadrain'
 	| 'healthNumChanges'
 	| 'magickaNumChanges'
-	| 'staminaNumChanges';
+	| 'staminaNumChanges'
+	| 'activeProfession';
 
 export type PropertyName = SystemPropertyName | CustomPropertyName;

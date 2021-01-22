@@ -4,6 +4,7 @@ import { AttrAll, MP } from '../types';
 import { currentActor } from '../constants';
 import { spawnSystem } from './spawnSystem';
 import { CTX } from '../platform';
+import { inventorySystem } from './inventorySystem';
 
 declare const mp: MP;
 declare const ctx: CTX;
@@ -81,6 +82,7 @@ export const initDevCommands = () => {
 		const sub = args[1];
 		const arg0 = args[2];
 		const arg1 = args[3];
+		const arg2 = args[4];
 		switch (sub) {
 			case 'reinit':
 				reinit(pcFormId, selectedFormId);
@@ -105,9 +107,13 @@ export const initDevCommands = () => {
 				consoleOutput.evalClient(
 					pcFormId,
 					genClientFunction(() => {
-						ctx.sp.Scene
+						ctx.sp.Scene;
 					})
 				);
+				break;
+			case 'additem':
+				if (!arg0) return;
+				inventorySystem.addItem(pcFormId, arg0, arg1 ? +arg1 : 1, arg2 ? true : false);
 				break;
 
 			default:

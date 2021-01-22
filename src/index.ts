@@ -1,8 +1,15 @@
 import { MP } from './types';
 import { initUtils, utils } from './utility';
 
-// import init functions
-import { initActorValue, initConsoleOutput, initIsDead, initScale, initSpawnPoint } from './properties';
+import {
+	initActiveProfession,
+	initActorValue,
+	initConsoleOutput,
+	initIsDead,
+	initScale,
+	initSpawnPoint,
+} from './properties';
+
 import {
 	initAnimationEvent,
 	initActorValueFlushRequiredEvent,
@@ -17,7 +24,7 @@ import {
 	initInputF5Event,
 } from './events';
 
-import { initDevCommands, initMines } from './systems';
+import { initDevCommands, initMinesSystem } from './systems';
 
 declare const mp: MP;
 
@@ -60,12 +67,15 @@ initDevCommands();
 // "events/onAnimationEvent"
 initAnimationEvent();
 
-initScale();
-initMines();
 initCurrentCellChangeEvent();
+initScale();
 initEmptyAnimationEvent();
 initHitStatic();
 initInputF5Event();
+
+// profession
+// initMinesSystem();
+// initActiveProfession();
 
 utils.hook('onInit', (pcFormId: number) => {
 	mp.onReinit(pcFormId);

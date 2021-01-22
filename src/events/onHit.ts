@@ -44,7 +44,7 @@ export const initHitEvent = () => {
 		let damageMod = -25;
 		if (!PRODUCTION) {
 			// help to kill enemies (godmode)
-			//damageMod = 0;
+			damageMod = 0;
 			if (eventData.agressor === pcFormId) {
 				damageMod = -250;
 			}
