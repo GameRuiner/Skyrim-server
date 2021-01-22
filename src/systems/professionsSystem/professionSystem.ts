@@ -3,7 +3,6 @@ import { Inventar, MP } from '../../types';
 import { utils } from '../../utility';
 import { inventorySystem } from '../inventorySystem';
 import { MINERALS } from './data/items';
-// import { MINERALS } from './data/items';
 import { ProfessionNames, Profession, PROFESSIONS, ProfessionStaff, ProfessionStaffNames } from './data/professions';
 
 declare const mp: MP;
