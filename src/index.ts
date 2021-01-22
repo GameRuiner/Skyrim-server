@@ -8,6 +8,7 @@ import {
 	initSpawnPoint,
 	initIsDead,
 	initActorValue,
+	initAnimation,
 } from './properties';
 
 import {
@@ -69,14 +70,16 @@ initDevCommands();
 // "events/onAnimationEvent"
 initAnimationEvent();
 
+initAnimation();
+
 initCurrentCellChangeEvent();
 initScale();
 initEmptyAnimationEvent();
 initHitStatic();
 initInputF5Event();
-initFarmEvent();
 initActivateEvent();
 initFarmSystem();
+// initFarmEvent();
 // profession
 initMinesSystem();
 initActiveProfession();

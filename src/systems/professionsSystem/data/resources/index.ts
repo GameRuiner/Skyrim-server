@@ -1,5 +1,8 @@
-import MINERALS from './minerals';
+import minerals from './minerals';
+import { AllResourcesProp } from './resourcesProp';
 
-export default {
-	minerals: MINERALS,
+const resources: AllResourcesProp = {
+	minerals: minerals,
 };
+
+export default resources;

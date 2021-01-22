@@ -6,7 +6,31 @@ declare const mp: MP;
 declare const ctx: CTX;
 
 function setAnimation() {
-	if (ctx.value !== ctx.state.animation) {
+	try {
+		if (ctx.value !== ctx.state.animation) {
+			ctx.state.animation = ctx.value;
+
+			if (ctx.value.animations) {
+				const animations: {
+					start: string[];
+					end: string[];
+				} = ctx.value.animations;
+				if (animations) {
+					animations.start.forEach((animName) => {
+						ctx.sp.Debug.sendAnimationEvent(ctx.sp.Game.getPlayer(), animName);
+					});
+					ctx.sp.Utility.wait(ctx.value.duration ?? 5).then(() => {
+						animations.end.forEach((animName) => {
+							ctx.sp.Debug.sendAnimationEvent(ctx.sp.Game.getPlayer(), animName);
+						});
+					});
+				} else {
+					ctx.sp.printConsole('Not found animations.');
+				}
+			}
+		}
+	} catch (e) {
+		ctx.sp.printConsole(e);
 	}
 }
 

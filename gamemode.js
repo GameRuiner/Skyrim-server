@@ -1,4 +1,5 @@
 var parcelRequire = undefined;
+var parcelRequire = undefined;
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -1110,39 +1111,65 @@ var initDevCommands = function () {
 };
 
 exports.initDevCommands = initDevCommands;
-},{"../utility":"utility/index.ts","../properties":"properties/index.ts","../constants":"constants/index.ts","./spawnSystem":"systems/spawnSystem.ts","./inventorySystem":"systems/inventorySystem.ts"}],"systems/professionsSystem/data/resources.ts":[function(require,module,exports) {
+},{"../utility":"utility/index.ts","../properties":"properties/index.ts","../constants":"constants/index.ts","./spawnSystem":"systems/spawnSystem.ts","./inventorySystem":"systems/inventorySystem.ts"}],"systems/professionsSystem/data/resources/minerals.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var MINERALS = [{
+var minerals = [{
+  type: 'minerals',
   baseId: 0x71cf3,
   name: 'Железная руда',
+  sourceName: 'Золотая жила'
+}, {
+  type: 'minerals',
+  baseId: 0x5acde,
+  name: 'Золотая руда',
   sourceName: 'Железорудная жила'
+}, {
+  type: 'minerals',
+  baseId: 0x5acdb,
+  name: 'Корундовая руда',
+  sourceName: 'Выход минерала'
+}, {
+  type: 'minerals',
+  baseId: 0x5acdb,
+  name: 'Корундовая руда',
+  sourceName: 'Корундовая жила'
+}, {
+  type: 'minerals',
+  baseId: 0x5ace0,
+  name: 'Лунная руда',
+  sourceName: 'Выход лунного камня'
+}, {
+  type: 'minerals',
+  baseId: 0x5ace1,
+  name: 'Малахитовая руда',
+  sourceName: 'Малахитовая жила'
+}, {
+  type: 'minerals',
+  baseId: 0x5acdd,
+  name: 'Орихалковая руда',
+  sourceName: 'Выход орихалка'
+}, {
+  type: 'minerals',
+  baseId: 0x5ace2,
+  name: 'Ртутная руда',
+  sourceName: 'Ртутная жила'
+}, {
+  type: 'minerals',
+  baseId: 0x5acdf,
+  name: 'Серебряная руда',
+  sourceName: 'Серебряная жила'
+}, {
+  type: 'minerals',
+  baseId: 0x5acdc,
+  name: 'Эбонитовая руда',
+  sourceName: 'Эбонитовая жила'
 }];
-exports.default = {
-  mineral: MINERALS
-};
-},{}],"systems/professionsSystem/data/professions.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var PROFESSIONS = {
-  miner: {
-    tool: 0xe3c16,
-    clothes: 0x80697,
-    boots: 0x1be1b
-  },
-  herbalist: {},
-  woodsman: {}
-};
-exports.default = {
-  professions: PROFESSIONS
-};
-},{}],"systems/professionsSystem/data/index.ts":[function(require,module,exports) {
+exports.default = minerals;
+},{}],"systems/professionsSystem/data/resources/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -1154,75 +1181,20 @@ var __importDefault = this && this.__importDefault || function (mod) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.resourceProp = exports.ProfessionStaff = exports.ProfessionList = exports.ProfessionStaffNames = exports.ProfessionNames = exports.Profession = exports.professions = exports.resources = void 0;
 
-var resources_1 = require("./resources");
+var minerals_1 = __importDefault(require("./minerals"));
 
-Object.defineProperty(exports, "resources", {
-  enumerable: true,
-  get: function () {
-    return __importDefault(resources_1).default;
-  }
-});
-
-var professions_1 = require("./professions");
-
-Object.defineProperty(exports, "professions", {
-  enumerable: true,
-  get: function () {
-    return __importDefault(professions_1).default;
-  }
-});
-
-var professions_2 = require("./professions");
-
-Object.defineProperty(exports, "Profession", {
-  enumerable: true,
-  get: function () {
-    return professions_2.Profession;
-  }
-});
-Object.defineProperty(exports, "ProfessionNames", {
-  enumerable: true,
-  get: function () {
-    return professions_2.ProfessionNames;
-  }
-});
-Object.defineProperty(exports, "ProfessionStaffNames", {
-  enumerable: true,
-  get: function () {
-    return professions_2.ProfessionStaffNames;
-  }
-});
-Object.defineProperty(exports, "ProfessionList", {
-  enumerable: true,
-  get: function () {
-    return professions_2.ProfessionList;
-  }
-});
-Object.defineProperty(exports, "ProfessionStaff", {
-  enumerable: true,
-  get: function () {
-    return professions_2.ProfessionStaff;
-  }
-});
-
-var resources_2 = require("./resources");
-
-Object.defineProperty(exports, "resourceProp", {
-  enumerable: true,
-  get: function () {
-    return resources_2.resourceProp;
-  }
-});
-},{"./resources":"systems/professionsSystem/data/resources.ts","./professions":"systems/professionsSystem/data/professions.ts"}],"systems/professionsSystem/data/professions/index.ts":[function(require,module,exports) {
+var resources = {
+  minerals: minerals_1.default
+};
+exports.default = resources;
+},{"./minerals":"systems/professionsSystem/data/resources/minerals.ts"}],"systems/professionsSystem/data/profession/collectors.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.PROFESSIONS = void 0;
-exports.PROFESSIONS = {
+var collectors = {
   miner: {
     tool: 0xe3c16,
     clothes: 0x80697,
@@ -1231,155 +1203,32 @@ exports.PROFESSIONS = {
   herbalist: {},
   woodsman: {}
 };
-},{}],"systems/professionsSystem/professionSystem.ts":[function(require,module,exports) {
+exports.default = collectors;
+},{}],"systems/professionsSystem/data/profession/index.ts":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var collectors_1 = __importDefault(require("./collectors"));
+
+exports.default = {
+  collectors: collectors_1.default
+};
+},{"./collectors":"systems/professionsSystem/data/profession/collectors.ts"}],"systems/professionsSystem/data/locations/mines.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.professionSystem = void 0;
-
-var properties_1 = require("../../properties");
-
-var utility_1 = require("../../utility");
-
-var inventorySystem_1 = require("../inventorySystem");
-
-var data_1 = require("./data");
-
-var professions_1 = require("./data/professions");
-
-var deleteProfessionItems = function (formId, professionName) {
-  utility_1.utils.log('[PROFESSIONS]', 'deleteProfessionItems');
-  var currentProfStaff = professions_1.PROFESSIONS[professionName];
-
-  if (!currentProfStaff) {
-    utility_1.utils.log('[PROFESSIONS]', 'Error: deleteProfessionItems() - Cannot find profession:', professionName);
-    return false;
-  }
-
-  var canEndProfession = Object.keys(currentProfStaff).every(function (key) {
-    var staffName = key;
-    var staff = currentProfStaff[staffName];
-    if (!staff) return false;
-    return inventorySystem_1.inventorySystem.isInInventory(formId, staff);
-  });
-
-  if (canEndProfession) {
-    Object.keys(currentProfStaff).forEach(function (key) {
-      var staffName = key;
-      var staff = currentProfStaff[staffName];
-      if (!staff) return false;
-      var isDeletedEvent = inventorySystem_1.inventorySystem.deleteItem(formId, staff, 1);
-
-      if (!isDeletedEvent.success) {
-        utility_1.utils.log('[PROFESSIONS]', isDeletedEvent.message);
-      }
-    });
-    properties_1.consoleOutput.printNote(formId, 'Ты уволен! Экипировка возвращена.');
-    return true;
-  } else {
-    var messageError = 'Ошибка: игрок не может уволиться, не все предметы могут быть возвращены!';
-    properties_1.consoleOutput.printNote(formId, messageError);
-    utility_1.utils.log('[PROFESSIONS]', messageError);
-    return false;
-  }
-};
-
-var addProfessionItems = function (formId, name) {
-  utility_1.utils.log('[PROFESSIONS]', 'addProfessionItems');
-  var currentProfStaff = professions_1.PROFESSIONS[name];
-
-  if (!currentProfStaff) {
-    utility_1.utils.log('[PROFESSIONS]', 'Error: addProfessionItems() -  Cannot find profession:', name);
-    return;
-  }
-
-  Object.keys(currentProfStaff).forEach(function (key) {
-    var staffName = key;
-    var staff = currentProfStaff[staffName];
-    if (!staff) return false;
-    inventorySystem_1.inventorySystem.addItem(formId, staff, 1);
-  });
-};
-
-var setProfession = function (formId, professionName) {
-  utility_1.utils.log('[PROFESSIONS]', 'setProfession');
-  var currentProfessionStaff = professions_1.PROFESSIONS[professionName];
-  addProfessionItems(formId, professionName);
-  var oldEquipment = inventorySystem_1.inventorySystem.getAllEquipedItems(formId);
-  changeProfessionOnServer(formId, {
-    name: professionName,
-    equipment: currentProfessionStaff,
-    oldEquipment: oldEquipment,
-    isActive: true
-  });
-};
-
-var changeProfessionOnServer = function (formId, profession) {
-  mp.set(formId, 'activeProfession', profession);
-};
-
-var getProfessionFromServer = function (formId) {
-  return mp.get(formId, 'activeProfession');
-};
-
-var deleteProfession = function (formId, professionName) {
-  utility_1.utils.log('[PROFESSIONS]', 'deleteProfession');
-  var isDeleted = deleteProfessionItems(formId, professionName);
-
-  if (!isDeleted) {
-    utility_1.utils.log('[PROFESSIONS]', 'Error: deleteProfessionItems() - error in deleteItem() ');
-  } else {
-    var oldEquipment = mp.get(formId, 'activeProfession').oldEquipment;
-    utility_1.utils.log('[PROFESSIONS]', oldEquipment);
-    changeProfessionOnServer(formId, {
-      oldEquipment: oldEquipment,
-      isActive: false
-    });
-  }
-};
-
-var sellItems = function (formId, items) {
-  var inv = properties_1.getInventar(formId);
-  items.forEach(function (item) {
-    var _a, _b;
-
-    var itemId = (_a = data_1.resources.mineral.find(function (mineral) {
-      return mineral.name === item.name;
-    })) === null || _a === void 0 ? void 0 : _a.id;
-
-    if (itemId !== undefined) {
-      var itemCount = (_b = inv.entries.find(function (itemFind) {
-        return itemFind.baseId === itemId;
-      })) === null || _b === void 0 ? void 0 : _b.count;
-
-      if (itemCount && itemCount > 0) {
-        inventorySystem_1.inventorySystem.deleteItem(formId, itemId, itemCount);
-        var msg = "\u0423\u0434\u0430\u043B\u0435\u043D\u043E " + item.name + ": " + itemCount + ", \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u043E \u0437\u043E\u043B\u043E\u0442\u043E " + itemCount * item.price + ".";
-        inventorySystem_1.inventorySystem.addItem(formId, 15, itemCount * item.price);
-      }
-    }
-  });
-};
-
-exports.professionSystem = {
-  set: setProfession,
-  setToServer: changeProfessionOnServer,
-  getFromServer: getProfessionFromServer,
-  delete: deleteProfession,
-  deleteItems: deleteProfessionItems,
-  addItems: addProfessionItems,
-  sellItems: sellItems
-};
-},{"../../properties":"properties/index.ts","../../utility":"utility/index.ts","../inventorySystem":"systems/inventorySystem.ts","./data":"systems/professionsSystem/data/index.ts","./data/professions":"systems/professionsSystem/data/professions/index.ts"}],"systems/professionsSystem/data/locations/mines.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.MINES = void 0;
-exports.MINES = [{
+var MINES = [{
   baseId: 0x2c778,
   name: 'DawnstarIronBreakerMine',
   ruName: 'Железорудная шахта'
@@ -1465,7 +1314,326 @@ exports.MINES = [{
   ruName: 'Лагерь Чистых родников',
   worldId: '43fab:Skyrim.esm'
 }];
-},{}],"systems/professionsSystem/minesSystem.ts":[function(require,module,exports) {
+exports.default = MINES;
+},{}],"systems/professionsSystem/data/locations/index.ts":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var mines_1 = __importDefault(require("./mines"));
+
+exports.default = {
+  mines: mines_1.default
+};
+},{"./mines":"systems/professionsSystem/data/locations/mines.ts"}],"systems/professionsSystem/data/animations/collectors.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var collectors = {
+  miner: {
+    start: ['idleplayer', 'idlepickaxetableenter'],
+    end: ['idlepickaxeexit', 'idlepickaxetableexit', 'idlechairexitstart']
+  }
+};
+exports.default = collectors;
+},{}],"systems/professionsSystem/data/animations/index.ts":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var collectors_1 = __importDefault(require("./collectors"));
+
+var allAnimation = {
+  collector: collectors_1.default
+};
+exports.default = allAnimation;
+},{"./collectors":"systems/professionsSystem/data/animations/collectors.ts"}],"systems/professionsSystem/data/resources/resourcesProp.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+},{}],"systems/professionsSystem/data/index.ts":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AnimationProp = exports.locationProp = exports.ProfessionTypesProp = exports.ProfessionStaffProp = exports.ProfessionListProp = exports.ProfessionStaffNamesProp = exports.ProfessionNamesProp = exports.ProfessionProp = exports.ResourcesTypesProp = exports.ResourceProp = exports.allAnimation = exports.locations = exports.professions = exports.resources = void 0;
+
+var resources_1 = require("./resources");
+
+Object.defineProperty(exports, "resources", {
+  enumerable: true,
+  get: function () {
+    return __importDefault(resources_1).default;
+  }
+});
+
+var profession_1 = require("./profession");
+
+Object.defineProperty(exports, "professions", {
+  enumerable: true,
+  get: function () {
+    return __importDefault(profession_1).default;
+  }
+});
+
+var locations_1 = require("./locations");
+
+Object.defineProperty(exports, "locations", {
+  enumerable: true,
+  get: function () {
+    return __importDefault(locations_1).default;
+  }
+});
+
+var animations_1 = require("./animations");
+
+Object.defineProperty(exports, "allAnimation", {
+  enumerable: true,
+  get: function () {
+    return __importDefault(animations_1).default;
+  }
+});
+
+var resourcesProp_1 = require("./resources/resourcesProp");
+
+Object.defineProperty(exports, "ResourceProp", {
+  enumerable: true,
+  get: function () {
+    return resourcesProp_1.ResourceProp;
+  }
+});
+Object.defineProperty(exports, "ResourcesTypesProp", {
+  enumerable: true,
+  get: function () {
+    return resourcesProp_1.ResourcesTypesProp;
+  }
+});
+
+var professionProp_1 = require("./profession/professionProp");
+
+Object.defineProperty(exports, "ProfessionProp", {
+  enumerable: true,
+  get: function () {
+    return professionProp_1.ProfessionProp;
+  }
+});
+Object.defineProperty(exports, "ProfessionNamesProp", {
+  enumerable: true,
+  get: function () {
+    return professionProp_1.ProfessionNamesProp;
+  }
+});
+Object.defineProperty(exports, "ProfessionStaffNamesProp", {
+  enumerable: true,
+  get: function () {
+    return professionProp_1.ProfessionStaffNamesProp;
+  }
+});
+Object.defineProperty(exports, "ProfessionListProp", {
+  enumerable: true,
+  get: function () {
+    return professionProp_1.ProfessionListProp;
+  }
+});
+Object.defineProperty(exports, "ProfessionStaffProp", {
+  enumerable: true,
+  get: function () {
+    return professionProp_1.ProfessionStaffProp;
+  }
+});
+Object.defineProperty(exports, "ProfessionTypesProp", {
+  enumerable: true,
+  get: function () {
+    return professionProp_1.ProfessionTypesProp;
+  }
+});
+
+var locationProp_1 = require("./locations/locationProp");
+
+Object.defineProperty(exports, "locationProp", {
+  enumerable: true,
+  get: function () {
+    return locationProp_1.location;
+  }
+});
+
+var animationsProp_1 = require("./animations/animationsProp");
+
+Object.defineProperty(exports, "AnimationProp", {
+  enumerable: true,
+  get: function () {
+    return animationsProp_1.AnimationProp;
+  }
+});
+},{"./resources":"systems/professionsSystem/data/resources/index.ts","./profession":"systems/professionsSystem/data/profession/index.ts","./locations":"systems/professionsSystem/data/locations/index.ts","./animations":"systems/professionsSystem/data/animations/index.ts","./resources/resourcesProp":"systems/professionsSystem/data/resources/resourcesProp.ts","./profession/professionProp":"systems/professionsSystem/data/resources/resourcesProp.ts","./locations/locationProp":"systems/professionsSystem/data/resources/resourcesProp.ts","./animations/animationsProp":"systems/professionsSystem/data/resources/resourcesProp.ts"}],"systems/professionsSystem/professionSystem.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.professionSystem = void 0;
+
+var properties_1 = require("../../properties");
+
+var utility_1 = require("../../utility");
+
+var inventorySystem_1 = require("../inventorySystem");
+
+var data_1 = require("./data");
+
+var data_2 = require("./data");
+
+var deleteProfessionItems = function (formId, professionName) {
+  utility_1.utils.log('[PROFESSIONS]', 'deleteProfessionItems');
+  var currentProfStaff = data_2.professions.collectors[professionName];
+
+  if (!currentProfStaff) {
+    utility_1.utils.log('[PROFESSIONS]', 'Error: deleteProfessionItems() - Cannot find profession:', professionName);
+    return false;
+  }
+
+  var canEndProfession = Object.keys(currentProfStaff).every(function (key) {
+    var staffName = key;
+    var staff = currentProfStaff[staffName];
+    if (!staff) return false;
+    return inventorySystem_1.inventorySystem.isInInventory(formId, staff);
+  });
+
+  if (canEndProfession) {
+    Object.keys(currentProfStaff).forEach(function (key) {
+      var staffName = key;
+      var staff = currentProfStaff[staffName];
+      if (!staff) return false;
+      var isDeletedEvent = inventorySystem_1.inventorySystem.deleteItem(formId, staff, 1);
+
+      if (!isDeletedEvent.success) {
+        utility_1.utils.log('[PROFESSIONS]', isDeletedEvent.message);
+      }
+    });
+    properties_1.consoleOutput.printNote(formId, 'Ты уволен! Экипировка возвращена.');
+    return true;
+  } else {
+    var messageError = 'Ошибка: игрок не может уволиться, не все предметы могут быть возвращены!';
+    properties_1.consoleOutput.printNote(formId, messageError);
+    utility_1.utils.log('[PROFESSIONS]', messageError);
+    return false;
+  }
+};
+
+var addProfessionItems = function (formId, name) {
+  utility_1.utils.log('[PROFESSIONS]', 'addProfessionItems');
+  var currentProfStaff = data_2.professions.collectors[name];
+
+  if (!currentProfStaff) {
+    utility_1.utils.log('[PROFESSIONS]', 'Error: addProfessionItems() -  Cannot find profession:', name);
+    return;
+  }
+
+  Object.keys(currentProfStaff).forEach(function (key) {
+    var staffName = key;
+    var staff = currentProfStaff[staffName];
+    if (!staff) return false;
+    inventorySystem_1.inventorySystem.addItem(formId, staff, 1);
+  });
+};
+
+var setProfession = function (formId, professionName) {
+  utility_1.utils.log('[PROFESSIONS]', 'setProfession');
+  var currentProfessionStaff = data_2.professions.collectors[professionName];
+  addProfessionItems(formId, professionName);
+  var oldEquipment = inventorySystem_1.inventorySystem.getAllEquipedItems(formId);
+  changeProfessionOnServer(formId, {
+    name: professionName,
+    equipment: currentProfessionStaff,
+    oldEquipment: oldEquipment,
+    isActive: true
+  });
+};
+
+var changeProfessionOnServer = function (formId, profession) {
+  mp.set(formId, 'activeProfession', profession);
+};
+
+var getProfessionFromServer = function (formId) {
+  return mp.get(formId, 'activeProfession');
+};
+
+var deleteProfession = function (formId, professionName) {
+  utility_1.utils.log('[PROFESSIONS]', 'deleteProfession');
+  var isDeleted = deleteProfessionItems(formId, professionName);
+
+  if (!isDeleted) {
+    utility_1.utils.log('[PROFESSIONS]', 'Error: deleteProfessionItems() - error in deleteItem() ');
+  } else {
+    var oldEquipment = mp.get(formId, 'activeProfession').oldEquipment;
+    utility_1.utils.log('[PROFESSIONS]', oldEquipment);
+    changeProfessionOnServer(formId, {
+      oldEquipment: oldEquipment,
+      isActive: false
+    });
+  }
+};
+
+var sellItems = function (formId, items) {
+  var inv = properties_1.getInventar(formId);
+  items.forEach(function (item) {
+    var _a, _b;
+
+    var itemId = (_a = data_1.resources.minerals.find(function (mineral) {
+      return mineral.name === item.name;
+    })) === null || _a === void 0 ? void 0 : _a.baseId;
+
+    if (itemId !== undefined) {
+      var itemCount = (_b = inv.entries.find(function (itemFind) {
+        return itemFind.baseId === itemId;
+      })) === null || _b === void 0 ? void 0 : _b.count;
+
+      if (itemCount && itemCount > 0) {
+        inventorySystem_1.inventorySystem.deleteItem(formId, itemId, itemCount);
+        var msg = "\u0423\u0434\u0430\u043B\u0435\u043D\u043E " + item.name + ": " + itemCount + ", \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u043E \u0437\u043E\u043B\u043E\u0442\u043E " + itemCount * item.price + ".";
+        inventorySystem_1.inventorySystem.addItem(formId, 15, itemCount * item.price);
+      }
+    }
+  });
+};
+
+exports.professionSystem = {
+  set: setProfession,
+  setToServer: changeProfessionOnServer,
+  getFromServer: getProfessionFromServer,
+  delete: deleteProfession,
+  deleteItems: deleteProfessionItems,
+  addItems: addProfessionItems,
+  sellItems: sellItems
+};
+},{"../../properties":"properties/index.ts","../../utility":"utility/index.ts","../inventorySystem":"systems/inventorySystem.ts","./data":"systems/professionsSystem/data/index.ts"}],"systems/professionsSystem/minesSystem.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1479,13 +1647,13 @@ var professionSystem_1 = require("./professionSystem");
 
 var properties_1 = require("../../properties");
 
-var mines_1 = require("./data/locations/mines");
+var data_1 = require("./data");
 
 var IS_SELL = true;
 var currentProfessionName = 'miner';
 
 var isMine = function (cellDesc) {
-  return mines_1.MINES.find(function (el) {
+  return data_1.locations.mines.find(function (el) {
     return el.worldId === cellDesc;
   }) ? true : false;
 };
@@ -1529,7 +1697,7 @@ var initMinesSystem = function () {
 };
 
 exports.initMinesSystem = initMinesSystem;
-},{"../../utility":"utility/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","../../properties":"properties/index.ts","./data/locations/mines":"systems/professionsSystem/data/locations/mines.ts"}],"systems/professionsSystem/farmSystem.ts":[function(require,module,exports) {
+},{"../../utility":"utility/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","../../properties":"properties/index.ts","./data":"systems/professionsSystem/data/index.ts"}],"systems/professionsSystem/farmSystem.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1546,17 +1714,34 @@ var data_1 = require("./data");
 var initFarmSystem = function () {
   utility_1.utils.hook('_onActivate', function (formId, target) {
     try {
-      if (target === null || target === void 0 ? void 0 : target.baseId) {
-        var objectData_1 = data_1.resources.mineral.find(function (item) {
-          return item.sourceName === target.name;
-        });
+      if ((target === null || target === void 0 ? void 0 : target.baseId) && (target === null || target === void 0 ? void 0 : target.name)) {
+        Object.keys(data_1.resources).every(function (key) {
+          var resourceType = key;
+          var data = data_1.resources[resourceType].find(function (item) {
+            return item.sourceName === target.name;
+          });
 
-        if (objectData_1) {
-          mp.set(formId, 'animation', {});
-          setTimeout(function () {
-            return systems_1.inventorySystem.addItem(formId, objectData_1.baseId, 1);
-          }, 5000);
-        }
+          if (data) {
+            var sendEvent = false;
+
+            switch (data.type) {
+              case 'minerals':
+                mp.set(formId, 'animation', {
+                  animations: data_1.allAnimation.collector.miner,
+                  duration: 5
+                });
+                sendEvent = true;
+                break;
+
+              default:
+                break;
+            }
+
+            sendEvent && setTimeout(function () {
+              return systems_1.inventorySystem.addItem(formId, data.baseId, 1);
+            }, 5000);
+          }
+        });
       }
     } catch (e) {
       utility_1.utils.log('_onFarm', e);
@@ -1855,7 +2040,32 @@ exports.initAnimation = void 0;
 var utility_1 = require("../utility");
 
 function setAnimation() {
-  if (ctx.value !== ctx.state.animation) {}
+  var _a;
+
+  try {
+    if (ctx.value !== ctx.state.animation) {
+      ctx.state.animation = ctx.value;
+
+      if (ctx.value.animations) {
+        var animations_1 = ctx.value.animations;
+
+        if (animations_1) {
+          animations_1.start.forEach(function (animName) {
+            ctx.sp.Debug.sendAnimationEvent(ctx.sp.Game.getPlayer(), animName);
+          });
+          ctx.sp.Utility.wait((_a = ctx.value.duration) !== null && _a !== void 0 ? _a : 5).then(function () {
+            animations_1.end.forEach(function (animName) {
+              ctx.sp.Debug.sendAnimationEvent(ctx.sp.Game.getPlayer(), animName);
+            });
+          });
+        } else {
+          ctx.sp.printConsole('Not found animations.');
+        }
+      }
+    }
+  } catch (e) {
+    ctx.sp.printConsole(e);
+  }
 }
 
 var initAnimation = function () {
@@ -2503,12 +2713,12 @@ properties_1.initSpawnPoint();
 events_1.initConsoleCommandEvent();
 systems_1.initDevCommands();
 events_1.initAnimationEvent();
+properties_1.initAnimation();
 events_1.initCurrentCellChangeEvent();
 properties_1.initScale();
 events_1.initEmptyAnimationEvent();
 events_1.initHitStatic();
 events_1.initInputF5Event();
-events_1.initFarmEvent();
 events_1.initActivateEvent();
 systems_1.initFarmSystem();
 systems_1.initMinesSystem();
@@ -2517,3 +2727,4 @@ utility_1.utils.hook('onInit', function (pcFormId) {
   mp.onReinit(pcFormId);
 });
 },{"./utility":"utility/index.ts","./properties":"properties/index.ts","./events":"events/index.ts","./systems":"systems/index.ts"}]},{},["index.ts"], null)
+

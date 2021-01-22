@@ -1,5 +1,5 @@
 import { Equipment } from '../../../../types/SystemProp';
-
+export type ProfessionTypesProp = 'collector';
 export type ProfessionNamesProp = 'miner' | 'herbalist' | 'woodsman';
 export type ProfessionStaffNamesProp = 'tool' | 'clothes' | 'boots' | 'helmet' | 'gloves';
 
