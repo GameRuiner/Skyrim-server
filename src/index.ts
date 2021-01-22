@@ -26,7 +26,7 @@ import {
 	initActivateEvent,
 } from './events';
 
-import { initDevCommands, initMinesSystem, initFarmSystem } from './systems';
+import { initDevCommands, initMinesSystem, initWoodsmanSystem } from './systems';
 
 declare const mp: MP;
 
@@ -78,8 +78,9 @@ initFarmEvent();
 initActivateEvent();
 initFarmSystem();
 // profession
-initMinesSystem();
 initActiveProfession();
+initMinesSystem();
+initWoodsmanSystem();
 
 utils.hook('onInit', (pcFormId: number) => {
 	mp.onReinit(pcFormId);
