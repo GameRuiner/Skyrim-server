@@ -9,6 +9,7 @@ function setActiveProfession() {
 	try {
 		if (ctx.value !== ctx.state.activeProfession) {
 			ctx.state.activeProfession = ctx.value;
+
 			if (ctx.value) {
 				const player = ctx.sp.Game.getPlayer();
 				if (ctx.value.oldEquipment && !ctx.value.isActive) {

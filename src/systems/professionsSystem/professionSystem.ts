@@ -167,6 +167,7 @@ const sellItems = (formId: number, items: { name: string; price: number }[]): vo
 				// 	})
 				// );
 
+				//15 - gold id
 				inventorySystem.addItem(formId, 15, itemCount * item.price);
 			}
 		}

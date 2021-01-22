@@ -22,9 +22,11 @@ import {
 	initEmptyAnimationEvent,
 	initHitStatic,
 	initInputF5Event,
+	initFarmEvent,
+	initActivateEvent,
 } from './events';
 
-import { initDevCommands, initMinesSystem } from './systems';
+import { initDevCommands, initMinesSystem, initFarmSystem } from './systems';
 
 declare const mp: MP;
 
@@ -72,7 +74,9 @@ initScale();
 initEmptyAnimationEvent();
 initHitStatic();
 initInputF5Event();
-
+initFarmEvent();
+initActivateEvent();
+initFarmSystem();
 // profession
 initMinesSystem();
 initActiveProfession();

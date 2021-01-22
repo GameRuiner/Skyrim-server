@@ -1,7 +1,8 @@
 export interface CellChangeEvent {
 	hasError: boolean;
 	err?: string;
-	cell?: any;
+	currentCell?: any;
+	prevCell?: any;
 }
 export interface ActivateEvent {
 	target: number;
@@ -14,8 +15,4 @@ export type message = {
 	type: 'error' | 'message' | 'add' | 'delete';
 	baseId?: number;
 	count?: number;
-	hasError?: boolean;
-	err?: string;
-	currentCell?: any;
-	prevCell?: any;
 };

@@ -1,6 +1,7 @@
-import { CTX, MP } from '../platform';
+import { CTX } from '../platform';
 import { ObjectReference } from '../platform/skyrimPlatform';
 import { getFunctionText, utils } from '../utility';
+import { MP } from '../types';
 
 declare const mp: MP;
 declare const ctx: CTX;

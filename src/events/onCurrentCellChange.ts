@@ -4,18 +4,12 @@ import { genClientFunction, utils } from '../utility';
 
 declare const mp: MP;
 declare const ctx: CTX;
-// ctx.sp.printConsole('[CELL_CHANGE v2]');
-// ctx.sp.printConsole(
-// 	ctx.state.currentCell?.id,
-// 	currentCellData.id,
-// 	ctx.state.currentCellId !== currentCellData.id
-// );
 
 export const initCurrentCellChangeEvent = () => {
 	mp.makeEventSource(
 		'_onCurrentCellChange',
 		genClientFunction(() => {
-			ctx.sp.once('update', () => {
+			ctx.sp.on('update', () => {
 				try {
 					let result: CellChangeEvent = { hasError: false };
 					const currentCell = ctx.sp.Game.getPlayer().getParentCell();
@@ -44,6 +38,7 @@ export const initCurrentCellChangeEvent = () => {
 		}, {})
 	);
 	utils.hook('_onCurrentCellChange', (pcFormId: number, event: CellChangeEvent) => {
+		utils.log('[CELL_CHANGE]', pcFormId, event.currentCell);
 		if (!event.hasError) {
 			utils.log('[CELL_CHANGE]', pcFormId, event.currentCell);
 			// utils.log('[CELL_CHANGE]', mp.get(pcFormId, 'worldOrCellDesc'));

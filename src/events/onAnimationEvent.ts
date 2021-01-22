@@ -1,7 +1,6 @@
 import { MP } from '../types';
 import { genClientFunction, utils } from '../utility';
 import { CTX } from '../platform';
-import { consoleOutput } from '../properties';
 import { currentActor, TRACE_ANIMATION } from '../constants';
 
 declare const mp: MP;

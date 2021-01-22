@@ -1462,7 +1462,42 @@ var initMinesSystem = function () {
 };
 
 exports.initMinesSystem = initMinesSystem;
-},{"../../utility":"utility/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","../../properties":"properties/index.ts","./data/locations/mines":"systems/professionsSystem/data/locations/mines.ts"}],"systems/professionsSystem/index.ts":[function(require,module,exports) {
+},{"../../utility":"utility/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","../../properties":"properties/index.ts","./data/locations/mines":"systems/professionsSystem/data/locations/mines.ts"}],"systems/professionsSystem/farmSystem.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initFarmSystem = void 0;
+
+var utility_1 = require("../../utility");
+
+var mineral_1 = require("./data/items/mineral");
+
+var systems_1 = require("../../systems");
+
+var initFarmSystem = function () {
+  utility_1.utils.hook('_onFarm', function (pcFormId, event) {
+    try {
+      var mineralFormId_1 = mineral_1.MINERALS.find(function (mineral) {
+        return mineral.sourceName === event.mineralSource;
+      });
+
+      if (mineralFormId_1) {
+        setTimeout(function () {
+          return systems_1.inventorySystem.addItem(pcFormId, mineralFormId_1.id, 1);
+        }, 5000);
+      } else {
+        utility_1.utils.log('Mineral notFound', event);
+      }
+    } catch (e) {
+      utility_1.utils.log('_onFarm', e);
+    }
+  });
+};
+
+exports.initFarmSystem = initFarmSystem;
+},{"../../utility":"utility/index.ts","./data/items/mineral":"systems/professionsSystem/data/items/mineral.ts","../../systems":"systems/index.ts"}],"systems/professionsSystem/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -1489,7 +1524,9 @@ Object.defineProperty(exports, "__esModule", {
 __exportStar(require("./minesSystem"), exports);
 
 __exportStar(require("./professionSystem"), exports);
-},{"./minesSystem":"systems/professionsSystem/minesSystem.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts"}],"systems/index.ts":[function(require,module,exports) {
+
+__exportStar(require("./farmSystem"), exports);
+},{"./minesSystem":"systems/professionsSystem/minesSystem.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","./farmSystem":"systems/professionsSystem/farmSystem.ts"}],"systems/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -1939,7 +1976,7 @@ var utility_1 = require("../utility");
 
 var initCurrentCellChangeEvent = function () {
   mp.makeEventSource('_onCurrentCellChange', utility_1.genClientFunction(function () {
-    ctx.sp.once('update', function () {
+    ctx.sp.on('update', function () {
       try {
         var result = {
           hasError: false
@@ -1972,6 +2009,8 @@ var initCurrentCellChangeEvent = function () {
     });
   }, {}));
   utility_1.utils.hook('_onCurrentCellChange', function (pcFormId, event) {
+    utility_1.utils.log('[CELL_CHANGE]', pcFormId, event.currentCell);
+
     if (!event.hasError) {
       utility_1.utils.log('[CELL_CHANGE]', pcFormId, event.currentCell);
     } else {
@@ -2084,9 +2123,7 @@ var initHitStatic = function () {
       });
     });
   }, {}));
-  utility_1.utils.hook('_onHitStatic', function (pcFormId, eventData) {
-    utility_1.utils.log('[_onHitStatic]', eventData);
-  });
+  utility_1.utils.hook('_onHitStatic', function (pcFormId, eventData) {});
 };
 
 exports.initHitStatic = initHitStatic;
@@ -2374,6 +2411,9 @@ properties_1.initScale();
 events_1.initEmptyAnimationEvent();
 events_1.initHitStatic();
 events_1.initInputF5Event();
+events_1.initFarmEvent();
+events_1.initActivateEvent();
+systems_1.initFarmSystem();
 systems_1.initMinesSystem();
 properties_1.initActiveProfession();
 utility_1.utils.hook('onInit', function (pcFormId) {
