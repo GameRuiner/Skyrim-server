@@ -24,7 +24,7 @@ import {
 	initInputF5Event,
 } from './events';
 
-import { initDevCommands, initMinesSystem } from './systems';
+import { initDevCommands, initMinesSystem, initWoodsmanSystem } from './systems';
 
 declare const mp: MP;
 
@@ -74,8 +74,9 @@ initHitStatic();
 initInputF5Event();
 
 // profession
-initMinesSystem();
 initActiveProfession();
+initMinesSystem();
+initWoodsmanSystem();
 
 utils.hook('onInit', (pcFormId: number) => {
 	mp.onReinit(pcFormId);

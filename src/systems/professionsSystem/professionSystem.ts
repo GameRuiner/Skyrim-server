@@ -121,7 +121,7 @@ const getProfessionFromServer = (formId: number): Profession => {
  * @param formId actor Id
  * @param professionName name of profession
  */
-const deleteProfession = (formId: number, professionName: ProfessionNames) => {
+const deleteProfession = (formId: number, professionName: ProfessionNames): boolean => {
 	utils.log('[PROFESSIONS]', 'deleteProfession');
 
 	const isDeleted = deleteProfessionItems(formId, professionName);
@@ -137,6 +137,7 @@ const deleteProfession = (formId: number, professionName: ProfessionNames) => {
 			isActive: false,
 		});
 	}
+	return isDeleted;
 };
 
 /**
