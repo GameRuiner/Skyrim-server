@@ -1,12 +1,16 @@
 import * as skyrimPlatform from './skyrimPlatform';
 
+import { Actor } from './Actor';
+import { Form } from './Form';
+import { ObjectReference } from './ObjectReference';
+
 export interface Game {
-	from: (form: skyrimPlatform.Form) => Game;
+	from: (form: Form) => Game;
 	addAchievement: (aiAchievementID: number) => void;
 	addHavokBallAndSocketConstraint: (
-		arRefA: skyrimPlatform.ObjectReference,
+		arRefA: ObjectReference,
 		arRefANode: string,
-		arRefB: skyrimPlatform.ObjectReference,
+		arRefB: ObjectReference,
 		arRefBNode: string,
 		afRefALocalOffsetX: number,
 		afRefALocalOffsetY: number,
@@ -43,70 +47,52 @@ export interface Game {
 		abJournalTabs: boolean,
 		aiDisablePOVType: number
 	) => void;
-	fadeOutGame: (
-		abFadingOut: boolean,
-		abBlackFade: boolean,
-		afSecsBeforeFade: number,
-		afFadeDuration: number
-	) => void;
-	fastTravel: (akDestination: skyrimPlatform.ObjectReference) => void;
-	findClosestActor: (
-		afX: number,
-		afY: number,
-		afZ: number,
-		afRadius: number
-	) => skyrimPlatform.Actor;
+	fadeOutGame: (abFadingOut: boolean, abBlackFade: boolean, afSecsBeforeFade: number, afFadeDuration: number) => void;
+	fastTravel: (akDestination: ObjectReference) => void;
+	findClosestActor: (afX: number, afY: number, afZ: number, afRadius: number) => Actor;
 	findClosestReferenceOfAnyTypeInList: (
 		arBaseObjects: skyrimPlatform.FormList,
 		afX: number,
 		afY: number,
 		afZ: number,
 		afRadius: number
-	) => skyrimPlatform.ObjectReference;
+	) => ObjectReference;
 	findClosestReferenceOfType: (
-		arBaseObject: skyrimPlatform.Form,
+		arBaseObject: Form,
 		afX: number,
 		afY: number,
 		afZ: number,
 		afRadius: number
-	) => skyrimPlatform.ObjectReference;
-	findRandomActor: (
-		afX: number,
-		afY: number,
-		afZ: number,
-		afRadius: number
-	) => skyrimPlatform.Actor;
+	) => ObjectReference;
+	findRandomActor: (afX: number, afY: number, afZ: number, afRadius: number) => Actor;
 	findRandomReferenceOfAnyTypeInList: (
 		arBaseObjects: skyrimPlatform.FormList,
 		afX: number,
 		afY: number,
 		afZ: number,
 		afRadius: number
-	) => skyrimPlatform.ObjectReference;
+	) => ObjectReference;
 	findRandomReferenceOfType: (
-		arBaseObject: skyrimPlatform.Form,
+		arBaseObject: Form,
 		afX: number,
 		afY: number,
 		afZ: number,
 		afRadius: number
-	) => skyrimPlatform.ObjectReference;
+	) => ObjectReference;
 	forceFirstPerson: () => void;
 	forceThirdPerson: () => void;
 	getCameraState: () => number;
-	getCurrentConsoleRef: () => skyrimPlatform.ObjectReference;
-	getCurrentCrosshairRef: () => skyrimPlatform.ObjectReference;
-	getDialogueTarget: () => skyrimPlatform.ObjectReference;
+	getCurrentConsoleRef: () => ObjectReference;
+	getCurrentCrosshairRef: () => ObjectReference;
+	getDialogueTarget: () => ObjectReference;
 	getExperienceForLevel: (currentLevel: number) => number;
-	getForm: (aiFormID: number) => skyrimPlatform.Form;
-	getFormEx: (formId: number) => skyrimPlatform.Form;
-	getFormFromFile: (
-		aiFormID: number,
-		asFilename: string
-	) => skyrimPlatform.Form;
+	getForm: (aiFormID: number) => Form;
+	getFormEx: (formId: number) => Form;
+	getFormFromFile: (aiFormID: number, asFilename: string) => Form;
 	getGameSettingFloat: (asGameSetting: string) => number;
 	getGameSettingInt: (asGameSetting: string) => number;
 	getGameSettingString: (asGameSetting: string) => Promise<string>;
-	getHotkeyBoundObject: (hotkey: number) => skyrimPlatform.Form;
+	getHotkeyBoundObject: (hotkey: number) => Form;
 	getLightModAuthor: (idx: number) => string;
 	getLightModByName: (name: string) => number;
 	getLightModCount: () => number;
@@ -127,9 +113,9 @@ export interface Game {
 	getNumTintsByType: (type: number) => number;
 	getPerkPoints: () => number;
 	getPlayerExperience: () => number;
-	getPlayerGrabbedRef: () => skyrimPlatform.ObjectReference;
+	getPlayerGrabbedRef: () => ObjectReference;
 	getPlayerMovementMode: () => boolean;
-	getPlayersLastRiddenHorse: () => skyrimPlatform.Actor;
+	getPlayersLastRiddenHorse: () => Actor;
 	getRealHoursPassed: () => number;
 	getSunPositionX: () => number;
 	getSunPositionY: () => number;
@@ -149,7 +135,7 @@ export interface Game {
 	isLookingControlsEnabled: () => boolean;
 	isMenuControlsEnabled: () => boolean;
 	isMovementControlsEnabled: () => boolean;
-	isObjectFavorited: (Form: skyrimPlatform.Form) => boolean;
+	isObjectFavorited: (Form: Form) => boolean;
 	isPlayerSungazing: () => boolean;
 	isPluginInstalled: (name: string) => boolean;
 	isSneakingControlsEnabled: () => boolean;
@@ -168,9 +154,9 @@ export interface Game {
 	queryStat: (asStat: string) => number;
 	quitToMainMenu: () => void;
 	removeHavokConstraints: (
-		arFirstRef: skyrimPlatform.ObjectReference,
+		arFirstRef: ObjectReference,
 		arFirstRefNodeName: string,
-		arSecondRef: skyrimPlatform.ObjectReference,
+		arSecondRef: ObjectReference,
 		arSecondRefNodeName: string
 	) => Promise<boolean>;
 	requestAutosave: () => void;
@@ -181,17 +167,13 @@ export interface Game {
 	serveTime: () => void;
 	setAllowFlyingMountLandingRequests: (abAllow: boolean) => void;
 	setBeastForm: (abEntering: boolean) => void;
-	setCameraTarget: (arTarget: skyrimPlatform.Actor) => void;
+	setCameraTarget: (arTarget: Actor) => void;
 	setGameSettingBool: (setting: string, value: boolean) => void;
 	setGameSettingFloat: (setting: string, value: number) => void;
 	setGameSettingInt: (setting: string, value: number) => void;
 	setGameSettingString: (setting: string, value: string) => void;
 	setHudCartMode: (abSetCartMode: boolean) => void;
-	setInChargen: (
-		abDisableSaving: boolean,
-		abDisableWaiting: boolean,
-		abShowControlsDisabledMessage: boolean
-	) => void;
+	setInChargen: (abDisableSaving: boolean, abDisableWaiting: boolean, abShowControlsDisabledMessage: boolean) => void;
 	setMiscStat: (name: string, value: number) => void;
 	setNthTintMaskColor: (n: number, color: number) => void;
 	setNthTintMaskTexturePath: (path: string, n: number) => void;
@@ -200,18 +182,16 @@ export interface Game {
 	setPlayerExperience: (exp: number) => void;
 	setPlayerLevel: (level: number) => void;
 	setPlayerReportCrime: (abReportCrime: boolean) => void;
-	setPlayersLastRiddenHorse: (horse: skyrimPlatform.Actor) => void;
+	setPlayersLastRiddenHorse: (horse: Actor) => void;
 	setSittingRotation: (afValue: number) => void;
-	setSunGazeImageSpaceModifier: (
-		apImod: skyrimPlatform.ImageSpaceModifier
-	) => void;
+	setSunGazeImageSpaceModifier: (apImod: skyrimPlatform.ImageSpaceModifier) => void;
 	setTintMaskColor: (color: number, type: number, index: number) => void;
 	setTintMaskTexturePath: (path: string, type: number, index: number) => void;
 	showFirstPersonGeometry: (abShow: boolean) => void;
 	showLimitedRaceMenu: () => void;
 	showRaceMenu: () => void;
 	showTitleSequenceMenu: () => void;
-	showTrainingMenu: (aTrainer: skyrimPlatform.Actor) => void;
+	showTrainingMenu: (aTrainer: Actor) => void;
 	startTitleSequence: (asSequenceName: string) => void;
 	teachWord: (akWord: skyrimPlatform.WordOfPower) => void;
 	triggerScreenBlood: (aiValue: number) => void;
@@ -221,15 +201,7 @@ export interface Game {
 	updateThirdPerson: () => void;
 	updateTintMaskColors: () => void;
 	usingGamepad: () => boolean;
-	getPlayer: () => skyrimPlatform.Actor;
-	shakeCamera: (
-		akSource: skyrimPlatform.ObjectReference,
-		afStrength: number,
-		afDuration: number
-	) => void;
-	shakeController: (
-		afSmallMotorStrength: number,
-		afBigMotorStreangth: number,
-		afDuration: number
-	) => void;
+	getPlayer: () => Actor;
+	shakeCamera: (akSource: ObjectReference, afStrength: number, afDuration: number) => void;
+	shakeController: (afSmallMotorStrength: number, afBigMotorStreangth: number, afDuration: number) => void;
 }

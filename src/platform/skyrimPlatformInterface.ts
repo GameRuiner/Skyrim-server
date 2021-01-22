@@ -6,6 +6,10 @@ import { Input } from './Input';
 import { Spell } from './Spell';
 import { Utility } from './Utility';
 import { Sound } from './Sound';
+import { ObjectReference } from './ObjectReference';
+import { Form } from './Form';
+import { Message } from './Message';
+import { Quest } from './Quest';
 
 export type SkyrimEventName =
 	| 'update'
@@ -57,12 +61,7 @@ export type SkyrimEvent =
 export interface SkyrimPlatform {
 	printConsole: (...args: any[]) => void;
 	writeScript: (scriptName: string, src: string) => void;
-	callNative: (
-		className: string,
-		functionName: string,
-		self?: object,
-		...args: any
-	) => any;
+	callNative: (className: string, functionName: string, self?: object, ...args: any) => any;
 	getJsMemoryUsage: () => number;
 	getPluginSourceCode: (pluginName: string) => string;
 	writePlugin: (pluginName: string, newSources: string) => string;
@@ -71,12 +70,7 @@ export interface SkyrimPlatform {
 	settings: any;
 	Face: skyrimPlatform.Face;
 	ChangeFormNpc: skyrimPlatform.ChangeFormNpc;
-	loadGame: (
-		pos: number[],
-		angle: number[],
-		worldOrCell: number,
-		changeFormNpc?: skyrimPlatform.ChangeFormNpc
-	) => void;
+	loadGame: (pos: number[], angle: number[], worldOrCell: number, changeFormNpc?: skyrimPlatform.ChangeFormNpc) => void;
 	worldPointToScreenPoint: (...args: number[][]) => number[][];
 	PacketType: skyrimPlatform.PacketType;
 	Browser: skyrimPlatform.Browser;
@@ -92,9 +86,7 @@ export interface SkyrimPlatform {
 	ExtraWornLeft: skyrimPlatform.ExtraWornLeft;
 	BaseExtraList: skyrimPlatform.BaseExtraList;
 	InventoryChangesEntry: skyrimPlatform.InventoryChangesEntry;
-	getExtraContainerChanges: (
-		objectReferenceId: number
-	) => skyrimPlatform.InventoryChangesEntry[];
+	getExtraContainerChanges: (objectReferenceId: number) => skyrimPlatform.InventoryChangesEntry[];
 	InventoryEntry: skyrimPlatform.InventoryEntry;
 	getContainer: (baseId: number) => skyrimPlatform.InventoryEntry[];
 	ActivateEvent: skyrimPlatform.ActivateEvent;
@@ -117,23 +109,17 @@ export interface SkyrimPlatform {
 	ActiveEffectApplyRemoveEvent: skyrimPlatform.ActiveEffectApplyRemoveEvent;
 	MagicEffectApplyEvent: skyrimPlatform.MagicEffectApplyEvent;
 
-	on: (
-		eventName: SkyrimEventName,
-		callback: (event?: SkyrimEvent) => void
-	) => void;
-	once: (
-		eventName: SkyrimEventName,
-		callback: (event?: SkyrimEvent) => void
-	) => void;
+	on: (eventName: SkyrimEventName, callback: (event?: SkyrimEvent) => void) => void;
+	once: (eventName: SkyrimEventName, callback: (event?: SkyrimEvent) => void) => void;
 
 	Hooks: skyrimPlatform.Hooks;
 	HttpResponse: skyrimPlatform.HttpResponse;
 	HttpClient: skyrimPlatform.HttpClient;
-	Form: skyrimPlatform.Form;
+	Form: Form;
 	Action: skyrimPlatform.Action;
 	Activator: skyrimPlatform.Activator;
 	ActiveMagicEffect: skyrimPlatform.ActiveMagicEffect;
-	ObjectReference: skyrimPlatform.ObjectReference;
+	ObjectReference: ObjectReference;
 	Actor: Actor;
 	ActorBase: skyrimPlatform.ActorBase;
 	ActorValueInfo: skyrimPlatform.ActorValueInfo;
@@ -183,7 +169,7 @@ export interface SkyrimPlatform {
 	LocationAlias: skyrimPlatform.LocationAlias;
 	LocationRefType: skyrimPlatform.LocationRefType;
 	MagicEffect: skyrimPlatform.MagicEffect;
-	Message: skyrimPlatform.Message;
+	Message: Message;
 	MusicType: skyrimPlatform.MusicType;
 	NetImmerse: skyrimPlatform.NetImmerse;
 	Outfit: skyrimPlatform.Outfit;
@@ -191,7 +177,7 @@ export interface SkyrimPlatform {
 	Package: skyrimPlatform.Package;
 	Perk: skyrimPlatform.Perk;
 	Potion: skyrimPlatform.Potion;
-	Quest: skyrimPlatform.Quest;
+	Quest: Quest;
 	Race: skyrimPlatform.Race;
 	ReferenceAlias: skyrimPlatform.ReferenceAlias;
 	Spell: Spell;

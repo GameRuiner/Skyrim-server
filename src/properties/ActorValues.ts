@@ -5,7 +5,8 @@ import { typeCheck } from '../utility/typeCheck';
 import { consoleOutput } from './consoleOutput';
 import { Attr, AttrRate, AttrRateMult, AttrDrain, AttrRelated, AttrAll } from '../types/Attr';
 import { Modifier } from '../types/Modifier';
-import { MP } from '../platform';
+import { MP } from '../types';
+
 import { PropertyName } from '../types/PropertyName';
 
 declare const mp: MP;

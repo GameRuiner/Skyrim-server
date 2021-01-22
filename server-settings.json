@@ -1,12 +1,8 @@
 {
-  "dataDir": "data",
-  "loadOrder": [
-    "Skyrim.esm",
-    "Update.esm",
-    "Dawnguard.esm",
-    "HearthFires.esm",
-    "Dragonborn.esm"
-  ],
-  "ip": "127.0.0.1",
-  "name": "Atlas"
+	"dataDir": "data",
+	"loadOrder": ["Skyrim.esm", "Update.esm", "Dawnguard.esm", "HearthFires.esm", "Dragonborn.esm"],
+	"ip": "127.0.0.1",
+	"port": 50051,
+	"name": "Atlas server",
+	"maxPlayers": 1
 }

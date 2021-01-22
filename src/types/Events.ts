@@ -1,17 +1,21 @@
 export interface CellChangeEvent {
-  hasError: boolean;
-  err?: string;
-  cell?: any;
+	hasError: boolean;
+	err?: string;
+	cell?: any;
 }
 export interface ActivateEvent {
-  target: number;
-  caster: number;
-  isCrimeToActivate: boolean;
+	target: number;
+	caster: number;
+	isCrimeToActivate: boolean;
 }
 
 export type message = {
-  message?: string;
-  type: "error" | "message" | "add" | "delete";
-  baseId?: number;
-  count?: number;
+	message?: string;
+	type: 'error' | 'message' | 'add' | 'delete';
+	baseId?: number;
+	count?: number;
+	hasError?: boolean;
+	err?: string;
+	currentCell?: any;
+	prevCell?: any;
 };

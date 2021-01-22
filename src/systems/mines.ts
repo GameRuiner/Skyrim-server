@@ -1,5 +1,6 @@
 import { getFunctionText, utils } from '../utility/utils';
-import { CTX, MP } from '../platform';
+import { CTX } from '../platform';
+import { MP } from '../types';
 import { consoleOutput } from '../properties';
 import { currentActor, EVENTS_NAME } from '../constants/constants';
 import { CellChangeEvent } from '../types/Events';
@@ -23,10 +24,7 @@ interface Inventar {
  */
 const isMine = (cell: any): boolean => {
 	const mines = ['mine', 'шахта'];
-	return mines.some((x) => (cell.name as string).toLowerCase().includes(x)) ||
-		cell.id === 91570
-		? true
-		: false;
+	return mines.some((x) => (cell.name as string).toLowerCase().includes(x)) || cell.id === 91570 ? true : false;
 };
 
 const addItem = (formId: number, baseId: number, count: number) => {
@@ -70,31 +68,25 @@ export const init = () => {
 			utils.log(err);
 		}
 	});
-	utils.hook(
-		EVENTS_NAME.currentCellChange,
-		(pcFormId: number, event: CellChangeEvent) => {
-			try {
-				if (isMine(event.cell)) {
-					const invEntry: any[] = mp.get(pcFormId, 'inventory').entries;
-					consoleOutput.print(pcFormId, 'Теперь ты шахтер! Работай!');
-					items.forEach((itemId) => {
-						if (
-							invEntry.map((x) => x.baseId).findIndex((x) => x === itemId) ===
-							-1
-						) {
-							addItem(pcFormId, itemId, 1);
-						}
-					});
-					// не выдает в цикле две вещи сразу
-					// пока сделал костыль
-					eqiup(pcFormId, items[0]);
-					setTimeout(() => {
-						eqiup(pcFormId, items[1]);
-					}, 1000);
-				}
-			} catch (err) {
-				utils.log(err);
+	utils.hook(EVENTS_NAME.currentCellChange, (pcFormId: number, event: CellChangeEvent) => {
+		try {
+			if (isMine(event.cell)) {
+				const invEntry: any[] = mp.get(pcFormId, 'inventory').entries;
+				consoleOutput.print(pcFormId, 'Теперь ты шахтер! Работай!');
+				items.forEach((itemId) => {
+					if (invEntry.map((x) => x.baseId).findIndex((x) => x === itemId) === -1) {
+						addItem(pcFormId, itemId, 1);
+					}
+				});
+				// не выдает в цикле две вещи сразу
+				// пока сделал костыль
+				eqiup(pcFormId, items[0]);
+				setTimeout(() => {
+					eqiup(pcFormId, items[1]);
+				}, 1000);
 			}
+		} catch (err) {
+			utils.log(err);
 		}
-	);
+	});
 };

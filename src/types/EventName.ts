@@ -1,7 +1,11 @@
 /**
  * Built-in events
  */
+<<<<<<< HEAD
 type SystemEventName = "onDeath" | "onInit" | "onReinit";
+=======
+type SystemEventName = 'onDeath' | 'onInit' | 'onReinit';
+>>>>>>> bf2957091c86ee0b1c2b7d597e85778ccce4e7c9
 
 /**
  * Custom events
@@ -20,6 +24,9 @@ type CustomEventName =
   | "_onSprintStateChange"
   | "_onHitScale"
   | "_onActivate"
-  | "_onFarm";
+  | "_onFarm"
+  | '_onAnimationEvent'
+	| '_onHitStatic'
+	| '_onInputF5';
 
 export type EventName = SystemEventName | CustomEventName;

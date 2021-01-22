@@ -1,8 +1,8 @@
-import { utils } from '../utility/utils';
-import { actorValues } from '../properties/ActorValues';
-import { MP } from '../platform';
-import { defaultSpawnPoint } from '../constants/constants';
-import { PropertyName } from '../types/PropertyName';
+import { utils } from '../utility';
+import { actorValues } from '../properties';
+import { defaultSpawnPoint } from '../constants';
+import { PropertyName, MP } from '../types';
+
 declare const mp: MP;
 
 export const spawnSystem = {
@@ -27,12 +27,4 @@ export const spawnSystem = {
 			worldOrCellDesc: mp.get(targetFormId, 'worldOrCellDesc'),
 		});
 	},
-};
-
-export const init = () => {
-	utils.hook('onDeath', (pcFormId: number) => {
-		setTimeout(() => {
-			spawnSystem.spawn(pcFormId);
-		}, spawnSystem.timeToRespawn);
-	});
 };

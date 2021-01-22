@@ -1,3 +1,4 @@
-export { init as devCommandsInit } from './devCommands';
-export { init as spawnSystemInit } from './spawnSystem';
-export { init as minesInit } from './mines';
+export * from './developerCommands';
+export * from './inventorySystem';
+export * from './spawnSystem';
+export * from './professionsSystem';
