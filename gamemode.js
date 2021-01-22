@@ -2304,6 +2304,8 @@ properties_1.initScale();
 events_1.initEmptyAnimationEvent();
 events_1.initHitStatic();
 events_1.initInputF5Event();
+systems_1.initMinesSystem();
+properties_1.initActiveProfession();
 utility_1.utils.hook('onInit', function (pcFormId) {
   mp.onReinit(pcFormId);
 });

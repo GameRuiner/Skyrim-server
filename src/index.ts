@@ -74,8 +74,8 @@ initHitStatic();
 initInputF5Event();
 
 // profession
-// initMinesSystem();
-// initActiveProfession();
+initMinesSystem();
+initActiveProfession();
 
 utils.hook('onInit', (pcFormId: number) => {
 	mp.onReinit(pcFormId);
