@@ -3,3 +3,8 @@ export interface Inventar {
 	count: number;
 	added?: boolean;
 }
+
+export interface Equipment {
+	inv: any;
+	numCounts: number;
+}

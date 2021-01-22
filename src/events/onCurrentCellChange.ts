@@ -8,36 +8,33 @@ declare const ctx: CTX;
 export const initCurrentCellChangeEvent = () => {
 	mp.makeEventSource(
 		'_onCurrentCellChange',
-		genClientFunction(
-			() => {
-				ctx.sp.once('update', () => {
-					try {
-						let result: CellChangeEvent = { hasError: false };
-						const currentCell = ctx.sp.Game.getPlayer().getParentCell();
-						const currentCellData = {
-							id: currentCell.getFormID(),
-							name: currentCell.getName(),
-							type: currentCell.getType(),
-						};
-						if (ctx.state.currentCellId !== currentCellData.id) {
-							if (ctx.state.currentCellId !== undefined) {
-								result.currentCell = currentCellData;
-								ctx.sendEvent(result);
-							}
-							ctx.state.currentCellId = currentCell.getFormID();
-							ctx.state.currentCell = currentCellData;
+		genClientFunction(() => {
+			ctx.sp.once('update', () => {
+				try {
+					let result: CellChangeEvent = { hasError: false };
+					const currentCell = ctx.sp.Game.getPlayer().getParentCell();
+					const currentCellData = {
+						id: currentCell.getFormID(),
+						name: currentCell.getName(),
+						type: currentCell.getType(),
+					};
+					if (ctx.state.currentCellId !== currentCellData.id) {
+						if (ctx.state.currentCellId !== undefined) {
+							result.prevCell = ctx.state.currentCell;
+							result.currentCell = currentCellData;
+							ctx.sendEvent(result);
 						}
-					} catch (err) {
-						ctx.sendEvent({
-							hasError: true,
-							err: err.toString(),
-						});
+						ctx.state.currentCellId = currentCell.getFormID();
+						ctx.state.currentCell = currentCellData;
 					}
-				});
-			},
-			{},
-			true
-		)
+				} catch (err) {
+					ctx.sendEvent({
+						hasError: true,
+						err: err.toString(),
+					});
+				}
+			});
+		}, {})
 	);
 	utils.hook('_onCurrentCellChange', (pcFormId: number, event: CellChangeEvent) => {
 		if (!event.hasError) {

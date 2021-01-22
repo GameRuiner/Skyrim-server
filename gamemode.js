@@ -1,3 +1,4 @@
+var parcelRequire = undefined;
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -1373,6 +1374,7 @@ var initCurrentCellChangeEvent = function () {
 
         if (ctx.state.currentCellId !== currentCellData.id) {
           if (ctx.state.currentCellId !== undefined) {
+            result.prevCell = ctx.state.currentCell;
             result.currentCell = currentCellData;
             ctx.sendEvent(result);
           }
@@ -1387,7 +1389,7 @@ var initCurrentCellChangeEvent = function () {
         });
       }
     });
-  }, {}, true));
+  }, {}));
   utility_1.utils.hook('_onCurrentCellChange', function (pcFormId, event) {
     if (!event.hasError) {
       utility_1.utils.log('[CELL_CHANGE]', pcFormId, event.currentCell);
