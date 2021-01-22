@@ -1,7 +1,4 @@
 var parcelRequire = undefined;
-var parcelRequire = undefined;
-var parcelRequire = undefined;
-var parcelRequire = undefined;
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -1123,12 +1120,12 @@ var minerals = [{
   type: 'minerals',
   baseId: 0x71cf3,
   name: 'Железная руда',
-  sourceName: 'Золотая жила'
+  sourceName: 'Железорудная жила'
 }, {
   type: 'minerals',
   baseId: 0x5acde,
   name: 'Золотая руда',
-  sourceName: 'Железорудная жила'
+  sourceName: 'Золотая жила'
 }, {
   type: 'minerals',
   baseId: 0x5acdb,
@@ -1597,7 +1594,7 @@ var deleteProfession = function (formId, professionName) {
     var oldEquipment = mp.get(formId, 'activeProfession').oldEquipment;
     utility_1.utils.log('[PROFESSIONS]', oldEquipment);
     changeProfessionOnServer(formId, {
-      oldEquipment: oldEquipment,
+      oldEquipment: oldEquipment.inv.entries,
       isActive: false
     });
   }
@@ -2001,7 +1998,6 @@ function setActiveProfession() {
         if (ctx.value.oldEquipment && !ctx.value.isActive) {
           ctx.value.oldEquipment.forEach(function (itemId) {
             var currentItem = ctx.sp.Game.getForm(itemId.baseId);
-            ctx.sp.printConsole(currentItem.getName());
 
             if (!player_1.isEquipped(currentItem)) {
               player_1.equipItem(currentItem, false, false);
@@ -2012,6 +2008,7 @@ function setActiveProfession() {
         if (ctx.value.equipment && ctx.value.isActive) {
           var equipItems = Object.keys(ctx.value.equipment);
           equipItems.forEach(function (item) {
+            ctx.sp.printConsole(item);
             var currentItem = ctx.sp.Game.getForm(ctx.value.equipment[item]);
             ctx.sp.printConsole(currentItem.getName());
 
@@ -2737,6 +2734,3 @@ utility_1.utils.hook('onInit', function (pcFormId) {
   mp.onReinit(pcFormId);
 });
 },{"./utility":"utility/index.ts","./properties":"properties/index.ts","./events":"events/index.ts","./systems":"systems/index.ts"}]},{},["index.ts"], null)
-
-
-

@@ -134,7 +134,7 @@ const deleteProfession = (formId: number, professionName: ProfessionNamesProp) =
 		utils.log('[PROFESSIONS]', oldEquipment);
 
 		changeProfessionOnServer(formId, {
-			oldEquipment: oldEquipment,
+			oldEquipment: oldEquipment.inv.entries,
 			isActive: false,
 		});
 	}

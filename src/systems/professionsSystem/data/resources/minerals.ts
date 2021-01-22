@@ -5,13 +5,13 @@ const minerals: ResourceProp[] = [
 		type: 'minerals',
 		baseId: 0x71cf3,
 		name: 'Железная руда',
-		sourceName: 'Золотая жила',
+		sourceName: 'Железорудная жила',
 	},
 	{
 		type: 'minerals',
 		baseId: 0x5acde,
 		name: 'Золотая руда',
-		sourceName: 'Железорудная жила',
+		sourceName: 'Золотая жила',
 	},
 	{
 		type: 'minerals',
