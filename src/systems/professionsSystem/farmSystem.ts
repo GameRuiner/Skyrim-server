@@ -11,19 +11,18 @@ export const initFarmSystem = () => {
 					const resourceType: ResourcesTypesProp = key as ResourcesTypesProp;
 					const data = resources[resourceType].find((item) => item.sourceName === target.name);
 					if (data) {
-						let sendEvent = false;
 						switch (data.type) {
 							case 'minerals':
+								const duration = 5;
 								mp.set(formId, 'animation', {
 									animations: allAnimation.collector.miner,
-									duration: 5,
+									duration: duration, //sec
 								});
-								sendEvent = true;
+								setTimeout(() => inventorySystem.addItem(formId, data.baseId, 1), duration * 1000); //milisec
 								break;
 							default:
 								break;
 						}
-						sendEvent && setTimeout(() => inventorySystem.addItem(formId, data.baseId, 1), 5000);
 					}
 				});
 			}

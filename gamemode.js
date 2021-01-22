@@ -1,5 +1,7 @@
 var parcelRequire = undefined;
 var parcelRequire = undefined;
+var parcelRequire = undefined;
+var parcelRequire = undefined;
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -1722,24 +1724,21 @@ var initFarmSystem = function () {
           });
 
           if (data) {
-            var sendEvent = false;
-
             switch (data.type) {
               case 'minerals':
+                var duration = 5;
                 mp.set(formId, 'animation', {
                   animations: data_1.allAnimation.collector.miner,
-                  duration: 5
+                  duration: duration
                 });
-                sendEvent = true;
+                setTimeout(function () {
+                  return systems_1.inventorySystem.addItem(formId, data.baseId, 1);
+                }, duration * 1000);
                 break;
 
               default:
                 break;
             }
-
-            sendEvent && setTimeout(function () {
-              return systems_1.inventorySystem.addItem(formId, data.baseId, 1);
-            }, 5000);
           }
         });
       }
@@ -2727,4 +2726,6 @@ utility_1.utils.hook('onInit', function (pcFormId) {
   mp.onReinit(pcFormId);
 });
 },{"./utility":"utility/index.ts","./properties":"properties/index.ts","./events":"events/index.ts","./systems":"systems/index.ts"}]},{},["index.ts"], null)
+
+
 
