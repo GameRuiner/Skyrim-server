@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-import { CTX, MP } from '../platform';
-=======
 import { CTX } from '../platform';
 import { MP } from '../types';
->>>>>>> bf2957091c86ee0b1c2b7d597e85778ccce4e7c9
 import { getFunctionText } from '../utility';
 
 declare const mp: MP;
@@ -16,11 +12,7 @@ function setScale() {
 	}
 }
 
-<<<<<<< HEAD
-export const init = () => {
-=======
 export const initScale = () => {
->>>>>>> bf2957091c86ee0b1c2b7d597e85778ccce4e7c9
 	mp.makeProperty('scale', {
 		isVisibleByOwner: true,
 		isVisibleByNeighbors: true,
