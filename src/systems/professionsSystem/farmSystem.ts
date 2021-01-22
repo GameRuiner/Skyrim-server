@@ -46,6 +46,7 @@ export const initFarmSystem = () => {
 							default:
 								break;
 						}
+						return;
 					}
 				});
 			}

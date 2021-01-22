@@ -1748,6 +1748,8 @@ var initFarmSystem = function () {
               default:
                 break;
             }
+
+            return;
           }
         });
       }
