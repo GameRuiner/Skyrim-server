@@ -24,7 +24,6 @@ type CustomPropertyName =
 	| 'spawnPoint'
 	| 'consoleOutput'
 	| 'notification'
-	| 'eval'
 	| 'av_health'
 	| 'av_magicka'
 	| 'av_stamina'
@@ -40,6 +39,10 @@ type CustomPropertyName =
 	| 'healthNumChanges'
 	| 'magickaNumChanges'
 	| 'staminaNumChanges'
-	| 'activeProfession';
+	| 'activeProfession'
+	| 'eval'
+	| 'message'
+	| 'teleport'
+	| 'animation';
 
 export type PropertyName = SystemPropertyName | CustomPropertyName;

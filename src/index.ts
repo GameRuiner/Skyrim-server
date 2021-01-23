@@ -3,11 +3,12 @@ import { initUtils, utils } from './utility';
 
 import {
 	initActiveProfession,
-	initActorValue,
 	initConsoleOutput,
-	initIsDead,
 	initScale,
 	initSpawnPoint,
+	initIsDead,
+	initActorValue,
+	initAnimation,
 } from './properties';
 
 import {
@@ -22,9 +23,10 @@ import {
 	initEmptyAnimationEvent,
 	initHitStatic,
 	initInputF5Event,
+	initActivateEvent,
 } from './events';
 
-import { initDevCommands, initMinesSystem, initWoodsmanSystem } from './systems';
+import { initDevCommands, initMinesSystem, initWoodsmanSystem, initFarmSystem } from './systems';
 
 declare const mp: MP;
 
@@ -67,11 +69,15 @@ initDevCommands();
 // "events/onAnimationEvent"
 initAnimationEvent();
 
+initAnimation();
+
 initCurrentCellChangeEvent();
 initScale();
 initEmptyAnimationEvent();
 initHitStatic();
 initInputF5Event();
+initActivateEvent();
+initFarmSystem();
 
 // profession
 initActiveProfession();

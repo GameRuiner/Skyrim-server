@@ -1,6 +1,7 @@
 import { Actor } from './Actor';
 import { Form } from './Form';
 import * as skyrimPlatform from './skyrimPlatform';
+import { ActorBase } from './skyrimPlatform';
 
 export interface ObjectReference extends Form {
 	from: (form: Form) => ObjectReference;

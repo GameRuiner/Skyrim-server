@@ -12,6 +12,7 @@ type CustomEventName =
 	| '_onConsoleCommand'
 	| '_onCurrentCellChange'
 	| '_onHit'
+	| '_onLocalDeath'
 	| '_onPowerAttack'
 	| '_onActorValueFlushRequiredhealth'
 	| '_onActorValueFlushRequiredstamina'
@@ -19,6 +20,7 @@ type CustomEventName =
 	| '_onSprintStateChange'
 	| '_onHitScale'
 	| '_onActivate'
+	| '_onFarm'
 	| '_onAnimationEvent'
 	| '_onHitStatic'
 	| '_onInputF5';

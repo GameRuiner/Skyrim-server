@@ -8,7 +8,7 @@ declare const ctx: CTX;
 function setScale() {
 	if (ctx.value !== ctx.state.lastScale) {
 		ctx.state.lastScale = +ctx.value;
-		ctx.refr.setScale(+ctx.value);
+		// ctx.refr.setScale(+ctx.value);
 	}
 }
 

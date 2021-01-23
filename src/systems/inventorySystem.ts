@@ -1,5 +1,6 @@
+import { getEquipment, getInventar, consoleOutput } from '../properties';
 import { CTX } from '../platform';
-import { consoleOutput, getEquipment, getInventar } from '../properties';
+// import { consoleOutput, getEquipment, getInventar } from '../properties';
 import { Equipment, MP } from '../types';
 import { genClientFunction } from '../utility';
 

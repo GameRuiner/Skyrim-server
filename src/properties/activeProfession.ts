@@ -9,13 +9,13 @@ function setActiveProfession() {
 	try {
 		if (ctx.value !== ctx.state.activeProfession) {
 			ctx.state.activeProfession = ctx.value;
+
 			if (ctx.value) {
 				const player = ctx.sp.Game.getPlayer();
 				if (ctx.value.oldEquipment && !ctx.value.isActive) {
 					// player.unequipAll();
 					ctx.value.oldEquipment.forEach((itemId: any) => {
 						const currentItem = ctx.sp.Game.getForm(itemId.baseId);
-						ctx.sp.printConsole(currentItem.getName());
 						if (!player.isEquipped(currentItem)) {
 							player.equipItem(currentItem, false, false);
 						}
@@ -24,6 +24,7 @@ function setActiveProfession() {
 				if (ctx.value.equipment && ctx.value.isActive) {
 					const equipItems = Object.keys(ctx.value.equipment);
 					equipItems.forEach((item) => {
+						ctx.sp.printConsole(item);
 						const currentItem = ctx.sp.Game.getForm(ctx.value.equipment[item]);
 						ctx.sp.printConsole(currentItem.getName());
 						if (!player.isEquipped(currentItem)) {
@@ -42,7 +43,7 @@ function setActiveProfession() {
 export const initActiveProfession = () => {
 	mp.makeProperty('activeProfession', {
 		isVisibleByOwner: true,
-		isVisibleByNeighbors: false,
+		isVisibleByNeighbors: true,
 		updateOwner: getFunctionText(setActiveProfession),
 		updateNeighbor: '',
 	});

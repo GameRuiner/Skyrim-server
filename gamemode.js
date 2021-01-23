@@ -150,11 +150,14 @@ System.register(["./utility", "./properties", "./events", "./systems"], function
       events_1.initConsoleCommandEvent();
       systems_1.initDevCommands();
       events_1.initAnimationEvent();
+      properties_1.initAnimation();
       events_1.initCurrentCellChangeEvent();
       properties_1.initScale();
       events_1.initEmptyAnimationEvent();
       events_1.initHitStatic();
       events_1.initInputF5Event();
+      events_1.initActivateEvent();
+      systems_1.initFarmSystem();
       properties_1.initActiveProfession();
       systems_1.initMinesSystem();
       systems_1.initWoodsmanSystem();

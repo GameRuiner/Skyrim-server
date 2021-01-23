@@ -3960,7 +3960,7 @@ System.register(
 					if (msgType === 'hostStart') {
 						var msg = msgAny;
 						var target = msg.target;
-						skyrimPlatform_16.printConsole('hostStart', target.toString(16));
+						// skyrimPlatform_16.printConsole('hostStart', target.toString(16));
 						var hosted = skyrimPlatform_16.storage['hosted'];
 						if (typeof hosted !== typeof []) {
 							// if you try to switch to Set checkout .concat usage.
