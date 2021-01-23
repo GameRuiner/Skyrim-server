@@ -18,7 +18,11 @@ export const PROFESSIONS: ProfessionList = {
 		boots: 0x1be1b,
 	},
 	herbalist: {},
-	woodsman: {},
+	woodsman: {
+		tool: 0x2F2F4,
+		clothes: 0xF1229,
+		boots: 0x1be1b,
+	},
 };
 
 export interface Profession {

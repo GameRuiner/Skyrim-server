@@ -1,5 +1,6 @@
 var parcelRequire = undefined;
 var parcelRequire = undefined;
+var parcelRequire = undefined;
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -1162,7 +1163,11 @@ exports.PROFESSIONS = {
     boots: 0x1be1b
   },
   herbalist: {},
-  woodsman: {}
+  woodsman: {
+    tool: 0x2F2F4,
+    clothes: 0xF1229,
+    boots: 0x1be1b
+  }
 };
 },{}],"systems/professionsSystem/professionSystem.ts":[function(require,module,exports) {
 "use strict";
@@ -1271,6 +1276,8 @@ var deleteProfession = function (formId, professionName) {
       isActive: false
     });
   }
+
+  return isDeleted;
 };
 
 var sellItems = function (formId, items) {
@@ -1462,42 +1469,101 @@ var initMinesSystem = function () {
 };
 
 exports.initMinesSystem = initMinesSystem;
-},{"../../utility":"utility/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","../../properties":"properties/index.ts","./data/locations/mines":"systems/professionsSystem/data/locations/mines.ts"}],"systems/professionsSystem/farmSystem.ts":[function(require,module,exports) {
+},{"../../utility":"utility/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","../../properties":"properties/index.ts","./data/locations/mines":"systems/professionsSystem/data/locations/mines.ts"}],"systems/professionsSystem/woodsmanSystem.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.initFarmSystem = void 0;
+exports.initWoodsmanSystem = void 0;
+
+var __1 = require("..");
 
 var utility_1 = require("../../utility");
 
-var mineral_1 = require("./data/items/mineral");
+var professions_1 = require("./data/professions");
 
-var systems_1 = require("../../systems");
+var professionSystem_1 = require("./professionSystem");
 
-var initFarmSystem = function () {
-  utility_1.utils.hook('_onFarm', function (pcFormId, event) {
+var currentProfessionName = 'woodsman';
+
+var initWoodsmanSystem = function () {
+  utility_1.utils.hook('_onActivate', function (pcFormId, event) {
     try {
-      var mineralFormId_1 = mineral_1.MINERALS.find(function (mineral) {
-        return mineral.sourceName === event.mineralSource;
-      });
+      if (event.target === 127529) {
+        var activeProfession = professionSystem_1.professionSystem.getFromServer(pcFormId);
+        var currentProfessionStaff = professions_1.PROFESSIONS[currentProfessionName];
 
-      if (mineralFormId_1) {
-        setTimeout(function () {
-          return systems_1.inventorySystem.addItem(pcFormId, mineralFormId_1.id, 1);
-        }, 5000);
-      } else {
-        utility_1.utils.log('Mineral notFound', event);
+        if (currentProfessionStaff) {
+          if (!activeProfession) {
+            professionSystem_1.professionSystem.set(pcFormId, currentProfessionName);
+          } else {
+            if (activeProfession.name === currentProfessionName) {
+              var isDeleted = professionSystem_1.professionSystem.delete(pcFormId, currentProfessionName);
+
+              if (!isDeleted) {
+                utility_1.utils.log('Error: deleteProfessionItems() - error in deleteItem() ');
+              } else {
+                mp.set(pcFormId, 'activeProfession', null);
+              }
+            }
+          }
+        }
       }
-    } catch (e) {
-      utility_1.utils.log('_onFarm', e);
+    } catch (err) {
+      utility_1.utils.log(err);
+    }
+  });
+  var countHitLog = 0;
+  utility_1.utils.hook('_onHitStatic', function (pcFormId, eventData) {
+    if (eventData.target === 0x12dee) {
+      countHitLog++;
+
+      if (countHitLog >= 3) {
+        var activeProfession = mp.get(pcFormId, 'activeProfession');
+
+        if (activeProfession != undefined) {
+          if (activeProfession.name === currentProfessionName) {
+            if (__1.inventorySystem.isEquip(pcFormId, 0x2f2f4)) {
+              __1.inventorySystem.addItem(pcFormId, 457107, 1);
+
+              countHitLog = 0;
+            }
+          }
+        }
+      }
+    }
+  });
+  utility_1.utils.hook('_onActivate', function (pcFormId, event) {
+    if (event.target === 0x1f228) {
+      var activeProfession = mp.get(pcFormId, 'activeProfession');
+
+      if (activeProfession != undefined) {
+        if (activeProfession.name === currentProfessionName) {
+          var inv = mp.get(pcFormId, 'inventory');
+          var deletedItemIndex = inv.entries.findIndex(function (item) {
+            return item.baseId === 457107;
+          });
+
+          if (inv.entries[deletedItemIndex] != undefined) {
+            var count = inv.entries[deletedItemIndex].count;
+
+            if (count > 0) {
+              var gold = 10 * count;
+
+              var del = __1.inventorySystem.deleteItem(pcFormId, 457107, count);
+
+              if (del.success) __1.inventorySystem.addItem(pcFormId, 0xf, gold);
+            }
+          }
+        }
+      }
     }
   });
 };
 
-exports.initFarmSystem = initFarmSystem;
-},{"../../utility":"utility/index.ts","./data/items/mineral":"systems/professionsSystem/data/items/mineral.ts","../../systems":"systems/index.ts"}],"systems/professionsSystem/index.ts":[function(require,module,exports) {
+exports.initWoodsmanSystem = initWoodsmanSystem;
+},{"..":"systems/index.ts","../../utility":"utility/index.ts","./data/professions":"systems/professionsSystem/data/professions/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts"}],"systems/professionsSystem/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -1521,12 +1587,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-__exportStar(require("./minesSystem"), exports);
-
 __exportStar(require("./professionSystem"), exports);
 
-__exportStar(require("./farmSystem"), exports);
-},{"./minesSystem":"systems/professionsSystem/minesSystem.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","./farmSystem":"systems/professionsSystem/farmSystem.ts"}],"systems/index.ts":[function(require,module,exports) {
+__exportStar(require("./minesSystem"), exports);
+
+__exportStar(require("./woodsmanSystem"), exports);
+},{"./professionSystem":"systems/professionsSystem/professionSystem.ts","./minesSystem":"systems/professionsSystem/minesSystem.ts","./woodsmanSystem":"systems/professionsSystem/woodsmanSystem.ts"}],"systems/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -1989,8 +2055,6 @@ var initCurrentCellChangeEvent = function () {
         };
 
         if (ctx.state.currentCellId !== currentCellData.id) {
-          ctx.state.currentCell = currentCellData;
-
           if (ctx.state.currentCellId !== undefined) {
             result.prevCell = ctx.state.currentCell;
             result.currentCell = currentCellData;
@@ -2413,11 +2477,12 @@ events_1.initHitStatic();
 events_1.initInputF5Event();
 events_1.initFarmEvent();
 events_1.initActivateEvent();
-systems_1.initFarmSystem();
-systems_1.initMinesSystem();
 properties_1.initActiveProfession();
+systems_1.initMinesSystem();
+systems_1.initWoodsmanSystem();
 utility_1.utils.hook('onInit', function (pcFormId) {
   mp.onReinit(pcFormId);
 });
 },{"./utility":"utility/index.ts","./properties":"properties/index.ts","./events":"events/index.ts","./systems":"systems/index.ts"}]},{},["index.ts"], null)
+
 

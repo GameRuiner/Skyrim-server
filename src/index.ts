@@ -76,7 +76,7 @@ initHitStatic();
 initInputF5Event();
 initFarmEvent();
 initActivateEvent();
-initFarmSystem();
+//initFarmSystem();
 // profession
 initActiveProfession();
 initMinesSystem();

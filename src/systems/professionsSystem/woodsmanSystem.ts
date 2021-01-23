@@ -1,10 +1,13 @@
-import { inventorySystem } from '@systems-skymp/inventorySystem';
-import { MP } from '@types-skymp';
-import { utils } from '@utility-skymp';
+import { inventorySystem } from '..';
+import { getEquipment, getInventar, consoleOutput } from '../../properties';
+import { MP } from '../../types';
+import { CTX } from '../../platform';
+import { utils, genClientFunction } from '../../utility';
 import { PROFESSIONS } from './data/professions';
 import { professionSystem } from './professionSystem';
 
 declare const mp: MP;
+declare const ctx: CTX;
 
 //Woodsman
 //-------------------------------------------------------------------
@@ -12,11 +15,13 @@ const currentProfessionName = 'woodsman';
 
 export const initWoodsmanSystem = () => {
 	utils.hook('_onActivate', (pcFormId: number, event: any) => {
+		// let inv = mp.get(pcFormId, 'inventory');
+		// const deletedItemIndex = inv.entries.findIndex((item: { baseId: number; }) => item.baseId === 457107);
 		try {
 			if (event.target === 127529) {
 				const activeProfession = professionSystem.getFromServer(pcFormId);
 				const currentProfessionStaff = PROFESSIONS[currentProfessionName];
-				//Проверка сосдали ли мы профессию шахтер
+				//Проверка сосдали ли мы профессию woodsman
 				if (currentProfessionStaff) {
 					if (!activeProfession) {
 						professionSystem.set(pcFormId, currentProfessionName);
@@ -37,13 +42,18 @@ export const initWoodsmanSystem = () => {
 		}
 	});
 
+	let countHitLog = 0;
 	utils.hook('_onHitStatic', (pcFormId: number, eventData: any) => {
 		if (eventData.target === 0x12dee) {
-			const activeProfession = mp.get(pcFormId, 'activeProfession');
-			if (activeProfession != undefined) {
-				if (activeProfession.name === currentProfessionName) {
-					if (inventorySystem.isEquip(pcFormId, 0x2f2f4)) {
-						inventorySystem.addItem(pcFormId, 457107, 1);
+			countHitLog++;
+			if (countHitLog >= 3) {
+				const activeProfession = mp.get(pcFormId, 'activeProfession');
+				if (activeProfession != undefined) {
+					if (activeProfession.name === currentProfessionName) {
+						if (inventorySystem.isEquip(pcFormId, 0x2f2f4)) {
+							inventorySystem.addItem(pcFormId, 457107, 1);
+							countHitLog = 0;
+						}
 					}
 				}
 			}
@@ -55,14 +65,16 @@ export const initWoodsmanSystem = () => {
 			const activeProfession = mp.get(pcFormId, 'activeProfession');
 			if (activeProfession != undefined) {
 				if (activeProfession.name === currentProfessionName) {
-					while (inventorySystem.isInInventory(pcFormId, 0x6f993)) {
-						const del = inventorySystem.deleteItem(pcFormId, 0x6f993, 1);
-						utils.log('Удалено полено');
-						if (del.success) {
-							inventorySystem.addItem(pcFormId, 0xf, 10);
+					let inv = mp.get(pcFormId, 'inventory');
+					const deletedItemIndex = inv.entries.findIndex((item: { baseId: number; }) => item.baseId === 457107);
+					if (inv.entries[deletedItemIndex] != undefined) {
+						let count = inv.entries[deletedItemIndex].count;
+						if (count > 0) {
+							let gold = 10 * count;
+							let del = inventorySystem.deleteItem(pcFormId, 457107, count);
+							if (del.success) inventorySystem.addItem(pcFormId, 0xf, gold);
 						}
 					}
-					utils.log('success');
 				}
 			}
 		}
