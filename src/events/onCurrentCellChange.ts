@@ -18,13 +18,12 @@ export const initCurrentCellChangeEvent = () => {
 						name: currentCell.getName(),
 						type: currentCell.getType(),
 					};
-					if (ctx.state.currentCellId !== currentCellData.id) {
-						if (ctx.state.currentCellId !== undefined) {
+					if (ctx.state.currentCell?.id !== currentCellData.id) {
+						if (ctx.state.currentCell?.id !== undefined) {
 							result.prevCell = ctx.state.currentCell;
 							result.currentCell = currentCellData;
 							ctx.sendEvent(result);
 						}
-						ctx.state.currentCellId = currentCell.getFormID();
 						ctx.state.currentCell = currentCellData;
 					}
 				} catch (err) {
@@ -37,7 +36,6 @@ export const initCurrentCellChangeEvent = () => {
 		}, {})
 	);
 	utils.hook('_onCurrentCellChange', (pcFormId: number, event: CellChangeEvent) => {
-		utils.log('[CELL_CHANGE]', pcFormId, event.currentCell);
 		if (!event.hasError) {
 			utils.log('[CELL_CHANGE]', pcFormId, event.currentCell);
 			// utils.log('[CELL_CHANGE]', mp.get(pcFormId, 'worldOrCellDesc'));
@@ -46,32 +44,3 @@ export const initCurrentCellChangeEvent = () => {
 		}
 	});
 };
-
-// ctx.sp.on('update', function () {
-// 	try {
-// 		var result = {
-// 			hasError: false
-// 		};
-// 		var currentCell = ctx.sp.Game.getPlayer().getParentCell();
-// 		var currentCellData = {
-// 			id: currentCell.getFormID(),
-// 			name: currentCell.getName(),
-// 			type: currentCell.getType()
-// 		};
-
-// 		if (ctx.state.currentCellId !== currentCellData.id) {
-// 			if (ctx.state.currentCellId !== undefined) {
-// 				result.currentCell = currentCellData;
-// 				ctx.sendEvent(result);
-// 			}
-
-// 			ctx.state.currentCellId = currentCell.getFormID();
-// 			ctx.state.currentCell = currentCellData;
-// 		}
-// 	} catch (err) {
-// 		ctx.sendEvent({
-// 			hasError: true,
-// 			err: err.toString()
-// 		});
-// 	}
-// });

@@ -25,6 +25,7 @@ export const initSprintStateChangeEvent = () => {
 	const sprintAttr: Attr = 'stamina';
 	const staminaReduce = -10;
 	utils.hook('_onSprintStateChange', (pcFormId: number, newState: any) => {
+		utils.log('[SPRINT]', newState);
 		switch (newState) {
 			case 'start':
 				actorValues.set(pcFormId, `mp_${sprintAttr}drain` as AttrAll, 'base', -staminaReduce);

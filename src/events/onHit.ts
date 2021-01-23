@@ -41,6 +41,10 @@ export const initHitEvent = () => {
 	});
 
 	utils.hook('_onHit', (pcFormId: number, eventData: any) => {
+		if (eventData.agressor === pcFormId) {
+			utils.log('[HIT] eventData', eventData);
+		}
+
 		let damageMod = -25;
 		if (!PRODUCTION) {
 			// help to kill enemies (godmode)
@@ -73,6 +77,10 @@ export const initHitEvent = () => {
 
 		const newDamageModValue = damage + damageMod;
 		actorValues.set(eventData.target, avName, 'damage', newDamageModValue);
+
+		if (eventData.agressor === pcFormId) {
+			utils.log('[HIT] newDamageModValue', newDamageModValue);
+		}
 
 		const wouldDie = actorValues.getMaximum(eventData.target, 'health') + newDamageModValue <= 0;
 		if (wouldDie && !mp.get(eventData.target, 'isDead')) {

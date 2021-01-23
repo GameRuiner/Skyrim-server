@@ -1,3 +1,5 @@
+import { ObjectReference } from '../platform/ObjectReference';
+
 export interface CellChangeEvent {
 	hasError: boolean;
 	err?: string;
@@ -5,8 +7,15 @@ export interface CellChangeEvent {
 	prevCell?: any;
 }
 export interface ActivateEvent {
-	target: number;
-	caster: number;
+	target: ObjectReference;
+	caster: ObjectReference;
+	isCrimeToActivate: boolean;
+}
+export interface ActivateEventReturn {
+	baseId: number;
+	name: string;
+	target: ObjectReference;
+	caster: ObjectReference;
 	isCrimeToActivate: boolean;
 }
 

@@ -18,9 +18,7 @@
 		"refreshGitignore": "git rm -r --cached . && git add . && git commit -m \".gitignore is now working\"",
 		"tsc:watch": "tsc --p tsconfig.json -w",
 		"tsc:build": "tsc --p tsconfig.json",
-		"gitignore:refresh": "git rm -r --cached . && git add . && git commit -m \".gitignore is now working\"",
-		"gitignore1": "git add .",
-		"gitignore2": "git commit -m \".gitignore is now working\""
+		"gitignore:refresh": "git rm -r --cached . && git add . && git commit -m \".gitignore is now working\""
 	},
 	"keywords": [],
 	"author": "",

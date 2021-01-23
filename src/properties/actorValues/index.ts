@@ -392,7 +392,5 @@ export const initActorValue = () => {
 		if (actorValues.setDefaults) {
 			actorValues.setDefaults(pcFormId, options);
 		}
-		/** set scale of Actor to default */
-		mp.set(pcFormId, 'scale', 1);
 	});
 };

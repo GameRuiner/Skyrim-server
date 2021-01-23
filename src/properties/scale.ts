@@ -6,9 +6,11 @@ declare const mp: MP;
 declare const ctx: CTX;
 
 function setScale() {
-	if (ctx.value !== ctx.state.lastScale) {
+	if (ctx.state.lastScale !== +ctx.value) {
+		if (ctx.state.lastScale !== undefined) {
+			ctx.sp.Game.getPlayer().setScale(+ctx.value);
+		}
 		ctx.state.lastScale = +ctx.value;
-		// ctx.refr.setScale(+ctx.value);
 	}
 }
 

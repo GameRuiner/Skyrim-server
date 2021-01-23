@@ -4,7 +4,6 @@ import { professionSystem } from './professionSystem';
 import { getWorldOrCellDesc } from '../../properties';
 import { locations } from './data';
 import type { ProfessionNamesProp, ProfessionProp } from './data';
-declare const mp: MP;
 
 /** if true sell items */
 const IS_SELL = true;
@@ -21,7 +20,9 @@ const isMine = (cellDesc: string): boolean => {
 
 export const initMinesSystem = () => {
 	utils.hook('_onCurrentCellChange', (pcFormId: number, event: CellChangeEvent) => {
+		utils.log('[MINES]', event);
 		try {
+			utils.log('[MINES] WorldOrCellDesc', getWorldOrCellDesc(pcFormId));
 			if (isMine(getWorldOrCellDesc(pcFormId))) {
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
 
@@ -34,7 +35,7 @@ export const initMinesSystem = () => {
 				}
 			} else {
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
-				if (myProfession.name === currentProfessionName) {
+				if (myProfession?.name === currentProfessionName) {
 					if (myProfession.isActive) {
 						professionSystem.delete(pcFormId, currentProfessionName);
 						if (IS_SELL) {

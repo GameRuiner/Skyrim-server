@@ -16,8 +16,9 @@ export const professionSystem = {
 	 */
 	set: (formId: number, professionName: ProfessionNamesProp) => {
 		utils.log('[PROFESSIONS]', 'setProfession');
-
+		
 		const currentProfessionStaff = professions.collectors[professionName];
+		utils.log('[PROFESSIONS] currentProfessionStaff', currentProfessionStaff);
 
 		professionSystem.addItems(formId, professionName);
 

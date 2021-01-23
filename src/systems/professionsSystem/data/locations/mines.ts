@@ -20,6 +20,7 @@ const MINES: locationProp[] = [
 		baseId: 0x1382e,
 		name: 'ShorsStoneRedbellyMine',
 		ruName: 'Красная шахта',
+		worldId: '1382e:Skyrim.esm',
 	},
 	{
 		baseId: 0x1523c,

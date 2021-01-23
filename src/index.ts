@@ -54,6 +54,11 @@ initConsoleOutput();
 // "properties/actorValues",
 initActorValue();
 
+utils.hook('onReinit', (pcFormId: number, options: any) => {
+	/** set scale of Actor to default */
+	mp.set(pcFormId, 'scale', 1);
+});
+
 // "events/onActorValueFlushRequired",
 initActorValueFlushRequiredEvent();
 
