@@ -76,6 +76,7 @@ SkyrimData
 server-settings.json
 dist_front
 SborkaPlugins
+gamemode.js
 
 #html
 html
