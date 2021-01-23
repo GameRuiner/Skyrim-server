@@ -1,6 +1,6 @@
-import { inventorySystem } from '@systems-skymp/inventorySystem';
 import { MP } from '@types-skymp';
 import { utils } from '@utility-skymp';
+import { inventorySystem } from '..';
 import { PROFESSIONS } from './data/professions';
 import { professionSystem } from './professionSystem';
 
