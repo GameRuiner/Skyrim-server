@@ -1,4 +1,6 @@
 import { CTX } from '../platform';
+import { Actor } from '../platform/Actor';
+import { ObjectReference } from '../platform/ObjectReference';
 import { MP } from '../types';
 import { getFunctionText, utils } from '../utility';
 
@@ -6,7 +8,7 @@ declare const mp: MP;
 declare const ctx: CTX;
 
 const updateNeighbor = getFunctionText(() => {
-	const ac = ctx.sp.Actor.from(ctx.refr);
+	const ac = ctx.sp.Actor.from(ctx.refr as Actor);
 
 	const isDead = ctx.value;
 	if (isDead) {
@@ -23,7 +25,7 @@ const updateNeighbor = getFunctionText(() => {
 });
 
 const updateOwner = getFunctionText(() => {
-	const ac = ctx.sp.Actor.from(ctx.refr);
+	const ac = ctx.sp.Actor.from(ctx.refr as Actor);
 
 	ac.startDeferredKill();
 

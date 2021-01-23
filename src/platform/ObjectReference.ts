@@ -111,7 +111,7 @@ export interface ObjectReference extends Form {
 	moveToInteractionLocation: (akTarget: ObjectReference) => Promise<void>;
 	moveToMyEditorLocation: () => Promise<void>;
 	moveToNode: (akTarget: ObjectReference, asNodeName: string) => Promise<void>;
-	placeActorAtMe: (akActorToPlace: ActorBase, aiLevelMod: number, akZone: skyrimPlatform.EncounterZone) => Actor;
+	placeActorAtMe: (akActorToPlace: skyrimPlatform.ActorBase, aiLevelMod: number, akZone: skyrimPlatform.EncounterZone) => Actor;
 	placeAtMe: (
 		akFormToPlace: Form,
 		aiCount: number,

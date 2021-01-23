@@ -1,5 +1,5 @@
 import { CTX } from '../platform';
-import { HitEvent } from '../platform';
+import { HitEvent } from '../platform/skyrimPlatform';
 import { MP } from '../types';
 import { getFunctionText, utils } from '../utility';
 

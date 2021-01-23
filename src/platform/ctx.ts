@@ -1,5 +1,6 @@
 import { PropertyName } from '../types';
 import { Form } from './Form';
+import { ObjectReference } from './ObjectReference';
 import { Actor } from './skyrimPlatform';
 import { SkyrimPlatform } from './skyrimPlatformInterface';
 
@@ -11,7 +12,7 @@ export interface CTX {
 	/**
 	 * Current Actor
 	 */
-	refr: Form;
+	refr: Actor | ObjectReference;
 	value: any;
 	/**
 	 * storage value
