@@ -1,7 +1,7 @@
 import { getEquipment, getInventar, consoleOutput } from '../properties';
 import { CTX } from '../platform';
 // import { consoleOutput, getEquipment, getInventar } from '../properties';
-import { Equipment, MP } from '../types';
+import { Equipment, Inventar, InventarItem, MP } from '../types';
 import { genClientFunction } from '../utility';
 
 declare const mp: MP;
@@ -152,7 +152,17 @@ export const inventorySystem = {
 	 * @param formId who should I eqiup the item to
 	 * @param baseId id of item
 	 */
-	isEquip: (formId: number, baseId: number): boolean => {
+	isEquip: (formId: number, baseId: number | undefined): boolean => {
+		if (!baseId) return false;
 		return getEquipment(formId).inv.entries.find((item) => item.baseId === baseId)?.worn ?? false;
+	},
+
+	/**
+	 * find item and if exist retrurn it
+	 * @param inv actor inventar
+	 * @param baseId item id to find
+	 */
+	find: (inv: Inventar, baseId: number): InventarItem | undefined => {
+		return inv.entries.find((x) => x.baseId === baseId);
 	},
 };

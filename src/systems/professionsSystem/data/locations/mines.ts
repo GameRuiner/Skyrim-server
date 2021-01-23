@@ -1,5 +1,6 @@
-import { location } from './locationProp';
-const MINES: location[] = [
+import { locationProp } from './locationProp';
+
+const MINES: locationProp[] = [
 	{
 		baseId: 0x2c778,
 		name: 'DawnstarIronBreakerMine',
@@ -107,4 +108,5 @@ const MINES: location[] = [
 		worldId: '43fab:Skyrim.esm',
 	},
 ];
+
 export default MINES;

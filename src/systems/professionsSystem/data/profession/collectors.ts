@@ -6,6 +6,8 @@ const collectors: ProfessionListProp = {
 		boots: 0x1be1b,
 	},
 	herbalist: {},
-	woodsman: {},
+	woodsman: {
+		tool: 0x2f2f4,
+	},
 };
 export default collectors;

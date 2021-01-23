@@ -3,6 +3,6 @@
 	"loadOrder": ["Skyrim.esm", "Update.esm", "Dawnguard.esm", "HearthFires.esm", "Dragonborn.esm"],
 	"ip": "127.0.0.1",
 	"port": 50051,
-	"name": "Atlas server",
+	"name": "__alekc",
 	"maxPlayers": 1
 }

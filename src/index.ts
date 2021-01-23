@@ -77,8 +77,9 @@ initEmptyAnimationEvent();
 initHitStatic();
 initInputF5Event();
 initActivateEvent();
-initFarmSystem();
 
+// farm
+initFarmSystem();
 // profession
 initActiveProfession();
 initMinesSystem();

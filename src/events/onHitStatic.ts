@@ -17,9 +17,10 @@ export const initHitStatic = () => {
 
 				const target = ctx.getFormIdInServerFormat(e.target.getFormId());
 				const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());
+
 				ctx.sendEvent({
-					target: target,
-					agressor: agressor,
+					target,
+					agressor,
 				});
 			});
 		}, {})
