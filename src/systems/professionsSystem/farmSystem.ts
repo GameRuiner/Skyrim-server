@@ -1,7 +1,7 @@
 import { utils } from '../../utility';
 import { inventorySystem } from '../../systems';
 import { MP } from '../../types';
-import { ResourcesTypesProp, allAnimation, resources } from './data';
+import { ResourcesTypesProp, allAnimation, resources, ProfessionProp } from './data';
 declare const mp: MP;
 
 /**
@@ -23,12 +23,19 @@ const farmItem = (
 		| undefined
 ) => {
 	if (animations) {
-		mp.set(formId, 'animation', { animations, duration });
+		const currentAnimation = mp.get(formId, 'animation');
+
+		if (!currentAnimation) {
+			mp.set(formId, 'animation', { animations, duration });
+			setTimeout(() => {
+				inventorySystem.addItem(formId, baseId, 1);
+				mp.set(formId, 'animation', null);
+			}, duration * 1000);
+		}
 	} else {
 		utils.log('farmItem(): animations not found');
+		inventorySystem.addItem(formId, baseId, 1);
 	}
-
-	setTimeout(() => inventorySystem.addItem(formId, baseId, 1), duration ? duration * 1000 : 1);
 };
 
 export const initFarmSystem = () => {
@@ -41,7 +48,12 @@ export const initFarmSystem = () => {
 					if (data) {
 						switch (data.type) {
 							case 'minerals':
-								farmItem(formId, 5, data.baseId, allAnimation.collector.miner);
+								const currentProf: ProfessionProp = mp.get(formId, 'activeProfession');
+								const duration = 5;
+								currentProf.name === 'miner'
+									? farmItem(formId, duration, data.baseId, allAnimation.collector.miner)
+									: mp.set(formId, 'message', 'Вы не шахтер!');
+
 								break;
 							default:
 								break;

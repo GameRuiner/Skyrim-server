@@ -10,7 +10,8 @@ function setAnimation() {
 		if (ctx.value !== ctx.state.animation) {
 			ctx.state.animation = ctx.value;
 
-			if (ctx.value.animations) {
+			if (ctx.value?.animations) {
+				ctx.sp.printConsole('Animation start.');
 				const animations: {
 					start: string[];
 					end: string[];

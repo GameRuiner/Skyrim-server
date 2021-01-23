@@ -1716,17 +1716,22 @@ var farmItem = function (formId, duration, baseId, animations) {
   }
 
   if (animations) {
-    mp.set(formId, 'animation', {
-      animations: animations,
-      duration: duration
-    });
+    var currentAnimation = mp.get(formId, 'animation');
+
+    if (!currentAnimation) {
+      mp.set(formId, 'animation', {
+        animations: animations,
+        duration: duration
+      });
+      setTimeout(function () {
+        systems_1.inventorySystem.addItem(formId, baseId, 1);
+        mp.set(formId, 'animation', null);
+      }, duration * 1000);
+    }
   } else {
     utility_1.utils.log('farmItem(): animations not found');
+    systems_1.inventorySystem.addItem(formId, baseId, 1);
   }
-
-  setTimeout(function () {
-    return systems_1.inventorySystem.addItem(formId, baseId, 1);
-  }, duration ? duration * 1000 : 1);
 };
 
 var initFarmSystem = function () {
@@ -1742,7 +1747,9 @@ var initFarmSystem = function () {
           if (data) {
             switch (data.type) {
               case 'minerals':
-                farmItem(formId, 5, data.baseId, data_1.allAnimation.collector.miner);
+                var currentProf = mp.get(formId, 'activeProfession');
+                var duration = 5;
+                currentProf.name === 'miner' ? farmItem(formId, duration, data.baseId, data_1.allAnimation.collector.miner) : mp.set(formId, 'message', 'Вы не шахтер!');
                 break;
 
               default:
@@ -2049,20 +2056,21 @@ exports.initAnimation = void 0;
 var utility_1 = require("../utility");
 
 function setAnimation() {
-  var _a;
+  var _a, _b;
 
   try {
     if (ctx.value !== ctx.state.animation) {
       ctx.state.animation = ctx.value;
 
-      if (ctx.value.animations) {
+      if ((_a = ctx.value) === null || _a === void 0 ? void 0 : _a.animations) {
+        ctx.sp.printConsole('Animation start.');
         var animations_1 = ctx.value.animations;
 
         if (animations_1) {
           animations_1.start.forEach(function (animName) {
             ctx.sp.Debug.sendAnimationEvent(ctx.sp.Game.getPlayer(), animName);
           });
-          ctx.sp.Utility.wait((_a = ctx.value.duration) !== null && _a !== void 0 ? _a : 5).then(function () {
+          ctx.sp.Utility.wait((_b = ctx.value.duration) !== null && _b !== void 0 ? _b : 5).then(function () {
             animations_1.end.forEach(function (animName) {
               ctx.sp.Debug.sendAnimationEvent(ctx.sp.Game.getPlayer(), animName);
             });
