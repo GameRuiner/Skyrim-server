@@ -1,3 +1,4 @@
+import { createContext } from 'vm';
 import { MP } from '../types';
 import { EventName } from '../types/EventName';
 
@@ -53,9 +54,24 @@ export const utils = {
  * return function text as text
  * @param func source function
  */
-export const getFunctionText = (func: Function): string => {
-	const funcString = func.toString().substring(0, func.toString().length - 1);
-	return funcString.replace(new RegExp('^.+?{', 'm'), '').trim();
+export const getFunctionText = (func: Function, functionName?: string): string => {
+	let funcString = func
+		.toString()
+		.substring(0, func.toString().length - 1)
+		.replace(new RegExp('^.+?{', 'm'), '')
+		.trim();
+
+	// add try catch
+	funcString = `
+	try {
+		${funcString}
+	} catch(err) {
+		ctx.sp.printConsole('[ERROR getFunctionText] (${functionName})', err)
+	}
+	`;
+	// , 'function text: ' + ${funcString}
+
+	return funcString;
 };
 
 /**
@@ -66,8 +82,8 @@ export const getFunctionText = (func: Function): string => {
  * TODO: Error when use array in param. Example - const pos = 21005.427734375,-7497.9853515625,-3611.7646484375;
  * TODO: ts change variables name, Example - pos change to pos_1. Maybe use regex to find params with name ***_
  */
-export const genClientFunction = (func: Function, args?: any, log: boolean = false) => {
-	let result = getFunctionText(func);
+export const genClientFunction = (func: Function, functionName?: string, args?: any, log: boolean = false) => {
+	let result = getFunctionText(func, functionName);
 	for (let name in args) {
 		result = `const ${name} = ${args[name]};` + result;
 	}

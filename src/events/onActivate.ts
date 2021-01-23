@@ -10,23 +10,16 @@ export const initActivateEvent = () => {
 	mp.makeEventSource(
 		'_onActivate',
 		getFunctionText(() => {
-			let count = 0;
-			let block = true;
 			ctx.sp.on('activate', (event: any) => {
 				try {
 					const e = event as ActivateEvent;
+					if (e.caster.getFormID() !== 0x14) return;
 
 					const target: ObjectReference = e.target;
-					const BaseForm = target.getBaseObject();
-
-					ctx.sp.printConsole(count++, 'activate');
-					block = !block;
-					const object = ctx.sp.Game.getFormEx(BaseForm.getFormID());
-					ctx.sp.ObjectReference.from(object).blockActivation(block);
 
 					const result: ActivateEventReturn = {
-						baseId: BaseForm.getFormID(),
-						name: BaseForm.getName(),
+						baseId: target.getFormID(),
+						name: target.getBaseObject().getName(),
 						caster: e.caster,
 						target: e.target,
 						isCrimeToActivate: e.isCrimeToActivate,
@@ -36,6 +29,6 @@ export const initActivateEvent = () => {
 					ctx.sp.printConsole('Catch _onActivate', e);
 				}
 			});
-		})
+		}, '_onActivate')
 	);
 };

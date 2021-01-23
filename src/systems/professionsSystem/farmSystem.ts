@@ -1,6 +1,6 @@
 import { utils } from '../../utility';
 import { inventorySystem } from '../../systems';
-import { ActivateEvent, ActivateEventReturn, MP } from '../../types';
+import { ActivateEventReturn, MP } from '../../types';
 import { ResourcesTypesProp, allAnimation, resources } from './data';
 declare const mp: MP;
 

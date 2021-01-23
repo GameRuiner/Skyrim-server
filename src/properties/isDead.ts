@@ -22,7 +22,7 @@ const updateNeighbor = getFunctionText(() => {
 		ctx.sp.printConsole(ac.getBaseObject().getFormID());
 		ctx.respawn();
 	}
-});
+}, 'updateNeighbor');
 
 const updateOwner = getFunctionText(() => {
 	const ac = ctx.sp.Actor.from(ctx.refr as Actor);
@@ -53,7 +53,7 @@ const updateOwner = getFunctionText(() => {
 
 		ctx.state.value = value;
 	}
-});
+}, 'updateOwner');
 
 export const initIsDead = () => {
 	mp.makeProperty('isDead', {

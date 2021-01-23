@@ -44,7 +44,7 @@ export const initActiveProfession = () => {
 	mp.makeProperty('activeProfession', {
 		isVisibleByOwner: true,
 		isVisibleByNeighbors: true,
-		updateOwner: getFunctionText(setActiveProfession),
+		updateOwner: getFunctionText(setActiveProfession, 'setActiveProfession'),
 		updateNeighbor: '',
 	});
 };

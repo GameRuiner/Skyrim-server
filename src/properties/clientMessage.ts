@@ -50,7 +50,7 @@ function sendMessage() {
 	}
 }
 
-export const init = () => {
+export const initSendMessage = () => {
 	mp.makeProperty('message', {
 		isVisibleByOwner: true,
 		isVisibleByNeighbors: false,

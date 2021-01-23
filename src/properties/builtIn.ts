@@ -99,3 +99,11 @@ export function getInventar(formId: number): Inventar {
 export function getEquipment(formId: number): Equipment {
 	return mp.get(formId, 'equipment');
 }
+
+/**
+ * Return neighbors of actor
+ * @param formId ID Object
+ */
+export function getNeighbors(formId: number): number[] {
+	return mp.get(formId, 'neighbors');
+}

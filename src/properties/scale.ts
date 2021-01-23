@@ -18,7 +18,7 @@ export const initScale = () => {
 	mp.makeProperty('scale', {
 		isVisibleByOwner: true,
 		isVisibleByNeighbors: true,
-		updateOwner: getFunctionText(setScale),
-		updateNeighbor: getFunctionText(setScale),
+		updateOwner: getFunctionText(setScale, 'setScale'),
+		updateNeighbor: getFunctionText(setScale, 'setScale'),
 	});
 };

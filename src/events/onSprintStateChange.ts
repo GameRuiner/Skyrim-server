@@ -19,7 +19,7 @@ export const initSprintStateChangeEvent = () => {
 					ctx.state.isSprinting = isSprinting;
 				}
 			});
-		})
+		}, 'SprintStateChange')
 	);
 
 	const sprintAttr: Attr = 'stamina';

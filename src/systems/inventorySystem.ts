@@ -66,6 +66,7 @@ export const inventorySystem = {
 						const name = ctx.sp.Game.getFormEx(baseId).getName();
 						ctx.sp.Debug.notification(`${name} ${count > 1 ? '(' + count + ') ' : ''}- добавлено`);
 					},
+					'notification add item',
 					{ baseId, count }
 				)
 			);
@@ -133,6 +134,7 @@ export const inventorySystem = {
 				() => {
 					ctx.sp.Game.getPlayer().equipItem(ctx.sp.Game.getFormEx(baseId), false, false);
 				},
+				'equip item',
 				{ baseId }
 			)
 		);

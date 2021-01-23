@@ -21,7 +21,7 @@ export const initAnimationEvent = () => {
 						}
 					},
 				};
-			}, {})
+			}, '_onAnimationEvent')
 		);
 
 		/**

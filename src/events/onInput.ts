@@ -20,7 +20,7 @@ export const initInputF5Event = () => {
 					ctx.state.isPressed = isPressed;
 				}
 			});
-		})
+		}, '_onInputF5')
 	);
 
 	utils.hook('_onInputF5', (pcFormId: number) => {

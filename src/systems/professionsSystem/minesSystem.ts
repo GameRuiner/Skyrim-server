@@ -20,10 +20,10 @@ const isMine = (cellDesc: string): boolean => {
 
 export const initMinesSystem = () => {
 	utils.hook('_onCurrentCellChange', (pcFormId: number, event: CellChangeEvent) => {
-		utils.log('[MINES]', event);
 		try {
-			utils.log('[MINES] WorldOrCellDesc', getWorldOrCellDesc(pcFormId));
 			if (isMine(getWorldOrCellDesc(pcFormId))) {
+				utils.log('[MINES]', event);
+				utils.log('[MINES] WorldOrCellDesc', getWorldOrCellDesc(pcFormId));
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
 
 				if (myProfession === null) {
