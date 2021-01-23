@@ -13,7 +13,8 @@ type SystemPropertyName =
 	| 'baseDesc'
 	| 'formDesc'
 	| 'equipment'
-	| 'isOnline';
+	| 'isOnline'
+	| 'neighbors';
 
 /**
  * Custom Properties
@@ -24,6 +25,7 @@ type CustomPropertyName =
 	| 'spawnPoint'
 	| 'consoleOutput'
 	| 'notification'
+	| 'eval'
 	| 'av_health'
 	| 'av_magicka'
 	| 'av_stamina'
