@@ -74,3 +74,11 @@ skymp5-gamemode
 Skyrim-server
 SkyrimData
 server-settings.json
+dist_front
+SborkaPlugins
+
+#html
+html
+.firebaserc
+.posthtmlrc
+firebase.json
