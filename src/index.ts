@@ -4,7 +4,6 @@ import { initUtils, utils } from './utility';
 import {
 	initActiveProfession,
 	initConsoleOutput,
-	initScale,
 	initSpawnPoint,
 	initIsDead,
 	initActorValue,
@@ -70,11 +69,12 @@ initDevCommands();
 initAnimationEvent();
 
 initCurrentCellChangeEvent();
-initScale();
+//initScale();
 initEmptyAnimationEvent();
 initHitStatic();
 initInputF5Event();
 initActivateEvent();
+initAnimation();
 
 // farm
 initFarmSystem();

@@ -54,7 +54,7 @@ export const initSendMessage = () => {
 	mp.makeProperty('message', {
 		isVisibleByOwner: true,
 		isVisibleByNeighbors: false,
-		updateOwner: getFunctionText(sendMessage),
+		updateOwner: getFunctionText(sendMessage, 'sendMessage'),
 		updateNeighbor: '',
 	});
 };
