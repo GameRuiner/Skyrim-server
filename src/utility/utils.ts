@@ -84,8 +84,25 @@ export const getFunctionText = (func: Function, functionName?: string): string =
  */
 export const genClientFunction = (func: Function, functionName?: string, args?: any, log: boolean = false) => {
 	let result = getFunctionText(func, functionName);
+
+	if (log) {
+		result = Array(10).fill('/').join('') + 'end params' + Array(10).fill('/').join('') + '\n' + result;
+	}
 	for (let name in args) {
-		result = `const ${name} = ${args[name]};` + result;
+		switch (typeof args[name]) {
+			case 'number':
+				result = `const ${name} = ${args[name]};\n` + result;
+				break;
+			case 'string':
+				result = `const ${name} = '${args[name]}';\n` + result;
+				break;
+			case 'boolean':
+				result = `const ${name} = ${args[name]};\n` + result;
+				break;
+		}
+	}
+	if (log) {
+		result = Array(10).fill('/').join('') + 'params' + Array(10).fill('/').join('') + '\n' + result;
 	}
 	if (log) {
 		utils.log('[DEBUG] Generated function\n', result);

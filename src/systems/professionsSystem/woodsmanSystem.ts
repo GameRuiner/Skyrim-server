@@ -45,9 +45,9 @@ export const initWoodsmanSystem = () => {
 
 	utils.hook('_onActivate', (pcFormId: number, event: ActivateEventReturn) => {
 		try {
-			utils.log('[WOODSMAN] event', event);
 			// get profession
 			if (event?.baseId === activatorIdToGetProf) {
+				utils.log('[WOODSMAN] event', event);
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
 				utils.log('[WOODSMAN]', myProfession);
 

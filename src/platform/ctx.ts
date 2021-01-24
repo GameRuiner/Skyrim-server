@@ -12,7 +12,7 @@ export interface CTX {
 	/**
 	 * Current Actor
 	 */
-	refr: Actor | ObjectReference;
+	refr: Form;
 	value: any;
 	/**
 	 * storage value
