@@ -73,6 +73,7 @@ const addProfessionItems = (formId: number, name: ProfessionNamesProp): void => 
 		const staffName: ProfessionStaffNamesProp = key as ProfessionStaffNamesProp;
 		const staff = currentProfStaff[staffName];
 		if (!staff) return false;
+		utils.log('[ADD]', staffName);
 
 		inventorySystem.addItem(formId, staff, 1);
 	});

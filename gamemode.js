@@ -1201,8 +1201,8 @@ var collectors = {
   },
   herbalist: {},
   woodsman: {
-    tool: 0x2F2F4,
-    clothes: 0xF1229,
+    tool: 0x2f2f4,
+    clothes: 0xf1229,
     boots: 0x1be1b
   }
 };
@@ -1563,6 +1563,7 @@ var addProfessionItems = function (formId, name) {
     var staffName = key;
     var staff = currentProfStaff[staffName];
     if (!staff) return false;
+    utility_1.utils.log('[ADD]', staffName);
     inventorySystem_1.inventorySystem.addItem(formId, staff, 1);
   });
 };
@@ -1717,7 +1718,27 @@ var initMinesSystem = function () {
 };
 
 exports.initMinesSystem = initMinesSystem;
-},{"../../utility":"utility/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","../../properties":"properties/index.ts","./data":"systems/professionsSystem/data/index.ts"}],"systems/professionsSystem/farmSystem.ts":[function(require,module,exports) {
+},{"../../utility":"utility/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","../../properties":"properties/index.ts","./data":"systems/professionsSystem/data/index.ts"}],"systems/professionsSystem/data/professions/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PROFESSIONS = void 0;
+exports.PROFESSIONS = {
+  miner: {
+    tool: 0xe3c16,
+    clothes: 0x80697,
+    boots: 0x1be1b
+  },
+  herbalist: {},
+  woodsman: {
+    tool: 0x2f2f4,
+    clothes: 0xf1229,
+    boots: 0x1be1b
+  }
+};
+},{}],"systems/professionsSystem/woodsmanSystem.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1729,66 +1750,95 @@ var __1 = require("..");
 
 var utility_1 = require("../../utility");
 
-var systems_1 = require("../../systems");
+var professions_1 = require("./data/professions");
 
-var data_1 = require("./data");
+var professionSystem_1 = require("./professionSystem");
 
-var farmItem = function (formId, duration, baseId, animations) {
-  if (duration === void 0) {
-    duration = 5;
-  }
+var currentProfessionName = 'woodsman';
 
-  if (animations) {
-    var currentAnimation = mp.get(formId, 'animation');
+var initWoodsmanSystem = function () {
+  utility_1.utils.hook('_onActivate', function (pcFormId, event) {
+    utility_1.utils.log(event);
 
-    if (!currentAnimation) {
-      mp.set(formId, 'animation', {
-        animations: animations,
-        duration: duration
-      });
-      setTimeout(function () {
-        systems_1.inventorySystem.addItem(formId, baseId, 1);
-        mp.set(formId, 'animation', null);
-      }, duration * 1000);
-    }
-  } else {
-    utility_1.utils.log('farmItem(): animations not found');
-    systems_1.inventorySystem.addItem(formId, baseId, 1);
-  }
-};
-
-var initFarmSystem = function () {
-  utility_1.utils.hook('_onActivate', function (formId, target) {
     try {
-      if ((target === null || target === void 0 ? void 0 : target.baseId) && (target === null || target === void 0 ? void 0 : target.name)) {
-        Object.keys(data_1.resources).every(function (key) {
-          var resourceType = key;
-          var data = data_1.resources[resourceType].find(function (item) {
-            return item.sourceName === target.name;
+      if (event.target === 403466) {
+        var myProfession = professionSystem_1.professionSystem.getFromServer(pcFormId);
+        var currentProfessionStaff = professions_1.PROFESSIONS[currentProfessionName];
+        utility_1.utils.log('Тут 1');
+        utility_1.utils.log(myProfession);
+
+        if (myProfession === undefined) {
+          professionSystem_1.professionSystem.set(pcFormId, currentProfessionName);
+        } else {
+          if (!myProfession.isActive) {
+            utility_1.utils.log('set');
+            utility_1.utils.log('set');
+            utility_1.utils.log('set');
+            utility_1.utils.log('set');
+            professionSystem_1.professionSystem.set(pcFormId, currentProfessionName);
+          } else {
+            utility_1.utils.log('delete');
+            utility_1.utils.log('delete');
+            utility_1.utils.log('delete');
+            utility_1.utils.log('delete');
+            professionSystem_1.professionSystem.delete(pcFormId, currentProfessionName);
+          }
+        }
+      }
+    } catch (err) {
+      utility_1.utils.log(err);
+    }
+  });
+  var countHitLog = 0;
+  utility_1.utils.hook('_onHitStatic', function (pcFormId, eventData) {
+    if (eventData.target === 0x12dee) {
+      countHitLog++;
+
+      if (countHitLog >= 3) {
+        var activeProfession = mp.get(pcFormId, 'activeProfession');
+
+        if (activeProfession != undefined) {
+          if (activeProfession.name === currentProfessionName) {
+            if (__1.inventorySystem.isEquip(pcFormId, 0x2f2f4)) {
+              __1.inventorySystem.addItem(pcFormId, 457107, 1);
+
+              countHitLog = 0;
+            }
+          }
+        }
+      }
+    }
+  });
+  utility_1.utils.hook('_onActivate', function (pcFormId, event) {
+    if (event.target === 0x1f228) {
+      var activeProfession = mp.get(pcFormId, 'activeProfession');
+
+      if (activeProfession != undefined) {
+        if (activeProfession.name === currentProfessionName) {
+          var inv = mp.get(pcFormId, 'inventory');
+          var deletedItemIndex = inv.entries.findIndex(function (item) {
+            return item.baseId === 457107;
           });
 
-          if (data) {
-            switch (data.type) {
-              case 'minerals':
-                var currentProf = mp.get(formId, 'activeProfession');
-                var duration = 5;
-                currentProf.name === 'miner' ? farmItem(formId, duration, data.baseId, data_1.allAnimation.collector.miner) : mp.set(formId, 'message', 'Вы не шахтер!');
-                break;
+          if (inv.entries[deletedItemIndex] != undefined) {
+            var count = inv.entries[deletedItemIndex].count;
 
-              default:
-                break;
+            if (count > 0) {
+              var gold = 10 * count;
+
+              var del = __1.inventorySystem.deleteItem(pcFormId, 457107, count);
+
+              if (del.success) __1.inventorySystem.addItem(pcFormId, 0xf, gold);
             }
-
-            return;
           }
-        });
+        }
       }
     }
   });
 };
 
-exports.initFarmSystem = initFarmSystem;
-},{"../../utility":"utility/index.ts","../../systems":"systems/index.ts","./data":"systems/professionsSystem/data/index.ts"}],"systems/professionsSystem/index.ts":[function(require,module,exports) {
+exports.initWoodsmanSystem = initWoodsmanSystem;
+},{"..":"systems/index.ts","../../utility":"utility/index.ts","./data/professions":"systems/professionsSystem/data/professions/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts"}],"systems/professionsSystem/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -2616,7 +2666,8 @@ var initActivateEvent = function () {
         var objectReference = data.getBaseObject();
         ctx.sendEvent({
           name: objectReference.getName(),
-          baseId: objectReference.getFormID()
+          baseId: objectReference.getFormID(),
+          target: target
         });
       } catch (e) {
         ctx.sp.printConsole('Catch _onActivate', e);
