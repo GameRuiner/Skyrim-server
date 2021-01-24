@@ -1,4 +1,4 @@
-import { MP } from '../platform';
+import { MP } from '../types';
 
 declare const mp: MP;
 

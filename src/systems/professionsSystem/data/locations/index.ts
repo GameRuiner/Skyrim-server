@@ -1,1 +1,5 @@
-export * from './mines';
+import MINES from './mines';
+
+export default {
+	mines: MINES,
+};

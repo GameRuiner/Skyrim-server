@@ -42,6 +42,7 @@ type CustomPropertyName =
 	| 'activeProfession'
 	| 'eval'
 	| 'message'
-	| 'teleport';
+	| 'teleport'
+	| 'animation';
 
 export type PropertyName = SystemPropertyName | CustomPropertyName;

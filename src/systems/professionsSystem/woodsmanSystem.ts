@@ -16,26 +16,36 @@ const currentProfessionName = 'woodsman';
 
 export const initWoodsmanSystem = () => {
 	utils.hook('_onActivate', (pcFormId: number, event: any) => {
+		
+		utils.log(event.baseId);
 		try {
-			if (event.target === 0x1f229) {
-				const activeProfession = professionSystem.getFromServer(pcFormId);
+			if (event.baseId === 2117) {
+				const myProfession = professionSystem.getFromServer(pcFormId);
 				const currentProfessionStaff = PROFESSIONS[currentProfessionName];
+				utils.log("Тут 1");
+				utils.log(myProfession);
 				//Проверка сосдали ли мы профессию woodsman
-				if (currentProfessionStaff) {
-					if (!activeProfession) {
+				if (myProfession === undefined) {
+					professionSystem.set(pcFormId, currentProfessionName);
+				} else {
+					if (!myProfession.isActive) {
 						professionSystem.set(pcFormId, currentProfessionName);
-					} else {
-						if (activeProfession.name === currentProfessionName) {
-							const isDeleted = professionSystem.delete(pcFormId, currentProfessionName);
-
-							if (!isDeleted) {
-								utils.log('Error: deleteProfessionItems() - error in deleteItem() ');
-							} else {
-								mp.set(pcFormId, 'activeProfession', null);
-							}
-						}
+					}
+					else {
+						professionSystem.delete(pcFormId, currentProfessionName);
 					}
 				}
+				// if (currentProfessionStaff) {
+				// 	if (!myProfession.isActive) {
+				// 		professionSystem.set(pcFormId, currentProfessionName);
+				// 		utils.log("Тут 2");
+				// 	} else {
+				// 		if (myProfession.name === currentProfessionName) {
+				// 			professionSystem.delete(pcFormId, currentProfessionName);
+				// 			utils.log("Тут 3");
+				// 		}
+				// 	}
+				// }
 			}
 		} catch (err) {
 			utils.log(err);

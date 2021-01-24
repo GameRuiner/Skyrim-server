@@ -13,7 +13,12 @@ export const initActivateEvent = () => {
 				try {
 					if (e.source && ctx.sp.Spell.from(e.source)) return;
 					const target = ctx.getFormIdInServerFormat(e.target.getFormId());
-					ctx.sendEvent({ target });
+					const data = e.target;
+					const objectReference = data.getBaseObject();
+					ctx.sendEvent({
+						name: objectReference.getName(),
+						baseId: objectReference.getFormID(),
+					});
 				} catch (e) {
 					ctx.sp.printConsole('Catch _onActivate', e);
 				}
