@@ -1592,9 +1592,24 @@ var deleteProfession = function (formId, professionName) {
     utility_1.utils.log('[PROFESSIONS]', 'Error: deleteProfessionItems() - error in deleteItem() ');
   } else {
     var oldEquipment = mp.get(formId, 'activeProfession').oldEquipment;
+    var myEquip_1 = inventorySystem_1.inventorySystem.get(formId);
+    var tmpOldEquip = oldEquipment;
+    var newEquip_1 = {
+      inv: {
+        entries: []
+      },
+      numChanges: 0
+    };
+    tmpOldEquip.inv.entries.forEach(function (oldItem) {
+      myEquip_1.entries.forEach(function (currentItem) {
+        if (oldItem.baseId === currentItem.baseId) {
+          newEquip_1.inv.entries.push(oldItem);
+        }
+      });
+    });
     utility_1.utils.log('[PROFESSIONS]', oldEquipment);
     changeProfessionOnServer(formId, {
-      oldEquipment: oldEquipment.inv.entries,
+      oldEquipment: newEquip_1,
       isActive: false
     });
   }
@@ -1997,15 +2012,18 @@ exports.initActiveProfession = void 0;
 var utility_1 = require("../utility");
 
 function setActiveProfession() {
+  var _a, _b, _c;
+
   try {
     if (ctx.value !== ctx.state.activeProfession) {
       ctx.state.activeProfession = ctx.value;
 
       if (ctx.value) {
         var player_1 = ctx.sp.Game.getPlayer();
+        var oldEquip = (_c = (_b = (_a = ctx.value) === null || _a === void 0 ? void 0 : _a.oldEquipment) === null || _b === void 0 ? void 0 : _b.inv) === null || _c === void 0 ? void 0 : _c.entries;
 
-        if (ctx.value.oldEquipment && !ctx.value.isActive) {
-          ctx.value.oldEquipment.forEach(function (itemId) {
+        if (oldEquip && !ctx.value.isActive) {
+          oldEquip.forEach(function (itemId) {
             var currentItem = ctx.sp.Game.getForm(itemId.baseId);
 
             if (!player_1.isEquipped(currentItem)) {

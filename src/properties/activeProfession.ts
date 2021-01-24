@@ -12,9 +12,10 @@ function setActiveProfession() {
 
 			if (ctx.value) {
 				const player = ctx.sp.Game.getPlayer();
-				if (ctx.value.oldEquipment && !ctx.value.isActive) {
+				const oldEquip = ctx.value?.oldEquipment?.inv?.entries;
+				if (oldEquip && !ctx.value.isActive) {
 					// player.unequipAll();
-					ctx.value.oldEquipment.forEach((itemId: any) => {
+					oldEquip.forEach((itemId: any) => {
 						const currentItem = ctx.sp.Game.getForm(itemId.baseId);
 						if (!player.isEquipped(currentItem)) {
 							player.equipItem(currentItem, false, false);

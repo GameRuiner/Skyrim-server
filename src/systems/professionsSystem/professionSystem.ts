@@ -1,5 +1,5 @@
 import { consoleOutput, getInventar } from '../../properties';
-import { Inventar, MP } from '../../types';
+import { Equipment, Inventar, MP } from '../../types';
 import { utils } from '../../utility';
 import { inventorySystem } from '../inventorySystem';
 import { resources } from './data';
@@ -131,10 +131,20 @@ const deleteProfession = (formId: number, professionName: ProfessionNamesProp) =
 		utils.log('[PROFESSIONS]', 'Error: deleteProfessionItems() - error in deleteItem() ');
 	} else {
 		const { oldEquipment } = mp.get(formId, 'activeProfession');
+		const myEquip = inventorySystem.get(formId);
+		const tmpOldEquip: Equipment = oldEquipment;
+		let newEquip: Equipment = { inv: { entries: [] }, numChanges: 0 };
+		tmpOldEquip.inv.entries.forEach((oldItem) => {
+			myEquip.entries.forEach((currentItem) => {
+				if (oldItem.baseId === currentItem.baseId) {
+					newEquip.inv.entries.push(oldItem);
+				}
+			});
+		});
 		utils.log('[PROFESSIONS]', oldEquipment);
 
 		changeProfessionOnServer(formId, {
-			oldEquipment: oldEquipment.inv.entries,
+			oldEquipment: newEquip,
 			isActive: false,
 		});
 	}
