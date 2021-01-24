@@ -2,9 +2,10 @@ import { inventorySystem } from '..';
 import { getEquipment, getInventar, consoleOutput } from '../../properties';
 import { MP } from '../../types';
 import { CTX } from '../../platform';
-import { utils, genClientFunction } from '../../utility';
+import { genClientFunction, getFunctionText, utils } from '../../utility';
 import { PROFESSIONS } from './data/professions';
 import { professionSystem } from './professionSystem';
+import { initEmptyAnimationEvent } from '../../events';
 
 declare const mp: MP;
 declare const ctx: CTX;
@@ -15,10 +16,8 @@ const currentProfessionName = 'woodsman';
 
 export const initWoodsmanSystem = () => {
 	utils.hook('_onActivate', (pcFormId: number, event: any) => {
-		// let inv = mp.get(pcFormId, 'inventory');
-		// const deletedItemIndex = inv.entries.findIndex((item: { baseId: number; }) => item.baseId === 457107);
 		try {
-			if (event.target === 127529) {
+			if (event.target === 0x1f229) {
 				const activeProfession = professionSystem.getFromServer(pcFormId);
 				const currentProfessionStaff = PROFESSIONS[currentProfessionName];
 				//Проверка сосдали ли мы профессию woodsman
@@ -28,6 +27,7 @@ export const initWoodsmanSystem = () => {
 					} else {
 						if (activeProfession.name === currentProfessionName) {
 							const isDeleted = professionSystem.delete(pcFormId, currentProfessionName);
+
 							if (!isDeleted) {
 								utils.log('Error: deleteProfessionItems() - error in deleteItem() ');
 							} else {
@@ -41,7 +41,8 @@ export const initWoodsmanSystem = () => {
 			utils.log(err);
 		}
 	});
-
+// HitTree
+//-------------------------------------------------------------------
 	let countHitLog = 0;
 	utils.hook('_onHitStatic', (pcFormId: number, eventData: any) => {
 		if (eventData.target === 0x12dee) {
@@ -59,7 +60,8 @@ export const initWoodsmanSystem = () => {
 			}
 		}
 	});
-
+//sell log
+//-------------------------------------------------------------------
 	utils.hook('_onActivate', (pcFormId: number, event: any) => {
 		if (event.target === 0x1f228) {
 			const activeProfession = mp.get(pcFormId, 'activeProfession');
@@ -79,5 +81,5 @@ export const initWoodsmanSystem = () => {
 			}
 		}
 	});
-	//-------------------------------------------------------------------
+//-------------------------------------------------------------------
 };

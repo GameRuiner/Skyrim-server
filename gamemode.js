@@ -1,6 +1,5 @@
 var parcelRequire = undefined;
 var parcelRequire = undefined;
-var parcelRequire = undefined;
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -1272,7 +1271,7 @@ var deleteProfession = function (formId, professionName) {
     var oldEquipment = mp.get(formId, 'activeProfession').oldEquipment;
     utility_1.utils.log('[PROFESSIONS]', oldEquipment);
     changeProfessionOnServer(formId, {
-      oldEquipment: oldEquipment,
+      oldEquipment: oldEquipment.inv.entries,
       isActive: false
     });
   }
@@ -1490,7 +1489,7 @@ var currentProfessionName = 'woodsman';
 var initWoodsmanSystem = function () {
   utility_1.utils.hook('_onActivate', function (pcFormId, event) {
     try {
-      if (event.target === 127529) {
+      if (event.target === 0x1f229) {
         var activeProfession = professionSystem_1.professionSystem.getFromServer(pcFormId);
         var currentProfessionStaff = professions_1.PROFESSIONS[currentProfessionName];
 
@@ -2484,5 +2483,4 @@ utility_1.utils.hook('onInit', function (pcFormId) {
   mp.onReinit(pcFormId);
 });
 },{"./utility":"utility/index.ts","./properties":"properties/index.ts","./events":"events/index.ts","./systems":"systems/index.ts"}]},{},["index.ts"], null)
-
 

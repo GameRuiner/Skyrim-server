@@ -133,7 +133,7 @@ const deleteProfession = (formId: number, professionName: ProfessionNames): bool
 		utils.log('[PROFESSIONS]', oldEquipment);
 
 		changeProfessionOnServer(formId, {
-			oldEquipment: oldEquipment,
+			oldEquipment: oldEquipment.inv.entries,
 			isActive: false,
 		});
 	}

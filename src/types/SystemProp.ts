@@ -1,4 +1,5 @@
 export interface Inventar {
+	filter(arg0: (item: { worn: any; }) => any);
 	entries: InventarItem[];
 }
 
