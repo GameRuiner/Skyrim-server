@@ -15,11 +15,9 @@ export const initActivateEvent = () => {
 					const e = event as ActivateEvent;
 					if (e.caster.getFormID() !== 0x14) return;
 
-					const target: ObjectReference = e.target;
-
 					const result: ActivateEventReturn = {
-						baseId: target.getFormID(),
-						name: target.getBaseObject().getName(),
+						baseId: e.target.getFormID(),
+						name: e.target.getBaseObject().getName(),
 						caster: e.caster,
 						target: e.target,
 						isCrimeToActivate: e.isCrimeToActivate,

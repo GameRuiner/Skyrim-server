@@ -45,6 +45,7 @@ type CustomPropertyName =
 	| 'eval'
 	| 'message'
 	| 'teleport'
-	| 'animation';
+	| 'animation'
+	| 'messageIdToShow';
 
 export type PropertyName = SystemPropertyName | CustomPropertyName;

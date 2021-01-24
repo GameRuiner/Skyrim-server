@@ -10,6 +10,32 @@ import { ObjectReference } from './ObjectReference';
 import { Form } from './Form';
 import { Message } from './Message';
 import { Quest } from './Quest';
+import { Projectile } from './Projectile';
+import {
+	ActivateEvent,
+	ActiveEffectApplyRemoveEvent,
+	CellFullyLoadedEvent,
+	CombatEvent,
+	ContainerChangedEvent,
+	DeathEvent,
+	EquipEvent,
+	GrabReleaseEvent,
+	HitEvent,
+	InitScriptEvent,
+	LockChangedEvent,
+	MagicEffectApplyEvent,
+	MoveAttachDetachEvent,
+	ObjectLoadedEvent,
+	ResetEvent,
+	SwitchRaceCompleteEvent,
+	TrackedStatsEvent,
+	UniqueIDChangeEvent,
+	WaitStopEvent,
+} from './Event';
+import { Cell } from './Cell';
+import { MagicEffect } from './MagicEffect';
+import { Location } from './Location';
+import { Keyword } from './Keyword';
 
 export type SkyrimEventName =
 	| 'update'
@@ -38,25 +64,25 @@ export type SkyrimEventName =
 	| 'effectStart';
 
 export type SkyrimEvent =
-	| skyrimPlatform.ActivateEvent
-	| skyrimPlatform.WaitStopEvent
-	| skyrimPlatform.ObjectLoadedEvent
-	| skyrimPlatform.MoveAttachDetachEvent
-	| skyrimPlatform.LockChangedEvent
-	| skyrimPlatform.GrabReleaseEvent
-	| skyrimPlatform.CellFullyLoadedEvent
-	| skyrimPlatform.SwitchRaceCompleteEvent
-	| skyrimPlatform.UniqueIDChangeEvent
-	| skyrimPlatform.TrackedStatsEvent
-	| skyrimPlatform.InitScriptEvent
-	| skyrimPlatform.ResetEvent
-	| skyrimPlatform.CombatEvent
-	| skyrimPlatform.DeathEvent
-	| skyrimPlatform.ContainerChangedEvent
-	| skyrimPlatform.HitEvent
-	| skyrimPlatform.EquipEvent
-	| skyrimPlatform.MagicEffectApplyEvent
-	| skyrimPlatform.ActiveEffectApplyRemoveEvent;
+	| ActivateEvent
+	| WaitStopEvent
+	| ObjectLoadedEvent
+	| MoveAttachDetachEvent
+	| LockChangedEvent
+	| GrabReleaseEvent
+	| CellFullyLoadedEvent // loaded cell once when enter
+	| SwitchRaceCompleteEvent
+	| UniqueIDChangeEvent
+	| TrackedStatsEvent
+	| InitScriptEvent
+	| ResetEvent
+	| CombatEvent
+	| DeathEvent
+	| ContainerChangedEvent
+	| HitEvent
+	| EquipEvent
+	| MagicEffectApplyEvent
+	| ActiveEffectApplyRemoveEvent;
 
 export interface SkyrimPlatform {
 	printConsole: (...args: any[]) => void;
@@ -132,7 +158,7 @@ export interface SkyrimPlatform {
 	Art: skyrimPlatform.Art;
 	AssociationType: skyrimPlatform.AssociationType;
 	Book: skyrimPlatform.Book;
-	Cell: skyrimPlatform.Cell;
+	Cell: Cell;
 	Class: skyrimPlatform.Class;
 	ColorForm: skyrimPlatform.ColorForm;
 	CombatStyle: skyrimPlatform.CombatStyle;
@@ -160,20 +186,20 @@ export interface SkyrimPlatform {
 	Ingredient: skyrimPlatform.Ingredient;
 	Input: Input;
 	Key: skyrimPlatform.Key;
-	Keyword: skyrimPlatform.Keyword;
+	Keyword: Keyword;
 	LeveledActor: skyrimPlatform.LeveledActor;
 	LeveledItem: skyrimPlatform.LeveledItem;
 	LeveledSpell: skyrimPlatform.LeveledSpell;
 	Light: skyrimPlatform.Light;
-	Location: skyrimPlatform.Location;
+	Location: Location;
 	LocationAlias: skyrimPlatform.LocationAlias;
 	LocationRefType: skyrimPlatform.LocationRefType;
-	MagicEffect: skyrimPlatform.MagicEffect;
+	MagicEffect: MagicEffect;
 	Message: Message;
 	MusicType: skyrimPlatform.MusicType;
 	NetImmerse: skyrimPlatform.NetImmerse;
 	Outfit: skyrimPlatform.Outfit;
-	Projectile: skyrimPlatform.Projectile;
+	Projectile: Projectile;
 	Package: skyrimPlatform.Package;
 	Perk: skyrimPlatform.Perk;
 	Potion: skyrimPlatform.Potion;

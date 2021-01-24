@@ -1,13 +1,10 @@
 import { inventorySystem } from '..';
-import { CTX } from '../../platform';
 import { ActivateEventReturn, Inventar } from '../../types';
 import { utils } from '../../utility';
 import { ProfessionProp } from './data';
 import collectors from './data/profession/collectors';
 import woods from './data/resources/woods';
 import { professionSystem } from './professionSystem';
-
-declare const ctx: CTX;
 
 // Woodsman
 const currentProfessionName = 'woodsman';
@@ -26,23 +23,6 @@ const goldId = 0xf;
 
 export const initWoodsmanSystem = () => {
 	// TODO: Block activator objects activatorIdToGetProf and activatorIdToGetSell
-	// utils.hook('onReinit', (pcFormId: number) => {
-	// 	consoleOutput.evalClient(
-	// 		pcFormId,
-	// 		getFunctionText(() => {
-	// 			const object = [ctx.sp.Game.getFormEx(379590), ctx.sp.Game.getFormEx(0x9fb04)];
-	// 			object.forEach((o) => {
-	// 				ctx.sp.ObjectReference.from(o).enable(false);
-	// 				ctx.sp.ObjectReference.from(o).resetInventory();
-	// 				ctx.sp.ObjectReference.from(o).blockActivation(true);
-	// 				ctx.sp.ObjectReference.from(o).setOpen(false);
-	// 			});
-	// 			//ctx.sp.ObjectReference.from(object[1]).activate(ctx.sp.Game.getPlayer(), false);
-	// 			//ctx.sp.Game.getPlayer().moveTo(ctx.sp.ObjectReference.from(object[1]), 0, 0, 0, true);
-	// 		}, 'disable objectRef')
-	// 	);
-	// });
-
 	utils.hook('_onActivate', (pcFormId: number, event: ActivateEventReturn) => {
 		try {
 			// get profession

@@ -1,6 +1,7 @@
 import * as skyrimPlatform from './skyrimPlatform';
 import { Actor } from './Actor';
 import { ObjectReference } from './ObjectReference';
+import { Keyword } from './Keyword';
 
 export interface Form {
 	from(form: Form): Form;
@@ -8,14 +9,14 @@ export interface Form {
 	getGoldValue(): number;
 	getKeywords(): object[];
 	getName(): string;
-	getNthKeyword(index: number): skyrimPlatform.Keyword;
+	getNthKeyword(index: number): Keyword;
 	getNumKeywords(): number;
 	getType(): number;
 	getWeight(): number;
 	getWorldModelNthTextureSet(n: number): skyrimPlatform.TextureSet;
 	getWorldModelNumTextureSets(): number;
 	getWorldModelPath(): string;
-	hasKeyword(akKeyword: skyrimPlatform.Keyword): boolean;
+	hasKeyword(akKeyword: Keyword): boolean;
 	hasWorldModel(): boolean;
 	isPlayable(): boolean;
 	playerKnows(): boolean;

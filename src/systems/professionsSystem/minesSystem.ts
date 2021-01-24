@@ -1,5 +1,5 @@
 import { utils } from '../../utility';
-import { CellChangeEvent, MP } from '../../types';
+import { CellChangeEvent } from '../../types';
 import { professionSystem } from './professionSystem';
 import { getWorldOrCellDesc } from '../../properties';
 import { locations } from './data';

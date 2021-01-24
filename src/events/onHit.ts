@@ -3,6 +3,7 @@ import { consoleOutput, actorValues } from '../properties';
 import { getFunctionText, utils } from '../utility';
 import { currentActor, PRODUCTION } from '../constants';
 import { MP } from '../types';
+import { HitEvent } from '../platform/skyrimPlatform';
 
 declare const mp: MP;
 declare const ctx: CTX;
@@ -11,12 +12,14 @@ export const initHitEvent = () => {
 	mp.makeEventSource(
 		'_onHit',
 		getFunctionText(() => {
-			ctx.sp.on('hit', (e: any) => {
+			ctx.sp.on('hit', (event: any) => {
+				const e = event as HitEvent;
+
 				if (!ctx.sp.Actor.from(e.target)) return;
 				if (e.source && ctx.sp.Spell.from(e.source)) return;
 
-				const target = ctx.getFormIdInServerFormat(e.target.getFormId());
-				const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());
+				const target = ctx.getFormIdInServerFormat(e.target.getFormID());
+				const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormID());
 
 				ctx.sendEvent({
 					isPowerAttack: e.isPowerAttack,
@@ -25,7 +28,7 @@ export const initHitEvent = () => {
 					isHitBlocked: e.isHitBlocked,
 					target: target,
 					agressor: agressor,
-					source: e.source ? e.source.getFormId() : 0,
+					source: e.source ? e.source.getFormID() : 0,
 				});
 			});
 		}, '_onHit')

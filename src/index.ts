@@ -1,4 +1,5 @@
 import { MP } from './types';
+
 import { initUtils, utils } from './utility';
 
 import {
@@ -23,9 +24,13 @@ import {
 	initHitStatic,
 	initInputF5Event,
 	initActivateEvent,
+	initActivateMessageEvent,
 } from './events';
 
-import { initDevCommands, initMinesSystem, initWoodsmanSystem, initFarmSystem } from './systems';
+import { initDevCommands, initMinesSystem, initWoodsmanSystem, initFarmSystem, initFarmerSystem } from './systems';
+import { initTestMsg } from './test/msgTest';
+import { initTestContainerChangeEvent } from './test/conainerChanged';
+import { initTestBlockContainer } from './test/blockContainer';
 
 declare const mp: MP;
 
@@ -76,12 +81,23 @@ initInputF5Event();
 initActivateEvent();
 initAnimation();
 
+//message form
+//initMessageIdToShow();
+//initMessageEvent();
+initActivateMessageEvent();
+
+//TEST
+initTestBlockContainer();
+initTestMsg();
+initTestContainerChangeEvent();
+
 // farm
 initFarmSystem();
 // profession
 initActiveProfession();
 initMinesSystem();
 initWoodsmanSystem();
+initFarmerSystem();
 
 utils.hook('onInit', (pcFormId: number) => {
 	mp.onReinit(pcFormId);

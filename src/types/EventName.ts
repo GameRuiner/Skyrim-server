@@ -23,6 +23,10 @@ type CustomEventName =
 	| '_onFarm'
 	| '_onAnimationEvent'
 	| '_onHitStatic'
-	| '_onInputF5';
+	| '_onInput'
+	| '_onMessage'
+	| '_onActivateMessage'
+	| '_onContainerChange'
+	| '_onCellFullyLoaded';
 
 export type EventName = SystemEventName | CustomEventName;

@@ -132,7 +132,8 @@ export const inventorySystem = {
 			formId,
 			genClientFunction(
 				() => {
-					ctx.sp.Game.getPlayer().equipItem(ctx.sp.Game.getFormEx(baseId), false, false);
+					const form = ctx.sp.Game.getFormEx(baseId);
+					ctx.sp.Game.getPlayer().equipItem(form, false, false);
 				},
 				'equip item',
 				{ baseId }

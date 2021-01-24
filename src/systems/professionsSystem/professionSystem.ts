@@ -16,7 +16,7 @@ export const professionSystem = {
 	 */
 	set: (formId: number, professionName: ProfessionNamesProp) => {
 		utils.log('[PROFESSIONS]', 'setProfession');
-		
+
 		const currentProfessionStaff = professions.collectors[professionName];
 		utils.log('[PROFESSIONS] currentProfessionStaff', currentProfessionStaff);
 
@@ -53,18 +53,19 @@ export const professionSystem = {
 	 * Delete profession
 	 * @param formId actor Id
 	 * @param professionName name of profession
+	 * @param force skip check profession items
 	 */
-	delete: (formId: number, professionName: ProfessionNamesProp) => {
+	delete: (formId: number, professionName: ProfessionNamesProp, force: boolean = false) => {
 		utils.log('[PROFESSIONS]', 'deleteProfession');
 
-		const isDeleted = professionSystem.deleteItems(formId, professionName);
+		const isDeleted = professionSystem.deleteItems(formId, professionName, force);
 
 		if (!isDeleted) {
 			utils.log('[PROFESSIONS]', 'Error: deleteProfessionItems() - error in deleteProfession() ');
 			throw '[PROFESSIONS] Error: deleteProfessionItems() - error in deleteProfession()';
 		} else {
 			const { oldEquipment } = mp.get(formId, 'activeProfession');
-			utils.log('[PROFESSIONS]', oldEquipment);
+			utils.log('[PROFESSIONS] oldEquipment', oldEquipment);
 
 			professionSystem.setToServer(formId, {
 				oldEquipment: oldEquipment.inv.entries,
@@ -79,8 +80,9 @@ export const professionSystem = {
 	 * if one of profession staff isn't in inventar profession can't end
 	 * @param formId id of actor
 	 * @param professionName name of profession
+	 * @param force skip check profession items
 	 */
-	deleteItems: (formId: number, professionName: ProfessionNamesProp): boolean => {
+	deleteItems: (formId: number, professionName: ProfessionNamesProp, force: boolean = false): boolean => {
 		utils.log('[PROFESSIONS]', 'deleteProfessionItems');
 
 		const currentProfStaff: ProfessionStaffProp = professions.collectors[professionName];
@@ -99,14 +101,14 @@ export const professionSystem = {
 			return inventorySystem.isInInventory(formId, staff);
 		});
 
-		if (canEndProfession) {
+		if (canEndProfession || force) {
 			Object.keys(currentProfStaff).forEach((key: string) => {
 				const staffName: ProfessionStaffNamesProp = key as ProfessionStaffNamesProp;
 				const staff = currentProfStaff[staffName];
 				if (!staff) return false;
 				const isDeletedEvent = inventorySystem.deleteItem(formId, staff, 1);
 				if (!isDeletedEvent.success) {
-					utils.log('[PROFESSIONS]', isDeletedEvent.message);
+					utils.log('[PROFESSIONS] isDeletedEvent.message', isDeletedEvent.message);
 				}
 			});
 
@@ -115,7 +117,7 @@ export const professionSystem = {
 		} else {
 			const messageError = 'Ошибка: игрок не может уволиться, не все предметы могут быть возвращены!';
 			consoleOutput.printNote(formId, messageError);
-			utils.log('[PROFESSIONS]', messageError);
+			utils.log('[PROFESSIONS] messageError', messageError);
 			return false;
 		}
 	},
