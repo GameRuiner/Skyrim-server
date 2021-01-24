@@ -1,11 +1,9 @@
 import { inventorySystem } from '..';
-import { getEquipment, getInventar, consoleOutput } from '../../properties';
 import { MP } from '../../types';
 import { CTX } from '../../platform';
 import { genClientFunction, getFunctionText, utils } from '../../utility';
-import { PROFESSIONS } from './data/professions';
+import { professions } from './data';
 import { professionSystem } from './professionSystem';
-import { initEmptyAnimationEvent } from '../../events';
 
 declare const mp: MP;
 declare const ctx: CTX;
@@ -18,41 +16,19 @@ export const initWoodsmanSystem = () => {
 	utils.hook('_onActivate', (pcFormId: number, event: any) => {
 		utils.log(event);
 		try {
-			if (event.target === 403466) {
+			if (event.target === 0x1f229) {
 				const myProfession = professionSystem.getFromServer(pcFormId);
-				const currentProfessionStaff = PROFESSIONS[currentProfessionName];
-				utils.log('Тут 1');
-				utils.log(myProfession);
+				const currentProfessionStaff = professions.collectors[currentProfessionName];
 				//Проверка сосдали ли мы профессию woodsman
 				if (myProfession === undefined) {
 					professionSystem.set(pcFormId, currentProfessionName);
 				} else {
 					if (!myProfession.isActive) {
-						utils.log('set');
-						utils.log('set');
-						utils.log('set');
-						utils.log('set');
-
 						professionSystem.set(pcFormId, currentProfessionName);
 					} else {
-						utils.log('delete');
-						utils.log('delete');
-						utils.log('delete');
-						utils.log('delete');
 						professionSystem.delete(pcFormId, currentProfessionName);
 					}
 				}
-				// if (currentProfessionStaff) {
-				// 	if (!myProfession.isActive) {
-				// 		professionSystem.set(pcFormId, currentProfessionName);
-				// 		utils.log("Тут 2");
-				// 	} else {
-				// 		if (myProfession.name === currentProfessionName) {
-				// 			professionSystem.delete(pcFormId, currentProfessionName);
-				// 			utils.log("Тут 3");
-				// 		}
-				// 	}
-				// }
 			}
 		} catch (err) {
 			utils.log(err);
@@ -67,8 +43,8 @@ export const initWoodsmanSystem = () => {
 			if (countHitLog >= 3) {
 				const activeProfession = mp.get(pcFormId, 'activeProfession');
 				if (activeProfession != undefined) {
-					if (activeProfession.name === currentProfessionName) {
-						if (inventorySystem.isEquip(pcFormId, 0x2f2f4)) {
+					if (activeProfession.name === currentProfessionName && professions.collectors.woodsman.tool) {
+						if (inventorySystem.isEquip(pcFormId, professions.collectors.woodsman.tool)) {
 							inventorySystem.addItem(pcFormId, 457107, 1);
 							countHitLog = 0;
 						}

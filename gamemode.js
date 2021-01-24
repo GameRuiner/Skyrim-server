@@ -1,4 +1,5 @@
 var parcelRequire = undefined;
+var parcelRequire = undefined;
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -1718,27 +1719,7 @@ var initMinesSystem = function () {
 };
 
 exports.initMinesSystem = initMinesSystem;
-},{"../../utility":"utility/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","../../properties":"properties/index.ts","./data":"systems/professionsSystem/data/index.ts"}],"systems/professionsSystem/data/professions/index.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.PROFESSIONS = void 0;
-exports.PROFESSIONS = {
-  miner: {
-    tool: 0xe3c16,
-    clothes: 0x80697,
-    boots: 0x1be1b
-  },
-  herbalist: {},
-  woodsman: {
-    tool: 0x2f2f4,
-    clothes: 0xf1229,
-    boots: 0x1be1b
-  }
-};
-},{}],"systems/professionsSystem/woodsmanSystem.ts":[function(require,module,exports) {
+},{"../../utility":"utility/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","../../properties":"properties/index.ts","./data":"systems/professionsSystem/data/index.ts"}],"systems/professionsSystem/woodsmanSystem.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1750,7 +1731,7 @@ var __1 = require("..");
 
 var utility_1 = require("../../utility");
 
-var professions_1 = require("./data/professions");
+var data_1 = require("./data");
 
 var professionSystem_1 = require("./professionSystem");
 
@@ -1761,26 +1742,16 @@ var initWoodsmanSystem = function () {
     utility_1.utils.log(event);
 
     try {
-      if (event.target === 403466) {
+      if (event.target === 0x1f229) {
         var myProfession = professionSystem_1.professionSystem.getFromServer(pcFormId);
-        var currentProfessionStaff = professions_1.PROFESSIONS[currentProfessionName];
-        utility_1.utils.log('Тут 1');
-        utility_1.utils.log(myProfession);
+        var currentProfessionStaff = data_1.professions.collectors[currentProfessionName];
 
         if (myProfession === undefined) {
           professionSystem_1.professionSystem.set(pcFormId, currentProfessionName);
         } else {
           if (!myProfession.isActive) {
-            utility_1.utils.log('set');
-            utility_1.utils.log('set');
-            utility_1.utils.log('set');
-            utility_1.utils.log('set');
             professionSystem_1.professionSystem.set(pcFormId, currentProfessionName);
           } else {
-            utility_1.utils.log('delete');
-            utility_1.utils.log('delete');
-            utility_1.utils.log('delete');
-            utility_1.utils.log('delete');
             professionSystem_1.professionSystem.delete(pcFormId, currentProfessionName);
           }
         }
@@ -1798,8 +1769,8 @@ var initWoodsmanSystem = function () {
         var activeProfession = mp.get(pcFormId, 'activeProfession');
 
         if (activeProfession != undefined) {
-          if (activeProfession.name === currentProfessionName) {
-            if (__1.inventorySystem.isEquip(pcFormId, 0x2f2f4)) {
+          if (activeProfession.name === currentProfessionName && data_1.professions.collectors.woodsman.tool) {
+            if (__1.inventorySystem.isEquip(pcFormId, data_1.professions.collectors.woodsman.tool)) {
               __1.inventorySystem.addItem(pcFormId, 457107, 1);
 
               countHitLog = 0;
@@ -1838,7 +1809,7 @@ var initWoodsmanSystem = function () {
 };
 
 exports.initWoodsmanSystem = initWoodsmanSystem;
-},{"..":"systems/index.ts","../../utility":"utility/index.ts","./data/professions":"systems/professionsSystem/data/professions/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts"}],"systems/professionsSystem/index.ts":[function(require,module,exports) {
+},{"..":"systems/index.ts","../../utility":"utility/index.ts","./data":"systems/professionsSystem/data/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts"}],"systems/professionsSystem/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -2766,3 +2737,4 @@ utility_1.utils.hook('onInit', function (pcFormId) {
   mp.onReinit(pcFormId);
 });
 },{"./utility":"utility/index.ts","./properties":"properties/index.ts","./events":"events/index.ts","./systems":"systems/index.ts"}]},{},["index.ts"], null)
+

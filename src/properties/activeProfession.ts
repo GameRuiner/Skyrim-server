@@ -23,6 +23,7 @@ function setActiveProfession() {
 					});
 				}
 				if (ctx.value.equipment && ctx.value.isActive) {
+					// player.unequipAll();
 					const equipItems = Object.keys(ctx.value.equipment);
 					equipItems.forEach((item) => {
 						ctx.sp.printConsole(item);
