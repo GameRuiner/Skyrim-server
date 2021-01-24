@@ -148,6 +148,7 @@ const deleteProfession = (formId: number, professionName: ProfessionNamesProp) =
 			isActive: false,
 		});
 	}
+	return isDeleted;
 };
 
 /**

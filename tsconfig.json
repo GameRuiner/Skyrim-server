@@ -15,12 +15,12 @@
 		// "sourceMap": true,                     /* Generates corresponding '.map' file. */
 		// "outFile": "./gamemode.js" /* Concatenate and emit output to single file. */,
 		// "outDir": "./",                        /* Redirect output structure to the directory. */
-		// "rootDir": "./src",                       /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+		"rootDir": "./" /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */,
 		// "composite": true,                     /* Enable project compilation */
 		// "tsBuildInfoFile": "./",               /* Specify file to store incremental compilation information */
 		"removeComments": true /* Do not emit comments to output. */,
 		// "noEmit": true,                        /* Do not emit outputs. */
-		// "importHelpers": true,                 /* Import emit helpers from 'tslib'. */
+		//"importHelpers": true /* Import emit helpers from 'tslib'. */,
 		// "downlevelIteration": true,            /* Provide full support for iterables in 'for-of', spread, and destructuring when targeting 'ES5' or 'ES3'. */
 		// "isolatedModules": true,               /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
 
@@ -42,17 +42,33 @@
 
 		/* Module Resolution Options */
 		"moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
-		// "baseUrl": "./src" /* Base directory to resolve non-absolute module names. */,
-		"paths": {
-			"@constants/*": ["./src/constants/*"],
-			"@events/*": ["./src/events/*"],
-			"@platform/*": ["./src/platform/*"],
-			"@properties/*": ["./src/properties/*"],
-			"@systems/*": ["./src/systems/*"],
-			"@types/*": ["./src/types/*"],
-			"@utility/*": ["./src/utility/*"],
-			"@test/*": ["./src/test/*"]
-		} /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
+		//"baseUrl": "src" /* Base directory to resolve non-absolute module names. */,
+		// "paths": {
+		// 	"@constants-skymp": ["./constants"],
+		// 	"@constants-skymp/*": ["./constants/*"],
+
+		// 	"@events-skymp": ["./events"],
+		// 	"@events-skymp/*": ["./events/*"],
+
+		// 	"@platform-skymp": ["./platform"],
+		// 	"@platform-skymp/*": ["./platform/*"],
+
+		// 	"@properties-skymp": ["./properties"],
+		// 	"@properties-skymp/*": ["./properties/*"],
+
+		// 	"@systems-skymp": ["./systems"],
+		// 	"@systems-skymp/*": ["./systems/*"],
+
+		// 	"@types-skymp": ["./types"],
+		// 	"@types-skymp/*": ["./types/*"],
+
+		// 	"@utility-skymp": ["./utility"],
+		// 	"@utility-skymp/*": ["./utility/*"],
+
+		// 	"@test-skymp": ["./test"],
+		// 	"@test-skymp/*": ["./test/*"]
+			
+		// } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
 		// "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
 		// "typeRoots": [],                       /* List of folders to include type definitions from. */
 		// "types": [],                           /* Type declaration files to be included in compilation. */

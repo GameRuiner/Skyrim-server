@@ -1200,7 +1200,11 @@ var collectors = {
     boots: 0x1be1b
   },
   herbalist: {},
-  woodsman: {}
+  woodsman: {
+    tool: 0x2F2F4,
+    clothes: 0xF1229,
+    boots: 0x1be1b
+  }
 };
 exports.default = collectors;
 },{}],"systems/professionsSystem/data/profession/index.ts":[function(require,module,exports) {
@@ -1613,6 +1617,8 @@ var deleteProfession = function (formId, professionName) {
       isActive: false
     });
   }
+
+  return isDeleted;
 };
 
 var sellItems = function (formId, items) {
@@ -1717,7 +1723,9 @@ exports.initMinesSystem = initMinesSystem;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.initFarmSystem = void 0;
+exports.initWoodsmanSystem = void 0;
+
+var __1 = require("..");
 
 var utility_1 = require("../../utility");
 
@@ -1775,8 +1783,6 @@ var initFarmSystem = function () {
           }
         });
       }
-    } catch (e) {
-      utility_1.utils.log('_onFarm', e);
     }
   });
 };
@@ -1806,12 +1812,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-__exportStar(require("./minesSystem"), exports);
-
 __exportStar(require("./professionSystem"), exports);
 
-__exportStar(require("./farmSystem"), exports);
-},{"./minesSystem":"systems/professionsSystem/minesSystem.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","./farmSystem":"systems/professionsSystem/farmSystem.ts"}],"systems/index.ts":[function(require,module,exports) {
+__exportStar(require("./minesSystem"), exports);
+
+__exportStar(require("./woodsmanSystem"), exports);
+},{"./professionSystem":"systems/professionsSystem/professionSystem.ts","./minesSystem":"systems/professionsSystem/minesSystem.ts","./woodsmanSystem":"systems/professionsSystem/woodsmanSystem.ts"}],"systems/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -2328,8 +2334,6 @@ var initCurrentCellChangeEvent = function () {
         };
 
         if (ctx.state.currentCellId !== currentCellData.id) {
-          ctx.state.currentCell = currentCellData;
-
           if (ctx.state.currentCellId !== undefined) {
             result.prevCell = ctx.state.currentCell;
             result.currentCell = currentCellData;
@@ -2704,9 +2708,9 @@ events_1.initEmptyAnimationEvent();
 events_1.initHitStatic();
 events_1.initInputF5Event();
 events_1.initActivateEvent();
-systems_1.initFarmSystem();
-systems_1.initMinesSystem();
 properties_1.initActiveProfession();
+systems_1.initMinesSystem();
+systems_1.initWoodsmanSystem();
 utility_1.utils.hook('onInit', function (pcFormId) {
   mp.onReinit(pcFormId);
 });

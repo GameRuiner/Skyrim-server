@@ -8,6 +8,7 @@ type SystemEventName = 'onDeath' | 'onInit' | 'onReinit';
  */
 type CustomEventName =
 	| '_'
+	| '_1'
 	| '_onBash'
 	| '_onConsoleCommand'
 	| '_onCurrentCellChange'
