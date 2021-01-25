@@ -1,11 +1,9 @@
 import { inventorySystem } from '..';
-import { getEquipment, getInventar, consoleOutput } from '../../properties';
 import { MP } from '../../types';
 import { CTX } from '../../platform';
-import { genClientFunction, getFunctionText, utils } from '../../utility';
-import { PROFESSIONS } from './data/professions';
+import { utils } from '../../utility';
+import { professions } from './data';
 import { professionSystem } from './professionSystem';
-import { initEmptyAnimationEvent } from '../../events';
 
 declare const mp: MP;
 declare const ctx: CTX;
@@ -20,7 +18,7 @@ export const initWoodsmanSystem = () => {
 		try {
 			if (event.target === 403466) {
 				const myProfession = professionSystem.getFromServer(pcFormId);
-				const currentProfessionStaff = PROFESSIONS[currentProfessionName];
+				const currentProfessionStaff = professions.collectors[currentProfessionName];
 				utils.log('Тут 1');
 				utils.log(myProfession);
 				//Проверка сосдали ли мы профессию woodsman

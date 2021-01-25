@@ -64,7 +64,7 @@ const addProfessionItems = (formId: number, name: ProfessionNamesProp): void => 
 
 	const currentProfStaff = professions.collectors[name];
 
-	if (!currentProfStaff) {
+	if (!currentProfStaff && currentProfStaff === {}) {
 		utils.log('[PROFESSIONS]', 'Error: addProfessionItems() -  Cannot find profession:', name);
 		return;
 	}
