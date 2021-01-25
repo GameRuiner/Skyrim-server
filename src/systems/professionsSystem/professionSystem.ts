@@ -65,10 +65,18 @@ export const professionSystem = {
 			throw '[PROFESSIONS] Error: deleteProfessionItems() - error in deleteProfession()';
 		} else {
 			const { oldEquipment } = mp.get(formId, 'activeProfession');
-			utils.log('[PROFESSIONS] oldEquipment', oldEquipment);
+			const myInv = inventorySystem.get(formId);
+			const oldEquipTmp: Equipment = oldEquipment;
+			let trueOldEquip: Equipment = { inv: { entries: [], filter: () => {} }, numChanges: 0 };
+			oldEquipTmp.inv.entries.forEach((oldItem) => {
+				myInv.entries.forEach((myItem) => {
+					if (oldItem.baseId === myItem.baseId) trueOldEquip.inv.entries.push(oldItem);
+				});
+			});
+			utils.log('[PROFESSIONS] oldEquipment', trueOldEquip);
 
 			professionSystem.setToServer(formId, {
-				oldEquipment: oldEquipment.inv.entries,
+				oldEquipment: trueOldEquip,
 				isActive: false,
 			});
 		}
