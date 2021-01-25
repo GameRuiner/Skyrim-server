@@ -11,18 +11,23 @@ export const initHitStatic = () => {
 	 */
 	mp.makeEventSource(
 		'_onHitStatic',
-		genClientFunction(() => {
-			ctx.sp.on('hit', (e: any) => {
-				if (ctx.sp.Actor.from(e.target)) return;
+		genClientFunction(
+			() => {
+				ctx.sp.on('hit', (e: any) => {
+					if (ctx.sp.Actor.from(e.target)) return;
 
-				const target = ctx.getFormIdInServerFormat(e.target.getFormId());
-				const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());
-				ctx.sendEvent({
-					target: target,
-					agressor: agressor,
+					const target = ctx.getFormIdInServerFormat(e.target.getFormId());
+					const agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());
+
+					ctx.sendEvent({
+						target,
+						agressor,
+					});
 				});
-			});
-		}, {})
+			},
+			'_onHitStatic',
+			{}
+		)
 	);
 
 	utils.hook('_onHitStatic', (pcFormId: number, eventData: any) => {

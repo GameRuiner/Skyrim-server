@@ -26,6 +26,7 @@ export const initBashEvent = () => {
 					},
 				};
 			},
+			'_onBash',
 			{ currentActorParam }
 		)
 	);

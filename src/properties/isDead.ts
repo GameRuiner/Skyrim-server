@@ -1,4 +1,6 @@
 import { CTX } from '../platform';
+import { Actor } from '../platform/Actor';
+import { ObjectReference } from '../platform/ObjectReference';
 import { MP } from '../types';
 import { getFunctionText, utils } from '../utility';
 
@@ -6,7 +8,7 @@ declare const mp: MP;
 declare const ctx: CTX;
 
 const updateNeighbor = getFunctionText(() => {
-	const ac = ctx.sp.Actor.from(ctx.refr);
+	const ac = ctx.sp.Actor.from(ctx.refr as Actor);
 
 	const isDead = ctx.value;
 	if (isDead) {
@@ -20,10 +22,10 @@ const updateNeighbor = getFunctionText(() => {
 		ctx.sp.printConsole(ac.getBaseObject().getFormID());
 		ctx.respawn();
 	}
-});
+}, 'updateNeighbor');
 
 const updateOwner = getFunctionText(() => {
-	const ac = ctx.sp.Actor.from(ctx.refr);
+	const ac = ctx.sp.Actor.from(ctx.refr as Actor);
 
 	ac.startDeferredKill();
 
@@ -51,7 +53,7 @@ const updateOwner = getFunctionText(() => {
 
 		ctx.state.value = value;
 	}
-});
+}, 'updateOwner');
 
 export const initIsDead = () => {
 	mp.makeProperty('isDead', {

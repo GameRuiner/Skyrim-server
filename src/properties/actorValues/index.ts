@@ -1,20 +1,74 @@
-import fs from 'fs';
-
-import { utils } from '../../utility';
-import { Attr, AttrRate, AttrRateMult, AttrDrain, AttrRelated, AttrAll, Modifier, MP, PropertyName } from '../../types';
+import { genClientFunction, utils } from '../../utility';
+import {
+	Attr,
+	AttrRate,
+	AttrRateMult,
+	AttrDrain,
+	AttrRelated,
+	AttrAll,
+	Modifier,
+	MP,
+	PropertyName,
+	ModifierValue,
+} from '../../types';
+import { CTX } from '../../platform';
 
 declare const mp: MP;
+declare const ctx: CTX;
+
 export interface SecondsMatched {
 	[key: number]: number;
 }
 
+export interface DefaultOptions {
+	force: boolean;
+}
+
 export interface ActorValues {
+	/**
+	 * set value of parameter
+	 * @param formId actor id
+	 * @param avName parameter name
+	 * @param modifierName modification name
+	 * @param newValue new value of parameter
+	 */
 	set: (formId: number, avName: AttrAll, modifierName: Modifier, newValue: any) => void;
+
+	/**
+	 * get value of parameter
+	 * @param formId actor id
+	 * @param avName parameter name
+	 * @param modifierName modification name
+	 */
 	get: (formId: number, avName: AttrAll, modifierName: Modifier) => number;
+
+	/**
+	 * get maximum value of parameter
+	 * @param formId actor id
+	 * @param avName parameter name
+	 */
 	getMaximum: (formId: number, avName: Attr) => number;
+
+	/**
+	 * get current value of parameter
+	 * @param formId actor id
+	 * @param avName parameter name
+	 */
 	getCurrent: (formId: number, avName: Attr) => number;
+
+	/**
+	 * ???
+	 * @param formId actor id
+	 * @param avName parameter name
+	 */
 	flushRegen: (formId: number, avName: Attr) => void;
-	setDefaults: (formId: number, options: any) => void;
+
+	/**
+	 * Set default parametrs of Actor
+	 * @param formId actor id
+	 * @param options options
+	 */
+	setDefaults: (formId: number, options: DefaultOptions) => void;
 }
 export interface AvOps {
 	parent?: AvOps;
@@ -37,89 +91,179 @@ const drain = (attr: Attr) => {
 	return `av_mp_${attr}drain`;
 };
 
-const updateAttributeCommon = (attr: Attr) => `
-	const av = "${attr}";
-	const ac = ctx.sp.Actor.from(ctx.refr);
-	if (!ac) return;
+// const updateAttributeCommon = (attr: Attr) => `
+// 	const av = "${attr}";
+// 	const ac = ctx.sp.Actor.from(ctx.refr);
+// 	if (!ac) return;
 
-	const base = ctx.value.base || 0;
-	const perm = ctx.value.permanent || 0;
-	const temp = ctx.value.temporary || 0;
-	const targetMax = base + perm + temp;
+// 	const base = ctx.value.base || 0;
+// 	const perm = ctx.value.permanent || 0;
+// 	const temp = ctx.value.temporary || 0;
+// 	const targetMax = base + perm + temp;
 
-	const numChangesKey = "${attr}NumChanges";
-	const numChanges = ctx.get(numChangesKey);
-	if (ctx.state[numChangesKey] !== numChanges) {
-		ctx.state[numChangesKey] = numChanges;
-		ctx.state.${attr}RegenStart = +Date.now();
-	}
+// 	const numChangesKey = "${attr}NumChanges";
+// 	const numChanges = ctx.get(numChangesKey);
+// 	if (ctx.state[numChangesKey] !== numChanges) {
+// 		ctx.state[numChangesKey] = numChanges;
+// 		ctx.state.${attr}RegenStart = +Date.now();
+// 	}
 
-	const realTargetDmg = ctx.value.damage || 0;
-	let targetDmg = realTargetDmg;
+// 	const realTargetDmg = ctx.value.damage || 0;
+// 	let targetDmg = realTargetDmg;
 
-	if (av === "health" || ac.getFormId() == 0x14) {
-		const multName = "${mult(attr)}";
-		const rateName = "${rate(attr)}";
-		const drainName = "${drain(attr)}";
+// 	if (av === "health" || ac.getFormId() == 0x14) {
+// 		const multName = "${mult(attr)}";
+// 		const rateName = "${rate(attr)}";
+// 		const drainName = "${drain(attr)}";
 
-		const additionalRegenMult = 1.0;
-		const regenDuration = (+Date.now() - (ctx.state.${attr}RegenStart || 0)) / 1000;
-		const healRateMult = ctx.get(multName);
-		const healRateMultCurrent = (healRateMult.base || 0)
-			+ (healRateMult.permanent || 0)
-			+ (healRateMult.temporary || 0)
-			+ (healRateMult.damage || 0);
-		const healRate = ctx.get(rateName);
-		const healRateCurrent = (healRate.base || 0)
-			+ (healRate.permanent || 0)
-			+ (healRate.temporary || 0)
-			+ (healRate.damage || 0);
+// 		const additionalRegenMult = 1.0;
+// 		const regenDuration = (+Date.now() - (ctx.state.${attr}RegenStart || 0)) / 1000;
+// 		const healRateMult = ctx.get(multName);
+// 		const healRateMultCurrent = (healRateMult.base || 0)
+// 			+ (healRateMult.permanent || 0)
+// 			+ (healRateMult.temporary || 0)
+// 			+ (healRateMult.damage || 0);
+// 		const healRate = ctx.get(rateName);
+// 		const healRateCurrent = (healRate.base || 0)
+// 			+ (healRate.permanent || 0)
+// 			+ (healRate.temporary || 0)
+// 			+ (healRate.damage || 0);
 
-		const drain = ctx.get(drainName);
-		const drainCurrent = (drain.base || 0)
-			+ (drain.permanent || 0)
-			+ (drain.temporary || 0)
-			+ (drain.damage || 0);
-		if (drainCurrent) {
-			targetDmg += regenDuration * drainCurrent;
-		}
-		else {
-			targetDmg += (regenDuration * additionalRegenMult
-				* healRateCurrent * healRateMultCurrent * 0.01 * targetMax * 0.01);
-		}
+// 		const drain = ctx.get(drainName);
+// 		const drainCurrent = (drain.base || 0)
+// 			+ (drain.permanent || 0)
+// 			+ (drain.temporary || 0)
+// 			+ (drain.damage || 0);
+// 		if (drainCurrent) {
+// 			targetDmg += regenDuration * drainCurrent;
+// 		}
+// 		else {
+// 			targetDmg += (regenDuration * additionalRegenMult
+// 				* healRateCurrent * healRateMultCurrent * 0.01 * targetMax * 0.01);
+// 		}
 
-		if (targetDmg > 0) {
-			targetDmg = 0;
-		}
-	}
+// 		if (targetDmg > 0) {
+// 			targetDmg = 0;
+// 		}
+// 	}
 
-	const currentPercentage = ac.getActorValuePercentage(av);
-	const currentMax = ac.getBaseActorValue(av);
+// 	const currentPercentage = ac.getActorValuePercentage(av);
+// 	const currentMax = ac.getBaseActorValue(av);
 
-	let targetPercentage = (targetMax + targetDmg) / targetMax;
-	if (ctx.get("isDead") && av === "health") {
-		targetPercentage = 0;
-	}
+// 	let targetPercentage = (targetMax + targetDmg) / targetMax;
+// 	if (ctx.get("isDead") && av === "health") {
+// 		targetPercentage = 0;
+// 	}
 
-	const deltaPercentage = targetPercentage - currentPercentage;
+// 	const deltaPercentage = targetPercentage - currentPercentage;
 
-	const k = (!targetPercentage || av === "stamina" || av === "magicka") ? 1 : 0.25;
+// 	const k = (!targetPercentage || av === "stamina" || av === "magicka") ? 1 : 0.25;
 
-	if (deltaPercentage > 0) {
-		ac.restoreActorValue(av, deltaPercentage * currentMax * k);
-	}
-	else if (deltaPercentage < 0) {
-		ac.damageActorValue(av, deltaPercentage * currentMax * k);
-	}
-`;
+// 	if (deltaPercentage > 0) {
+// 		ac.restoreActorValue(av, deltaPercentage * currentMax * k);
+// 	}
+// 	else if (deltaPercentage < 0) {
+// 		ac.damageActorValue(av, deltaPercentage * currentMax * k);
+// 	}
+// `;
 
-const updateAttributeNeighbor = (attr: Attr) => {
-	return attr === 'health' ? updateAttributeCommon(attr) + `ac.setActorValue("${attr}", 9999);` : '';
+const updateAttributeCommon2 = (attrParam: Attr, isOwner: boolean = false) => {
+	return genClientFunction(
+		() => {
+			const rateAV = (attr: Attr): PropertyName =>
+				attr === 'health' ? 'av_healrate' : (`av_${attr}rate` as PropertyName);
+			const multAV = (attr: Attr): PropertyName =>
+				attr === 'health' ? 'av_healratemult' : (`av_${attr}ratemult` as PropertyName);
+			const drainAV = (attr: Attr): PropertyName => `av_mp_${attr}drain` as PropertyName;
+
+			const av = attrParam;
+			const ac = ctx.sp.Actor.from(ctx.refr);
+			if (!ac) return;
+
+			const base: number = ctx.value.base || 0;
+			const perm: number = ctx.value.permanent || 0;
+			const temp: number = ctx.value.temporary || 0;
+			const targetMax: number = base + perm + temp;
+
+			const numChangesKey = `${av}NumChanges` as PropertyName;
+			const numChanges = ctx.get(numChangesKey);
+			if (ctx.state[numChangesKey] !== numChanges) {
+				ctx.state[numChangesKey] = numChanges;
+				ctx.state[`${av}RegenStart`] = +Date.now();
+			}
+
+			const realTargetDmg: number = ctx.value.damage || 0;
+			let targetDmg = realTargetDmg;
+
+			if (av === 'health' || ac.getFormID() == 0x14) {
+				const multName = multAV(av);
+				const rateName = rateAV(av);
+				const drainName = drainAV(av);
+
+				const additionalRegenMult = 1.0;
+				const regenDuration = (+Date.now() - (ctx.state[`${av}RegenStart`] || 0)) / 1000;
+
+				const healRateMult = ctx.get(multName) as ModifierValue;
+				const healRateMultCurrent =
+					(healRateMult.base || 0) +
+					(healRateMult.permanent || 0) +
+					(healRateMult.temporary || 0) +
+					(healRateMult.damage || 0);
+
+				const healRate = ctx.get(rateName) as ModifierValue;
+				const healRateCurrent =
+					(healRate.base || 0) + (healRate.permanent || 0) + (healRate.temporary || 0) + (healRate.damage || 0);
+
+				const drain = ctx.get(drainName) as ModifierValue;
+				const drainCurrent = (drain.base || 0) + (drain.permanent || 0) + (drain.temporary || 0) + (drain.damage || 0);
+				if (drainCurrent) {
+					targetDmg += regenDuration * drainCurrent;
+				} else {
+					targetDmg +=
+						regenDuration * additionalRegenMult * healRateCurrent * healRateMultCurrent * 0.01 * targetMax * 0.01;
+				}
+
+				if (targetDmg > 0) {
+					targetDmg = 0;
+				}
+			}
+
+			const currentPercentage = ac.getActorValuePercentage(av);
+			const currentMax = ac.getBaseActorValue(av);
+
+			let targetPercentage = (targetMax + targetDmg) / targetMax;
+			if (ctx.get('isDead') && av === 'health') {
+				targetPercentage = 0;
+			}
+
+			const deltaPercentage = targetPercentage - currentPercentage;
+
+			const k = !targetPercentage || av === 'stamina' || av === 'magicka' ? 1 : 0.25;
+
+			if (deltaPercentage > 0) {
+				ac.restoreActorValue(av, deltaPercentage * currentMax * k);
+			} else if (deltaPercentage < 0) {
+				ac.damageActorValue(av, deltaPercentage * currentMax * k);
+			}
+
+			if (isOwner) {
+				ac.setActorValue(av, base);
+			} else if (av === 'health') {
+				ac.setActorValue(av, 9999);
+			}
+		},
+		'updateAttributeCommon2',
+		{ attrParam, isOwner }
+	);
 };
 
-const updateAttributeOwner = (attr: Attr) => {
-	return updateAttributeCommon(attr) + `ac.setActorValue("${attr}", base);`;
-};
+// const updateAttributeNeighbor = (attr: Attr) => {
+// 	return attr === 'health' ? updateAttributeCommon2(attr) + `\nac.setActorValue("${attr}", 9999);` : '';
+// };
+
+// const updateAttributeOwner = (attr: Attr) => {
+// 	return updateAttributeCommon2(attr) + `\nac.setActorValue("${attr}", base);`;
+// };
 
 const avs: AttrAll[] = [
 	'healrate',
@@ -229,8 +373,8 @@ export const initActorValue = () => {
 		mp.makeProperty(('av_' + attr) as PropertyName, {
 			isVisibleByOwner: true,
 			isVisibleByNeighbors: attr === 'health',
-			updateNeighbor: updateAttributeNeighbor(attr),
-			updateOwner: updateAttributeOwner(attr),
+			updateNeighbor: updateAttributeCommon2(attr, false),
+			updateOwner: updateAttributeCommon2(attr, true),
 		});
 	}
 
@@ -349,7 +493,7 @@ export const initActorValue = () => {
 			const damageModAfterRegen = avOps.get(formId, avName, 'damage');
 			avOps.set(formId, avName, 'damage', damageModAfterRegen);
 		},
-		setDefaults: (formId: number, options: any) => {
+		setDefaults: (formId: number, options: DefaultOptions) => {
 			const force = options && options.force;
 			if (utils.isActor(formId)) {
 				if (mp.get(formId, 'isDead') === undefined || force) {
@@ -375,24 +519,22 @@ export const initActorValue = () => {
 					if (!mp.get(formId, ('av_' + avName) as PropertyName) || force) {
 						//if (formId == 0x9b7a2) console.log(avName, 2);
 						mp.set(formId, ('av_' + avName) as PropertyName, { base: 0 });
-						if (formId == 0x9b7a2) fs.writeFileSync('kekekek', '' + mp.get(formId, ('av_' + avName) as PropertyName));
-						if (formId == 0x9b7a2) {
-							setTimeout(() => {
-								fs.writeFileSync('kekekek1', '' + mp.get(formId, ('av_' + avName) as PropertyName));
-							}, 100);
-						}
+						// if (formId == 0x9b7a2) fs.writeFileSync('kekekek', '' + mp.get(formId, ('av_' + avName) as PropertyName));
+						// if (formId == 0x9b7a2) {
+						// 	setTimeout(() => {
+						// 		fs.writeFileSync('kekekek1', '' + mp.get(formId, ('av_' + avName) as PropertyName));
+						// 	}, 100);
+						// }
 					}
 				}
 			}
 		},
 	};
 
-	utils.hook('onReinit', (pcFormId: number, options: any) => {
+	utils.hook('onReinit', (pcFormId: number, options: DefaultOptions) => {
 		/** set default value to Actor */
 		if (actorValues.setDefaults) {
 			actorValues.setDefaults(pcFormId, options);
 		}
-		/** set scale of Actor to default */
-		mp.set(pcFormId, 'scale', 1);
 	});
 };

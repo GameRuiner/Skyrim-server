@@ -39,7 +39,7 @@ export const initAnimation = () => {
 	mp.makeProperty('animation', {
 		isVisibleByOwner: true,
 		isVisibleByNeighbors: true,
-		updateOwner: getFunctionText(setAnimation),
+		updateOwner: getFunctionText(setAnimation, 'setAnimation'),
 		updateNeighbor: '',
 	});
 };

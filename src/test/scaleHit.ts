@@ -1,12 +1,12 @@
-import { HitEvent } from '@platform/skyrimPlatform';
 import { CTX } from '../platform';
+import { HitEvent } from '../platform/skyrimPlatform';
 import { MP } from '../types';
 import { getFunctionText, utils } from '../utility';
 
 declare const mp: MP;
 declare const ctx: CTX;
 
-export const init = () => {
+export const initScaleHit = () => {
 	function changeScaleOnHit() {
 		ctx.sp.on('hit', (event) => {
 			const e = event as HitEvent;

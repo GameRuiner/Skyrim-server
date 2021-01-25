@@ -1,6 +1,7 @@
 import { CTX } from '../platform';
-import { getFunctionText, utils } from '../utility';
-import { MP } from '../types';
+import { getFunctionText } from '../utility';
+import { ActivateEvent, ActivateEventReturn, MP } from '../types';
+import { ObjectReference } from '../platform/ObjectReference';
 
 declare const mp: MP;
 declare const ctx: CTX;
@@ -9,21 +10,23 @@ export const initActivateEvent = () => {
 	mp.makeEventSource(
 		'_onActivate',
 		getFunctionText(() => {
-			ctx.sp.on('activate', (e: any) => {
+			ctx.sp.on('activate', (event: any) => {
 				try {
-					if (e.source && ctx.sp.Spell.from(e.source)) return;
-					const target = ctx.getFormIdInServerFormat(e.target.getFormId());
-					const data = e.target;
-					const objectReference = data.getBaseObject();
-					ctx.sendEvent({
-						name: objectReference.getName(),
-						baseId: objectReference.getFormID(),
-						target: target,
-					});
+					const e = event as ActivateEvent;
+					if (e.caster.getFormID() !== 0x14) return;
+
+					const result: ActivateEventReturn = {
+						baseId: e.target.getFormID(),
+						name: e.target.getBaseObject().getName(),
+						caster: e.caster,
+						target: e.target,
+						isCrimeToActivate: e.isCrimeToActivate,
+					};
+					ctx.sendEvent(result);
 				} catch (e) {
 					ctx.sp.printConsole('Catch _onActivate', e);
 				}
 			});
-		})
+		}, '_onActivate')
 	);
 };

@@ -10,3 +10,4 @@ export * from './onPowerAttack';
 export * from './onSprintStateChange';
 export * from './onInput';
 export * from './onActivate';
+export * from './onActivateMessage';

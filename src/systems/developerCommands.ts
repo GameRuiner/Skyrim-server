@@ -1,4 +1,4 @@
-import { genClientFunction, getFunctionText, utils } from '../utility';
+import { genClientFunction, utils } from '../utility';
 import { consoleOutput, actorValues } from '../properties';
 import { AttrAll, MP } from '../types';
 import { currentActor } from '../constants';
@@ -102,14 +102,13 @@ export const initDevCommands = () => {
 			case 'tp':
 				tp(pcFormId, 127529);
 				break;
+			case 'scale':
+				const scale = mp.get(pcFormId, 'scale');
+				utils.log(scale);
+				mp.set(pcFormId, 'scale', scale === 1 ? 2 : 1);
+				break;
 			case 'msg':
 				const pos = mp.get(pcFormId, 'pos');
-				consoleOutput.evalClient(
-					pcFormId,
-					genClientFunction(() => {
-						ctx.sp.Scene;
-					})
-				);
 				break;
 			case 'additem':
 				if (!arg0) return;

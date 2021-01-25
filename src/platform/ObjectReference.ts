@@ -1,7 +1,7 @@
 import { Actor } from './Actor';
 import { Form } from './Form';
+import { Location } from './Location';
 import * as skyrimPlatform from './skyrimPlatform';
-import { ActorBase } from './skyrimPlatform';
 
 export interface ObjectReference extends Form {
 	from: (form: Form) => ObjectReference;
@@ -59,7 +59,7 @@ export interface ObjectReference extends Form {
 	getItemMaxCharge: () => number;
 	getKey: () => skyrimPlatform.Key;
 	getLength: () => number;
-	getLinkedRef: (apKeyword: skyrimPlatform.Keyword) => ObjectReference;
+	getLinkedRef: (apKeyword: Keyword) => ObjectReference;
 	getLockLevel: () => number;
 	getMass: () => number;
 	getNthForm: (index: number) => Form;
@@ -81,7 +81,7 @@ export interface ObjectReference extends Form {
 	getVoiceType: () => skyrimPlatform.VoiceType;
 	getWidth: () => number;
 	getWorldSpace: () => skyrimPlatform.WorldSpace;
-	hasEffectKeyword: (akKeyword: skyrimPlatform.Keyword) => boolean;
+	hasEffectKeyword: (akKeyword: Keyword) => boolean;
 	hasNode: (asNodeName: string) => boolean;
 	hasRefType: (akRefType: skyrimPlatform.LocationRefType) => boolean;
 	ignoreFriendlyHits: (abIgnore: boolean) => void;
@@ -112,7 +112,11 @@ export interface ObjectReference extends Form {
 	moveToInteractionLocation: (akTarget: ObjectReference) => Promise<void>;
 	moveToMyEditorLocation: () => Promise<void>;
 	moveToNode: (akTarget: ObjectReference, asNodeName: string) => Promise<void>;
-	placeActorAtMe: (akActorToPlace: ActorBase, aiLevelMod: number, akZone: skyrimPlatform.EncounterZone) => Actor;
+	placeActorAtMe: (
+		akActorToPlace: skyrimPlatform.ActorBase,
+		aiLevelMod: number,
+		akZone: skyrimPlatform.EncounterZone
+	) => Actor;
 	placeAtMe: (
 		akFormToPlace: Form,
 		aiCount: number,

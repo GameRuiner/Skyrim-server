@@ -65,6 +65,7 @@ node_modules/
 # dotenv environment variables file
 .env
 
+# skyrim server files
 world.sqlite
 skymp5-server.exe
 scamp_native.node
@@ -72,4 +73,18 @@ scamp_native.node
 skymp5-gamemode
 Skyrim-server
 SkyrimData
+<<<<<<< HEAD
 gamemode
+=======
+server-settings.json
+dist_front
+SborkaPlugins
+gamemode.js
+SkyrimScripts
+
+#html
+html
+.firebaserc
+.posthtmlrc
+firebase.json
+>>>>>>> 8f3d039aff2955e37099f24e1728abcd20c8b640

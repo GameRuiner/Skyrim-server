@@ -90,7 +90,7 @@ export interface Actor extends ObjectReference {
 	hasFamilyRelationship: (akOther: Actor) => boolean;
 	hasLOS: (akOther: ObjectReference) => boolean;
 	hasMagicEffect: (akEffect: skyrimPlatform.MagicEffect) => boolean;
-	hasMagicEffectWithKeyword: (akKeyword: skyrimPlatform.Keyword) => boolean;
+	hasMagicEffectWithKeyword: (akKeyword: Keyword) => boolean;
 	hasParentRelationship: (akOther: Actor) => boolean;
 	hasPerk: (akPerk: skyrimPlatform.Perk) => boolean;
 	hasSpell: (akForm: Form) => boolean;
@@ -226,5 +226,5 @@ export interface Actor extends ObjectReference {
 	unequipSpell: (akSpell: Spell, aiSource: number) => void;
 	updateWeight: (neckDelta: number) => void;
 	willIntimidateSucceed: () => boolean;
-	wornHasKeyword: (akKeyword: skyrimPlatform.Keyword) => boolean;
+	wornHasKeyword: (akKeyword: Keyword) => boolean;
 }

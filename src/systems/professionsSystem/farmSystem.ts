@@ -1,7 +1,7 @@
 import { utils } from '../../utility';
 import { inventorySystem } from '../../systems';
-import { MP } from '../../types';
-import { ResourcesTypesProp, allAnimation, resources, ProfessionProp } from './data';
+import { ActivateEventReturn, MP } from '../../types';
+import { ResourcesTypesProp, allAnimation, resources } from './data';
 declare const mp: MP;
 
 /**
@@ -39,12 +39,12 @@ const farmItem = (
 };
 
 export const initFarmSystem = () => {
-	utils.hook('_onActivate', (formId: number, target: { name: string; baseId: number }) => {
+	utils.hook('_onActivate', (formId: number, event: ActivateEventReturn) => {
 		try {
-			if (target?.baseId && target?.name) {
+			if (event?.baseId && event?.name) {
 				Object.keys(resources).every((key: string) => {
 					const resourceType: ResourcesTypesProp = key as ResourcesTypesProp;
-					const data = resources[resourceType].find((item) => item.sourceName === target.name);
+					const data = resources[resourceType].find((item) => item.sourceName === event.name);
 					if (data) {
 						switch (data.type) {
 							case 'minerals':

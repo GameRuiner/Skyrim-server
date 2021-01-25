@@ -1,10 +1,10 @@
 import { MP } from './types';
+
 import { initUtils, utils } from './utility';
 
 import {
 	initActiveProfession,
 	initConsoleOutput,
-	initScale,
 	initSpawnPoint,
 	initIsDead,
 	initActorValue,
@@ -24,9 +24,13 @@ import {
 	initHitStatic,
 	initInputF5Event,
 	initActivateEvent,
+	initActivateMessageEvent,
 } from './events';
 
-import { initDevCommands, initMinesSystem, initWoodsmanSystem } from './systems';
+import { initDevCommands, initMinesSystem, initWoodsmanSystem, initFarmSystem, initFarmerSystem } from './systems';
+import { initTestMsg } from './test/msgTest';
+import { initTestContainerChangeEvent } from './test/conainerChanged';
+import { initTestBlockContainer } from './test/blockContainer';
 
 declare const mp: MP;
 
@@ -69,20 +73,61 @@ initDevCommands();
 // "events/onAnimationEvent"
 initAnimationEvent();
 
-initAnimation();
-
 initCurrentCellChangeEvent();
-initScale();
+//initScale();
 initEmptyAnimationEvent();
 initHitStatic();
 initInputF5Event();
 initActivateEvent();
-//initFarmSystem();
+initAnimation();
+
+//message form
+//initMessageIdToShow();
+//initMessageEvent();
+initActivateMessageEvent();
+
+//TEST
+initTestBlockContainer();
+initTestMsg();
+initTestContainerChangeEvent();
+
+// farm
+initFarmSystem();
 // profession
 initActiveProfession();
 initMinesSystem();
 initWoodsmanSystem();
+initFarmerSystem();
 
 utils.hook('onInit', (pcFormId: number) => {
 	mp.onReinit(pcFormId);
+});
+
+const getDistance = (a: number[], b: number[]) => {
+	return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2) + Math.pow(a[2] - b[2], 2));
+};
+
+utils.hook('onUiEvent', (formId: number, msg: Record<string, unknown>) => {
+	switch (msg.type) {
+		case 'chatMessage':
+			const myName = mp.get(formId, 'appearance').name;
+			const myPos: number[] = mp.get(formId, 'pos');
+			let neighbors: number[] = mp.get(formId, 'neighbors');
+			neighbors = neighbors.filter((x) => mp.get(x, 'type') === 'MpActor');
+			neighbors.forEach((neiFormId) => {
+				const pos: number[] = mp.get(neiFormId, 'pos');
+				const distance = getDistance(myPos, pos);
+				if (distance >= 0 && distance < 1000) {
+					mp.sendUiMessage(neiFormId, {
+						pageIndex: msg.pageIndex,
+						text: msg.text,
+						name: myName,
+						tagIndex: 0,
+						type: 'chatMessage',
+					});
+					utils.log('Chat message handled', msg);
+				}
+			});
+			break;
+	}
 });

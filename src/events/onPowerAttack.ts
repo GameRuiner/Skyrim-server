@@ -22,7 +22,7 @@ export const initPowerAttacksEvent = () => {
 					}
 				},
 			};
-		})
+		}, 'PowerAttack')
 	);
 
 	const sprintAttr: Attr = 'stamina';

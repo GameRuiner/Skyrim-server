@@ -16,7 +16,7 @@ function teleport() {
 	}
 }
 
-export const init = () => {
+export const initTeleport = () => {
 	mp.makeProperty('teleport', {
 		isVisibleByOwner: true,
 		isVisibleByNeighbors: false,
