@@ -1,2 +1,2 @@
 export * from './ctx';
-export * from './skyrimPlatformInterface';
+export * from './skyrimPlatform';

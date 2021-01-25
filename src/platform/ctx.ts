@@ -2,7 +2,7 @@ import { PropertyName } from '../types';
 import { Form } from './Form';
 import { ObjectReference } from './ObjectReference';
 import { Actor } from './skyrimPlatform';
-import { SkyrimPlatform } from './skyrimPlatformInterface';
+import { SkyrimPlatform } from './skyrimPlatform';
 
 export interface CTX {
 	/**

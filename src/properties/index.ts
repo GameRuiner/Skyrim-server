@@ -6,6 +6,5 @@ export * from './spawnPoint';
 export * from './builtIn';
 export * from './activeProfession';
 export * from './animation';
-export * from './messageIdToShow';
 //export * from './clientMessage';
 //export * from './teleport';
