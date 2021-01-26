@@ -2,6 +2,7 @@ import { utils } from '../../utility';
 import { inventorySystem } from '../../systems';
 import { ActivateEventReturn, MP } from '../../types';
 import { ResourcesTypesProp, allAnimation, resources, ProfessionProp } from './data';
+import { professionSystem } from './professionSystem';
 declare const mp: MP;
 
 /**
@@ -39,7 +40,7 @@ const farmItem = (
 };
 
 export const initFarmSystem = () => {
-	utils.hook('_onActivate', (formId: number, event: ActivateEventReturn) => {
+	utils.hook('_onActivate', (pcFormId: number, event: ActivateEventReturn) => {
 		try {
 			if (event?.baseId && event?.name) {
 				Object.keys(resources).every((key: string) => {
@@ -48,11 +49,11 @@ export const initFarmSystem = () => {
 					if (data) {
 						switch (data.type) {
 							case 'minerals':
-								const currentProf: ProfessionProp = mp.get(formId, 'activeProfession');
+								const currentProf: ProfessionProp = professionSystem.getFromServer(pcFormId);
 								const duration = 5;
 								currentProf.name === 'miner'
-									? farmItem(formId, duration, data.baseId, allAnimation.collector.miner)
-									: mp.set(formId, 'message', 'Вы не шахтер!');
+									? farmItem(pcFormId, duration, data.baseId, allAnimation.collector.miner)
+									: mp.set(pcFormId, 'message', 'Вы не шахтер!');
 
 								break;
 							default:

@@ -63,22 +63,25 @@ export const professionSystem = {
 		if (!isDeleted) {
 			utils.log('[PROFESSIONS]', 'Error: deleteProfessionItems() - error in deleteProfession() ');
 			throw '[PROFESSIONS] Error: deleteProfessionItems() - error in deleteProfession()';
-		} else {
-			const { oldEquipment } = mp.get(formId, 'activeProfession');
-			const oldEquipTmp: Equipment = oldEquipment;
-			let trueOldEquip: Equipment = { inv: { entries: [], filter: () => {} }, numChanges: 0 };
-			oldEquipTmp.inv.entries.forEach((oldItem) => {
-				if (inventorySystem.isInInventory(formId, oldItem.baseId)) {
-					trueOldEquip.inv.entries.push(oldItem);
-				}
-			});
-			utils.log('[PROFESSIONS] oldEquipment', trueOldEquip);
-
-			professionSystem.setToServer(formId, {
-				oldEquipment: trueOldEquip,
-				isActive: false,
-			});
 		}
+
+		const { oldEquipment } = professionSystem.getFromServer(formId);
+		oldEquipment.inv.entries = oldEquipment.inv.entries.filter((item) =>
+			inventorySystem.isInInventory(formId, item.baseId)
+		);
+		// let trueOldEquip: Equipment = { inv: { entries: [], filter: () => {} }, numChanges: 0 };
+		// oldEquipment.inv.entries.forEach((oldItem) => {
+		// 	if (inventorySystem.isInInventory(formId, oldItem.baseId)) {
+		// 		trueOldEquip.inv.entries.push(oldItem);
+		// 	}
+		// });
+		utils.log('[PROFESSIONS] oldEquipment', oldEquipment);
+
+		professionSystem.setToServer(formId, {
+			oldEquipment: oldEquipment,
+			isActive: false,
+		});
+
 		return isDeleted;
 	},
 
