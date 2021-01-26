@@ -1,9 +1,13 @@
-import { utils } from '../../utility';
+import { getFunctionText, utils } from '../../utility';
 import { inventorySystem } from '../../systems';
 import { ActivateEventReturn, MP } from '../../types';
 import { ResourcesTypesProp, allAnimation, resources, ProfessionProp } from './data';
 import { professionSystem } from './professionSystem';
+import { consoleOutput } from '../../properties';
+import { CTX } from '../../platform';
+
 declare const mp: MP;
+declare const ctx: CTX;
 
 /**
  * Add item to inventory with animation.
@@ -51,6 +55,16 @@ export const initFarmSystem = () => {
 							case 'minerals':
 								const currentProf: ProfessionProp = professionSystem.getFromServer(pcFormId);
 								const duration = 5;
+								// consoleOutput.evalClient(
+								// 	pcFormId,
+								// 	getFunctionText(() => {
+								// 		const ac = ctx.sp.Game.getPlayer();
+								// 		// ac.drawWeapon();
+								// 		// if (ac.isWeaponDrawn()) {
+								// 		// 	ac.sheatheWeapon();
+								// 		// }
+								// 	})
+								// );
 								currentProf.name === 'miner'
 									? farmItem(pcFormId, duration, data.baseId, allAnimation.collector.miner)
 									: mp.set(pcFormId, 'message', 'Вы не шахтер!');

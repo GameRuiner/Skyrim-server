@@ -35,23 +35,24 @@ export const initCurrentCellChangeEvent = () => {
 						let result: CellChangeEvent = { hasError: false };
 						const currentCell = ctx.sp.Game.getPlayer().getParentCell();
 
-						const currentLocation = ctx.sp.Game.getPlayer().getCurrentLocation();
-						let keywords = [];
-						for (let i = 0; i < currentLocation.getNumKeywords(); i++) {
-							keywords.push(currentLocation.getNthKeyword(i).getFormID());
-						}
-
 						const currentCellData: CellChangeItem = {
 							id: currentCell.getFormID(),
 							name: currentCell.getName(),
 							type: currentCell.getType(),
-							keywords,
 						};
 
 						if (ctx.state.currentCell?.id !== currentCellData.id) {
 							if (ctx.state.currentCell?.id !== undefined) {
 								result.prevCell = ctx.state.currentCell;
 								result.currentCell = currentCellData;
+
+								const currentLocation = ctx.sp.Game.getPlayer().getCurrentLocation();
+								let keywords = [];
+								for (let i = 0; i < currentLocation.getNumKeywords(); i++) {
+									keywords.push(currentLocation.getNthKeyword(i).getFormID());
+								}
+								result.currentCell.keywords = keywords;
+
 								ctx.sendEvent(result);
 							}
 							ctx.state.currentCell = currentCellData;

@@ -62,14 +62,18 @@ export const getFunctionText = (func: Function, functionName?: string): string =
 		.trim();
 
 	// add try catch
+	const date = new Date(Date.now());
+	const m = date.getMinutes();
+	const s = date.getSeconds();
+	const ms = date.getMilliseconds();
 	funcString = `
 	try {
 		${funcString}
 	} catch(err) {
-		ctx.sp.printConsole('[ERROR getFunctionText] (${functionName})', err)
+		ctx.sp.printConsole('${m}:${s}:${ms} [ERROR getFunctionText] (${functionName})', err);
 	}
 	`;
-	// , 'function text: ' + ${funcString}
+	// ctx.sp.printConsole('${m}:${s}:${ms} [ERROR getFunctionText][ACTOR VALUES] ac.id', ac.getFormID());
 
 	return funcString;
 };

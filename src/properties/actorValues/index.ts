@@ -167,7 +167,9 @@ const drain = (attr: Attr) => {
 // 	}
 // `;
 
-const updateAttributeCommon2 = (attrParam: Attr, isOwner: boolean = false) => {
+// TODO: NPCs sometimes have the value of healRateMult, healRate and drain equal undefined
+// ! добавил проверку на undefined healRateMult?, healRate? and drain?
+const updateAttributeCommon = (attrParam: Attr, isOwner: boolean = false) => {
 	return genClientFunction(
 		() => {
 			const rateAV = (attr: Attr): PropertyName =>
@@ -179,6 +181,10 @@ const updateAttributeCommon2 = (attrParam: Attr, isOwner: boolean = false) => {
 			const av = attrParam;
 			const ac = ctx.sp.Actor.from(ctx.refr);
 			if (!ac) return;
+
+			// 4278193063
+
+			// ctx.sp.printConsole('[ACTOR VALUES] ctx.value.base', ctx.value.base);
 
 			const base: number = ctx.value.base || 0;
 			const perm: number = ctx.value.permanent || 0;
@@ -204,18 +210,28 @@ const updateAttributeCommon2 = (attrParam: Attr, isOwner: boolean = false) => {
 				const regenDuration = (+Date.now() - (ctx.state[`${av}RegenStart`] || 0)) / 1000;
 
 				const healRateMult = ctx.get(multName) as ModifierValue;
+				// ctx.sp.printConsole('[ACTOR VALUES] healRateMult.base', healRateMult.base);
+
 				const healRateMultCurrent =
-					(healRateMult.base || 0) +
-					(healRateMult.permanent || 0) +
-					(healRateMult.temporary || 0) +
-					(healRateMult.damage || 0);
+					(healRateMult?.base || 0) +
+					(healRateMult?.permanent || 0) +
+					(healRateMult?.temporary || 0) +
+					(healRateMult?.damage || 0);
 
 				const healRate = ctx.get(rateName) as ModifierValue;
+				// ctx.sp.printConsole('[ACTOR VALUES] healRate.base', healRate.base)
 				const healRateCurrent =
-					(healRate.base || 0) + (healRate.permanent || 0) + (healRate.temporary || 0) + (healRate.damage || 0);
+					(healRate?.base || 0) + (healRate?.permanent || 0) + (healRate?.temporary || 0) + (healRate?.damage || 0);
 
 				const drain = ctx.get(drainName) as ModifierValue;
-				const drainCurrent = (drain.base || 0) + (drain.permanent || 0) + (drain.temporary || 0) + (drain.damage || 0);
+				// ctx.sp.printConsole('[ACTOR VALUES] drain.base', drain.base)
+
+				// if (ac.getFormID() === 4278193063) {
+				// 	ctx.sp.printConsole('[ACTOR VALUES] drain', drain);
+				// }
+
+				const drainCurrent =
+					(drain?.base || 0) + (drain?.permanent || 0) + (drain?.temporary || 0) + (drain?.damage || 0);
 				if (drainCurrent) {
 					targetDmg += regenDuration * drainCurrent;
 				} else {
@@ -252,17 +268,17 @@ const updateAttributeCommon2 = (attrParam: Attr, isOwner: boolean = false) => {
 				ac.setActorValue(av, 9999);
 			}
 		},
-		'updateAttributeCommon2',
+		'updateAttributeCommon',
 		{ attrParam, isOwner }
 	);
 };
 
 // const updateAttributeNeighbor = (attr: Attr) => {
-// 	return attr === 'health' ? updateAttributeCommon2(attr) + `\nac.setActorValue("${attr}", 9999);` : '';
+// 	return attr === 'health' ? updateAttributeCommon(attr) + `\nac.setActorValue("${attr}", 9999);` : '';
 // };
 
 // const updateAttributeOwner = (attr: Attr) => {
-// 	return updateAttributeCommon2(attr) + `\nac.setActorValue("${attr}", base);`;
+// 	return updateAttributeCommon(attr) + `\nac.setActorValue("${attr}", base);`;
 // };
 
 const avs: AttrAll[] = [
@@ -373,8 +389,8 @@ export const initActorValue = () => {
 		mp.makeProperty(('av_' + attr) as PropertyName, {
 			isVisibleByOwner: true,
 			isVisibleByNeighbors: attr === 'health',
-			updateNeighbor: updateAttributeCommon2(attr, false),
-			updateOwner: updateAttributeCommon2(attr, true),
+			updateNeighbor: updateAttributeCommon(attr, false),
+			updateOwner: updateAttributeCommon(attr, true),
 		});
 	}
 

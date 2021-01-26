@@ -17,21 +17,23 @@ const currentProfessionName: ProfessionNamesProp = 'miner';
 const isMine = (cellDesc: string): boolean => {
 	return locations.mines.find((el) => el.worldId === cellDesc) ? true : false;
 };
+/**
+ * Return true if Actor came to mine location
+ * @param keywords location keywords
+ */
+const isMineKeyword = (keywords: number[] = []): boolean => {
+	return keywords.includes(0x18ef1);
+};
 
 export const initMinesSystem = () => {
 	utils.hook('_onCurrentCellChange', (pcFormId: number, event: CellChangeEvent) => {
 		try {
-			if (isMine(getWorldOrCellDesc(pcFormId))) {
-				utils.log('[MINES]', event);
-				utils.log('[MINES] WorldOrCellDesc', getWorldOrCellDesc(pcFormId));
+			if (isMineKeyword(event.currentCell?.keywords)) {
+				utils.log('[MINES]', event.currentCell);
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
-
-				if (myProfession === null) {
+				
+				if (!myProfession?.isActive) {
 					professionSystem.set(pcFormId, currentProfessionName);
-				} else {
-					if (!myProfession.isActive) {
-						professionSystem.set(pcFormId, currentProfessionName);
-					}
 				}
 			} else {
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
