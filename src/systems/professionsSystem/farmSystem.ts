@@ -45,20 +45,23 @@ export const initFarmSystem = () => {
 				Object.keys(resources).every((key: string) => {
 					const resourceType: ResourcesTypesProp = key as ResourcesTypesProp;
 					const data = resources[resourceType].find((item) => item.sourceName === event.name);
-					if (data) {
-						switch (data.type) {
-							case 'minerals':
-								const currentProf: ProfessionProp = mp.get(formId, 'activeProfession');
-								const duration = 5;
-								currentProf.name === 'miner'
-									? farmItem(formId, duration, data.baseId, allAnimation.collector.miner)
-									: mp.set(formId, 'message', 'Вы не шахтер!');
-
-								break;
-							default:
-								break;
+					const currentProf: ProfessionProp = mp.get(formId, 'activeProfession');
+					if (currentProf) {
+						if (data) {
+							switch (data.type) {
+								case 'minerals':
+									const duration = 5;
+									currentProf.name === 'miner'
+										? farmItem(formId, duration, data.baseId, allAnimation.collector.miner)
+										: mp.set(formId, 'message', 'Вы не шахтер!');
+									break;
+								default:
+									break;
+							}
+							return;
 						}
-						return;
+					} else {
+						mp.set(formId, 'message', 'У вас нет профессии');
 					}
 				});
 			}

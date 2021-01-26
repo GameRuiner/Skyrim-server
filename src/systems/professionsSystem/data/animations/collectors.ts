@@ -13,6 +13,10 @@ const collectors: AnimationProp = {
 		start: [],
 		end: [],
 	},
+	farmer: {
+		start: [],
+		end: [],
+	},
 };
 
 export default collectors;
