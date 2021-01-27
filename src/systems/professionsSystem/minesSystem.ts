@@ -22,6 +22,8 @@ const isMine = (cellDesc: string): boolean => {
  * @param keywords location keywords
  */
 const isMineKeyword = (keywords: number[] = []): boolean => {
+	if (!keywords) return false;
+
 	return keywords.includes(0x18ef1);
 };
 
@@ -31,7 +33,7 @@ export const initMinesSystem = () => {
 			if (isMineKeyword(event.currentCell?.keywords)) {
 				utils.log('[MINES]', event.currentCell);
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
-				
+
 				if (!myProfession?.isActive) {
 					professionSystem.set(pcFormId, currentProfessionName);
 				}

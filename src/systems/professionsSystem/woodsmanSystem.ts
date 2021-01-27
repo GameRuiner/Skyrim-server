@@ -32,7 +32,7 @@ export const initWoodsmanSystem = () => {
 	utils.hook('_onActivate', (pcFormId: number, event: ActivateEventReturn) => {
 		try {
 			// get profession
-			if (event?.target && activatorIdToGetProf.includes(event?.target)) {
+			if (event?.target && activatorIdToGetProf?.includes(event?.target)) {
 				utils.log('[WOODSMAN] event', event);
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
 				utils.log('[WOODSMAN]', myProfession);
@@ -47,7 +47,7 @@ export const initWoodsmanSystem = () => {
 			}
 
 			// sell items
-			if (event?.target && activatorIdToGetSell.includes(event?.target)) {
+			if (event?.target && activatorIdToGetSell?.includes(event?.target)) {
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
 				if (myProfession?.name === currentProfessionName) {
 					const inv: Inventar = inventorySystem.get(pcFormId);
@@ -71,7 +71,7 @@ export const initWoodsmanSystem = () => {
 	/** collect items by hit the tree */
 	utils.hook('_onHitStatic', (pcFormId: number, eventData: HitEventReturn) => {
 		// get item from hit to tree
-		if (treeIdsToCollect.includes(eventData.target)) {
+		if (treeIdsToCollect?.includes(eventData.target)) {
 			const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
 			if (
 				myProfession.name === currentProfessionName &&
