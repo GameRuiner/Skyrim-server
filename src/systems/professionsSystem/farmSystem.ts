@@ -1,8 +1,13 @@
-import { utils } from '../../utility';
+import { getFunctionText, utils } from '../../utility';
 import { inventorySystem } from '../../systems';
 import { ActivateEventReturn, MP } from '../../types';
 import { ResourcesTypesProp, allAnimation, resources, ProfessionProp } from './data';
+import { professionSystem } from './professionSystem';
+import { consoleOutput } from '../../properties';
+import { CTX } from '../../platform';
+
 declare const mp: MP;
+declare const ctx: CTX;
 
 /**
  * Add item to inventory with animation.
@@ -39,29 +44,27 @@ const farmItem = (
 };
 
 export const initFarmSystem = () => {
-	utils.hook('_onActivate', (formId: number, event: ActivateEventReturn) => {
+	utils.hook('_onActivate', (pcFormId: number, event: ActivateEventReturn) => {
 		try {
-			if (event?.baseId && event?.name) {
+			if (event?.target && event?.targetBaseName) {
 				Object.keys(resources).every((key: string) => {
 					const resourceType: ResourcesTypesProp = key as ResourcesTypesProp;
-					const data = resources[resourceType].find((item) => item.sourceName === event.name);
-					const currentProf: ProfessionProp = mp.get(formId, 'activeProfession');
-					if (currentProf) {
-						if (data) {
-							switch (data.type) {
-								case 'minerals':
-									const duration = 5;
-									currentProf.name === 'miner'
-										? farmItem(formId, duration, data.baseId, allAnimation.collector.miner)
-										: mp.set(formId, 'message', 'Вы не шахтер!');
-									break;
-								default:
-									break;
-							}
-							return;
+					const data = resources[resourceType].find((item) => item.sourceName === event.targetBaseName);
+					const currentProf: ProfessionProp = professionSystem.getFromServer(pcFormId);
+					if (data && currentProf) {
+						switch (data.type) {
+							case 'minerals':
+								const duration = 5;
+								currentProf.name === 'miner'
+									? farmItem(pcFormId, duration, data.baseId, allAnimation.collector.miner)
+									: mp.set(pcFormId, 'message', 'Вы не шахтер!');
+
+								break;
+							default:
+								break;
 						}
 					} else {
-						mp.set(formId, 'message', 'У вас нет профессии');
+						mp.set(pcFormId, 'message', 'У вас нет профессии');
 					}
 				});
 			}

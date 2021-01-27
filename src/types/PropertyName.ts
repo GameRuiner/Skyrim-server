@@ -46,6 +46,6 @@ type CustomPropertyName =
 	| 'message'
 	| 'teleport'
 	| 'animation'
-	| 'messageIdToShow';
+	| 'inFarm';
 
 export type PropertyName = SystemPropertyName | CustomPropertyName;

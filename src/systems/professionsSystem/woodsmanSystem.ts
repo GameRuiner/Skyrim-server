@@ -1,5 +1,5 @@
-import { inventorySystem } from '..';
-import { ActivateEventReturn, Inventar } from '../../types';
+import { blockSystem, inventorySystem } from '..';
+import { ActivateEventReturn, HitEventReturn, Inventar } from '../../types';
 import { utils } from '../../utility';
 import { ProfessionProp } from './data';
 import collectors from './data/profession/collectors';
@@ -9,9 +9,9 @@ import { professionSystem } from './professionSystem';
 // Woodsman
 const currentProfessionName = 'woodsman';
 /** object to activate profession */
-const activatorIdToGetProf = 0x9fb04; // barrel in riverwood
+const activatorIdToGetProf = [0x9fb04]; // barrel in riverwood
 /** object to sell collected item */
-const activatorIdToGetSell = 0x1f228; // barrel in riverwood
+const activatorIdToGetSell = [0x1f228]; // barrel in riverwood
 /** tree id to collect */
 const treeIdsToCollect = [0x12dee];
 /** id of collect item */
@@ -22,11 +22,17 @@ const collectItemPrice = woods[0].price;
 const goldId = 0xf;
 
 export const initWoodsmanSystem = () => {
-	// TODO: Block activator objects activatorIdToGetProf and activatorIdToGetSell
+	/** block activation woodsman object */
+	utils.hook('onReinit', (pcFormId: number) => {
+		const blockItems = activatorIdToGetProf.concat(activatorIdToGetSell);
+		blockSystem.block(pcFormId, blockItems);
+	});
+
+	/**	set woodsman profession by activate the object and sell collected items */
 	utils.hook('_onActivate', (pcFormId: number, event: ActivateEventReturn) => {
 		try {
 			// get profession
-			if (event?.baseId === activatorIdToGetProf) {
+			if (event?.target && activatorIdToGetProf?.includes(event?.target)) {
 				utils.log('[WOODSMAN] event', event);
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
 				utils.log('[WOODSMAN]', myProfession);
@@ -38,21 +44,10 @@ export const initWoodsmanSystem = () => {
 					professionSystem.delete(pcFormId, currentProfessionName);
 					utils.log('[WOODSMAN]', 'profession delete');
 				}
-				// if (currentProfessionStaff) {
-				// 	if (!myProfession.isActive) {
-				// 		professionSystem.set(pcFormId, currentProfessionName);
-				// 		utils.log("Тут 2");
-				// 	} else {
-				// 		if (myProfession.name === currentProfessionName) {
-				// 			professionSystem.delete(pcFormId, currentProfessionName);
-				// 			utils.log("Тут 3");
-				// 		}
-				// 	}
-				// }
 			}
 
 			// sell items
-			if (event?.baseId === activatorIdToGetSell) {
+			if (event?.target && activatorIdToGetSell?.includes(event?.target)) {
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
 				if (myProfession?.name === currentProfessionName) {
 					const inv: Inventar = inventorySystem.get(pcFormId);
@@ -73,9 +68,10 @@ export const initWoodsmanSystem = () => {
 		}
 	});
 
-	utils.hook('_onHitStatic', (pcFormId: number, eventData: any) => {
+	/** collect items by hit the tree */
+	utils.hook('_onHitStatic', (pcFormId: number, eventData: HitEventReturn) => {
 		// get item from hit to tree
-		if (treeIdsToCollect.includes(eventData.target)) {
+		if (treeIdsToCollect?.includes(eventData.target)) {
 			const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
 			if (
 				myProfession.name === currentProfessionName &&

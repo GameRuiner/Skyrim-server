@@ -117,6 +117,9 @@ export const inventorySystem = {
 
 			result.success = true;
 			result.message = isSilent ? '' : `Успех: Количество предмета изменено на ${newCount}.`;
+			if (result.message && !isSilent) {
+				mp.set(formId, 'message', result.message);
+			}
 			return result;
 		}
 		return result;

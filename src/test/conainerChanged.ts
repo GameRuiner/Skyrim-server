@@ -36,23 +36,5 @@ export const initTestContainerChangeEvent = () => {
 		if (event.oldContainer === 0x14) {
 			inventorySystem.deleteItem(pcFormId, event.baseId, event.count, true);
 		}
-
-		// if (event.oldContainer === 0x14 && !event.newContainer) {
-		// 	inventorySystem.deleteItem(pcFormId, event.baseId, event.count, true);
-		// } else if (!event.oldContainer && event.newContainer === 0x14) {
-		// 	inventorySystem.addItem(pcFormId, event.baseId, event.count, true);
-		// }
-
-		// if (event.oldContainer === 0x14 && !event.newContainer) {
-		// 	inventorySystem.deleteItem(pcFormId, event.baseId, event.count, true);
-		// } else if (!event.oldContainer && event.newContainer === 0x14) {
-		// 	inventorySystem.addItem(pcFormId, event.baseId, event.count, true);
-		// } else if (event.newContainer === 0x14) {
-		// 	inventorySystem.addItem(pcFormId, event.baseId, event.count, true);
-		// 	//inventorySystem.deleteItem(event.oldContainer, event.baseId, event.count, true);
-		// } else {
-		// 	// inventorySystem.addItem(event.oldContainer, event.baseId, event.count, true);
-		// 	inventorySystem.deleteItem(pcFormId, event.baseId, event.count, true);
-		// }
 	});
 };

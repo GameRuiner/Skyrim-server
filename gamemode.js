@@ -132,7 +132,7 @@ var __spreadArrays = this && this.__spreadArrays || function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.initUtils = exports.genClientFunction = exports.getFunctionText = exports.utils = void 0;
+exports.inPoly = exports.initUtils = exports.genClientFunction = exports.getFunctionText = exports.utils = void 0;
 exports.utils = {
   log: function () {
     var _a;
@@ -181,7 +181,11 @@ exports.utils = {
 
 var getFunctionText = function (func, functionName) {
   var funcString = func.toString().substring(0, func.toString().length - 1).replace(new RegExp('^.+?{', 'm'), '').trim();
-  funcString = "\n\ttry {\n\t\t" + funcString + "\n\t} catch(err) {\n\t\tctx.sp.printConsole('[ERROR getFunctionText] (" + functionName + ")', err)\n\t}\n\t";
+  var date = new Date(Date.now());
+  var m = date.getMinutes();
+  var s = date.getSeconds();
+  var ms = date.getMilliseconds();
+  funcString = "\n\ttry {\n\t\t" + funcString + "\n\t} catch(err) {\n\t\tctx.sp.printConsole('" + m + ":" + s + ":" + ms + " [ERROR getFunctionText] (" + functionName + ")', err);\n\t}\n\t";
   return funcString;
 };
 
@@ -210,6 +214,13 @@ var genClientFunction = function (func, functionName, args, log) {
 
       case 'boolean':
         result = "const " + name + " = " + args[name] + ";\n" + result;
+        break;
+
+      case 'object':
+        if (Array.isArray(args[name])) {
+          result = "const " + name + " = [" + args[name] + "];\n" + result;
+        }
+
         break;
     }
   }
@@ -241,6 +252,32 @@ var initUtils = function () {
 };
 
 exports.initUtils = initUtils;
+var cacheInPoly = {};
+
+var inPoly = function (x, y, xp, yp) {
+  var index = x.toString() + y.toString() + xp.join('') + yp.join('');
+
+  if (cacheInPoly[index]) {
+    return cacheInPoly[index];
+  }
+
+  var npol = xp.length;
+  var j = npol - 1;
+  var c = false;
+
+  for (var i = 0; i < npol; i++) {
+    if ((yp[i] <= y && y < yp[j] || yp[j] <= y && y < yp[i]) && x > (xp[j] - xp[i]) * (y - yp[i]) / (yp[j] - yp[i]) + xp[i]) {
+      c = !c;
+    }
+
+    j = i;
+  }
+
+  cacheInPoly[index] = c;
+  return c;
+};
+
+exports.inPoly = inPoly;
 },{}],"utility/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -288,7 +325,7 @@ var drain = function (attr) {
   return "av_mp_" + attr + "drain";
 };
 
-var updateAttributeCommon2 = function (attrParam, isOwner) {
+var updateAttributeCommon = function (attrParam, isOwner) {
   if (isOwner === void 0) {
     isOwner = false;
   }
@@ -331,11 +368,11 @@ var updateAttributeCommon2 = function (attrParam, isOwner) {
       var additionalRegenMult = 1.0;
       var regenDuration = (+Date.now() - (ctx.state[av + "RegenStart"] || 0)) / 1000;
       var healRateMult = ctx.get(multName);
-      var healRateMultCurrent = (healRateMult.base || 0) + (healRateMult.permanent || 0) + (healRateMult.temporary || 0) + (healRateMult.damage || 0);
+      var healRateMultCurrent = ((healRateMult === null || healRateMult === void 0 ? void 0 : healRateMult.base) || 0) + ((healRateMult === null || healRateMult === void 0 ? void 0 : healRateMult.permanent) || 0) + ((healRateMult === null || healRateMult === void 0 ? void 0 : healRateMult.temporary) || 0) + ((healRateMult === null || healRateMult === void 0 ? void 0 : healRateMult.damage) || 0);
       var healRate = ctx.get(rateName);
-      var healRateCurrent = (healRate.base || 0) + (healRate.permanent || 0) + (healRate.temporary || 0) + (healRate.damage || 0);
+      var healRateCurrent = ((healRate === null || healRate === void 0 ? void 0 : healRate.base) || 0) + ((healRate === null || healRate === void 0 ? void 0 : healRate.permanent) || 0) + ((healRate === null || healRate === void 0 ? void 0 : healRate.temporary) || 0) + ((healRate === null || healRate === void 0 ? void 0 : healRate.damage) || 0);
       var drain_1 = ctx.get(drainName);
-      var drainCurrent = (drain_1.base || 0) + (drain_1.permanent || 0) + (drain_1.temporary || 0) + (drain_1.damage || 0);
+      var drainCurrent = ((drain_1 === null || drain_1 === void 0 ? void 0 : drain_1.base) || 0) + ((drain_1 === null || drain_1 === void 0 ? void 0 : drain_1.permanent) || 0) + ((drain_1 === null || drain_1 === void 0 ? void 0 : drain_1.temporary) || 0) + ((drain_1 === null || drain_1 === void 0 ? void 0 : drain_1.damage) || 0);
 
       if (drainCurrent) {
         targetDmg += regenDuration * drainCurrent;
@@ -370,7 +407,7 @@ var updateAttributeCommon2 = function (attrParam, isOwner) {
     } else if (av === 'health') {
       ac.setActorValue(av, 9999);
     }
-  }, 'updateAttributeCommon2', {
+  }, 'updateAttributeCommon', {
     attrParam: attrParam,
     isOwner: isOwner
   });
@@ -480,8 +517,8 @@ var initActorValue = function () {
     mp.makeProperty('av_' + attr, {
       isVisibleByOwner: true,
       isVisibleByNeighbors: attr === 'health',
-      updateNeighbor: updateAttributeCommon2(attr, false),
-      updateOwner: updateAttributeCommon2(attr, true)
+      updateNeighbor: updateAttributeCommon(attr, false),
+      updateOwner: updateAttributeCommon(attr, true)
     });
   }
 
@@ -831,29 +868,15 @@ exports.initIsDead = initIsDead;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.PRODUCTION = exports.TRACE_ANIMATION = exports.EVENTS_NAME = exports.defaultSpawnPoint = exports.currentActor = void 0;
+exports.PRODUCTION = exports.TRACE_ANIMATION = exports.defaultSpawnPoint = exports.currentActor = void 0;
 exports.currentActor = 0x14;
 exports.defaultSpawnPoint = {
   pos: [227, 239, 53],
   angle: [0, 0, 0],
   worldOrCellDesc: '165a7:Skyrim.esm'
 };
-exports.EVENTS_NAME = {
-  _: '_',
-  bash: '_onBash',
-  consoleCommand: '_onConsoleCommand',
-  currentCellChange: '_onCurrentCellChange',
-  hit: '_onHit',
-  localDeath: '_onLocalDeath',
-  powerAttack: '_onPowerAttack',
-  actorValueFlushRequiredhealth: '_onActorValueFlushRequiredhealth',
-  actorValueFlushRequiredstamina: '_onActorValueFlushRequiredstamina',
-  actorValueFlushRequiredmagicka: '_onActorValueFlushRequiredmagicka',
-  sprintStateChange: '_onSprintStateChange',
-  hitScale: '_onHitScale'
-};
-exports.TRACE_ANIMATION = true;
-exports.PRODUCTION = false;
+exports.TRACE_ANIMATION = false;
+exports.PRODUCTION = true;
 },{}],"constants/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -1029,6 +1052,11 @@ exports.inventorySystem = {
       mp.set(formId, 'inventory', inv);
       result.success = true;
       result.message = isSilent ? '' : "\u0423\u0441\u043F\u0435\u0445: \u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u043F\u0440\u0435\u0434\u043C\u0435\u0442\u0430 \u0438\u0437\u043C\u0435\u043D\u0435\u043D\u043E \u043D\u0430 " + newCount + ".";
+
+      if (result.message && !isSilent) {
+        mp.set(formId, 'message', result.message);
+      }
+
       return result;
     }
 
@@ -1748,28 +1776,17 @@ exports.professionSystem = {
     if (!isDeleted) {
       utility_1.utils.log('[PROFESSIONS]', 'Error: deleteProfessionItems() - error in deleteProfession() ');
       throw '[PROFESSIONS] Error: deleteProfessionItems() - error in deleteProfession()';
-    } else {
-      var oldEquipment = mp.get(formId, 'activeProfession').oldEquipment;
-      var oldEquipTmp = oldEquipment;
-      var trueOldEquip_1 = {
-        inv: {
-          entries: [],
-          filter: function () {}
-        },
-        numChanges: 0
-      };
-      oldEquipTmp.inv.entries.forEach(function (oldItem) {
-        if (inventorySystem_1.inventorySystem.isInInventory(formId, oldItem.baseId)) {
-          trueOldEquip_1.inv.entries.push(oldItem);
-        }
-      });
-      utility_1.utils.log('[PROFESSIONS] oldEquipment', trueOldEquip_1);
-      exports.professionSystem.setToServer(formId, {
-        oldEquipment: trueOldEquip_1,
-        isActive: false
-      });
     }
 
+    var oldEquipment = exports.professionSystem.getFromServer(formId).oldEquipment;
+    oldEquipment.inv.entries = oldEquipment.inv.entries.filter(function (item) {
+      return inventorySystem_1.inventorySystem.isInInventory(formId, item.baseId);
+    });
+    utility_1.utils.log('[PROFESSIONS] oldEquipment', oldEquipment);
+    exports.professionSystem.setToServer(formId, {
+      oldEquipment: oldEquipment,
+      isActive: false
+    });
     return isDeleted;
   },
   deleteItems: function (formId, professionName, force) {
@@ -1863,8 +1880,6 @@ var utility_1 = require("../../utility");
 
 var professionSystem_1 = require("./professionSystem");
 
-var properties_1 = require("../../properties");
-
 var data_1 = require("./data");
 
 var IS_SELL = true;
@@ -1877,19 +1892,26 @@ var isMine = function (cellName) {
   }) ? true : false;
 };
 
+var isMineKeyword = function (keywords) {
+  if (keywords === void 0) {
+    keywords = [];
+  }
+
+  if (!keywords) return false;
+  return keywords.includes(0x18ef1);
+};
+
 var initMinesSystem = function () {
-  utility_1.utils.hook('_onCurrentCellChange', function (pcFormId) {
+  utility_1.utils.hook('_onCurrentCellChange', function (pcFormId, event) {
     try {
-      if (isMine(properties_1.getWorldOrCellDesc(pcFormId))) {
-        utility_1.utils.log('[MINES] WorldOrCellDesc', properties_1.getWorldOrCellDesc(pcFormId));
+      utility_1.utils.log('Cell change');
+
+      if (isMine(mp.get(pcFormId, 'worldOrCellDesc'))) {
+        utility_1.utils.log('[MINES]', event.currentCell);
         var myProfession = professionSystem_1.professionSystem.getFromServer(pcFormId);
 
-        if (!myProfession) {
+        if (!(myProfession === null || myProfession === void 0 ? void 0 : myProfession.isActive)) {
           professionSystem_1.professionSystem.set(pcFormId, currentProfessionName);
-        } else {
-          if (!myProfession.isActive) {
-            professionSystem_1.professionSystem.set(pcFormId, currentProfessionName);
-          }
         }
       } else {
         var myProfession = professionSystem_1.professionSystem.getFromServer(pcFormId);
@@ -1917,7 +1939,7 @@ var initMinesSystem = function () {
 };
 
 exports.initMinesSystem = initMinesSystem;
-},{"../../utility":"utility/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","../../properties":"properties/index.ts","./data":"systems/professionsSystem/data/index.ts"}],"systems/professionsSystem/woodsmanSystem.ts":[function(require,module,exports) {
+},{"../../utility":"utility/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts","./data":"systems/professionsSystem/data/index.ts"}],"systems/professionsSystem/woodsmanSystem.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -1942,17 +1964,22 @@ var woods_1 = __importDefault(require("./data/resources/woods"));
 var professionSystem_1 = require("./professionSystem");
 
 var currentProfessionName = 'woodsman';
-var activatorIdToGetProf = 0x9fb04;
-var activatorIdToGetSell = 0x1f228;
+var activatorIdToGetProf = [0x9fb04];
+var activatorIdToGetSell = [0x1f228];
 var treeIdsToCollect = [0x12dee];
 var collectItemId = woods_1.default[0].baseId;
 var collectItemPrice = woods_1.default[0].price;
 var goldId = 0xf;
 
 var initWoodsmanSystem = function () {
+  utility_1.utils.hook('onReinit', function (pcFormId) {
+    var blockItems = activatorIdToGetProf.concat(activatorIdToGetSell);
+
+    __1.blockSystem.block(pcFormId, blockItems);
+  });
   utility_1.utils.hook('_onActivate', function (pcFormId, event) {
     try {
-      if ((event === null || event === void 0 ? void 0 : event.baseId) === activatorIdToGetProf) {
+      if ((event === null || event === void 0 ? void 0 : event.target) && (activatorIdToGetProf === null || activatorIdToGetProf === void 0 ? void 0 : activatorIdToGetProf.includes(event === null || event === void 0 ? void 0 : event.target))) {
         utility_1.utils.log('[WOODSMAN] event', event);
         var myProfession = professionSystem_1.professionSystem.getFromServer(pcFormId);
         utility_1.utils.log('[WOODSMAN]', myProfession);
@@ -1966,7 +1993,7 @@ var initWoodsmanSystem = function () {
         }
       }
 
-      if ((event === null || event === void 0 ? void 0 : event.baseId) === activatorIdToGetSell) {
+      if ((event === null || event === void 0 ? void 0 : event.target) && (activatorIdToGetSell === null || activatorIdToGetSell === void 0 ? void 0 : activatorIdToGetSell.includes(event === null || event === void 0 ? void 0 : event.target))) {
         var myProfession = professionSystem_1.professionSystem.getFromServer(pcFormId);
 
         if ((myProfession === null || myProfession === void 0 ? void 0 : myProfession.name) === currentProfessionName) {
@@ -1992,7 +2019,7 @@ var initWoodsmanSystem = function () {
     }
   });
   utility_1.utils.hook('_onHitStatic', function (pcFormId, eventData) {
-    if (treeIdsToCollect.includes(eventData.target)) {
+    if (treeIdsToCollect === null || treeIdsToCollect === void 0 ? void 0 : treeIdsToCollect.includes(eventData.target)) {
       var myProfession = professionSystem_1.professionSystem.getFromServer(pcFormId);
 
       if (myProfession.name === currentProfessionName && __1.inventorySystem.isEquip(pcFormId, collectors_1.default[currentProfessionName].tool)) {
@@ -2019,6 +2046,8 @@ var systems_1 = require("../../systems");
 
 var data_1 = require("./data");
 
+var professionSystem_1 = require("./professionSystem");
+
 var farmItem = function (formId, duration, baseId, animations) {
   if (duration === void 0) {
     duration = 5;
@@ -2044,32 +2073,28 @@ var farmItem = function (formId, duration, baseId, animations) {
 };
 
 var initFarmSystem = function () {
-  utility_1.utils.hook('_onActivate', function (formId, event) {
+  utility_1.utils.hook('_onActivate', function (pcFormId, event) {
     try {
-      if ((event === null || event === void 0 ? void 0 : event.baseId) && (event === null || event === void 0 ? void 0 : event.name)) {
+      if ((event === null || event === void 0 ? void 0 : event.target) && (event === null || event === void 0 ? void 0 : event.targetBaseName)) {
         Object.keys(data_1.resources).every(function (key) {
           var resourceType = key;
           var data = data_1.resources[resourceType].find(function (item) {
-            return item.sourceName === event.name;
+            return item.sourceName === event.targetBaseName;
           });
-          var currentProf = mp.get(formId, 'activeProfession');
+          var currentProf = professionSystem_1.professionSystem.getFromServer(pcFormId);
 
-          if (currentProf) {
-            if (data) {
-              switch (data.type) {
-                case 'minerals':
-                  var duration = 5;
-                  currentProf.name === 'miner' ? farmItem(formId, duration, data.baseId, data_1.allAnimation.collector.miner) : mp.set(formId, 'message', 'Вы не шахтер!');
-                  break;
+          if (data && currentProf) {
+            switch (data.type) {
+              case 'minerals':
+                var duration = 5;
+                currentProf.name === 'miner' ? farmItem(pcFormId, duration, data.baseId, data_1.allAnimation.collector.miner) : mp.set(pcFormId, 'message', 'Вы не шахтер!');
+                break;
 
-                default:
-                  break;
-              }
-
-              return;
+              default:
+                break;
             }
           } else {
-            mp.set(formId, 'message', 'У вас нет профессии');
+            mp.set(pcFormId, 'message', 'У вас нет профессии');
           }
         });
       }
@@ -2080,7 +2105,50 @@ var initFarmSystem = function () {
 };
 
 exports.initFarmSystem = initFarmSystem;
-},{"../../utility":"utility/index.ts","../../systems":"systems/index.ts","./data":"systems/professionsSystem/data/index.ts"}],"systems/professionsSystem/farmerSystem.ts":[function(require,module,exports) {
+},{"../../utility":"utility/index.ts","../../systems":"systems/index.ts","./data":"systems/professionsSystem/data/index.ts","./professionSystem":"systems/professionsSystem/professionSystem.ts"}],"properties/professions/inFarm.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initInFarmProp = void 0;
+
+var initInFarmProp = function () {
+  mp.makeProperty('inFarm', {
+    isVisibleByNeighbors: false,
+    isVisibleByOwner: false,
+    updateNeighbor: '',
+    updateOwner: ''
+  });
+};
+
+exports.initInFarmProp = initInFarmProp;
+},{}],"properties/professions/index.ts":[function(require,module,exports) {
+"use strict";
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  Object.defineProperty(o, k2, {
+    enumerable: true,
+    get: function () {
+      return m[k];
+    }
+  });
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __exportStar = this && this.__exportStar || function (m, exports) {
+  for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+__exportStar(require("./inFarm"), exports);
+},{"./inFarm":"properties/professions/inFarm.ts"}],"systems/professionsSystem/farmerSystem.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2090,13 +2158,30 @@ exports.initFarmerSystem = void 0;
 
 var _1 = require(".");
 
+var properties_1 = require("../../properties");
+
+var professions_1 = require("../../properties/professions");
+
 var utility_1 = require("../../utility");
+
+var inventorySystem_1 = require("../inventorySystem");
 
 var data_1 = require("./data");
 
 var currentProfessionName = 'farmer';
+var waterBarrelId = 83991823;
+var emptyBucket = 0x12fdf;
+var bucketWithWater = 0x5019d13;
+var FarmZones = [{
+  xp: new Array(20688.2421875, 20765.36328125, 21634.35546875, 21673.72265625),
+  yp: new Array(-17439.828125, -17003.31640625, -17113.658203125, -17609.171875)
+}, {
+  xp: new Array(22217.359375, 22298.4296875, 22899.06640625, 22722.14453125),
+  yp: new Array(-17784.376953125, -17302.755859375, -17377.037109375, -17840.4140625)
+}];
 
 var initFarmerSystem = function () {
+  professions_1.initInFarmProp();
   utility_1.utils.hook('_onActivateMessage', function (pcFormId, event) {
     var _a;
 
@@ -2112,10 +2197,37 @@ var initFarmerSystem = function () {
       _1.professionSystem.delete(pcFormId, currentProfessionName, true);
     }
   });
+  utility_1.utils.hook('_onActivate', function (pcFormId, event) {
+    if (event.targetBaseId === waterBarrelId) {
+      if (inventorySystem_1.inventorySystem.isInInventory(pcFormId, emptyBucket)) {
+        inventorySystem_1.inventorySystem.deleteItem(pcFormId, emptyBucket, 1);
+        inventorySystem_1.inventorySystem.addItem(pcFormId, bucketWithWater, 1);
+      } else {
+        properties_1.consoleOutput.printNote(pcFormId, 'У тебя больше нет пустых ведер!');
+      }
+    }
+  });
+  utility_1.utils.hook('_onUpdate2sec', function (pcFormId) {
+    var _a;
+
+    var currentPos = properties_1.getPos(pcFormId);
+    var isFarm = FarmZones.some(function (zone) {
+      return utility_1.inPoly(currentPos.x, currentPos.y, zone.xp, zone.yp);
+    });
+    var currentStateInFarm = (_a = mp.get(pcFormId, 'inFarm')) !== null && _a !== void 0 ? _a : false;
+    if (isFarm === currentStateInFarm) return;
+    mp.set(pcFormId, 'inFarm', isFarm);
+
+    if (isFarm) {
+      properties_1.consoleOutput.printNote(pcFormId, 'Вы вошли в зону посадки');
+    } else {
+      properties_1.consoleOutput.printNote(pcFormId, 'Вы покинули зону посадки');
+    }
+  });
 };
 
 exports.initFarmerSystem = initFarmerSystem;
-},{".":"systems/professionsSystem/index.ts","../../utility":"utility/index.ts","./data":"systems/professionsSystem/data/index.ts"}],"systems/professionsSystem/index.ts":[function(require,module,exports) {
+},{".":"systems/professionsSystem/index.ts","../../properties":"properties/index.ts","../../properties/professions":"properties/professions/index.ts","../../utility":"utility/index.ts","../inventorySystem":"systems/inventorySystem.ts","./data":"systems/professionsSystem/data/index.ts"}],"systems/professionsSystem/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -2148,7 +2260,43 @@ __exportStar(require("./woodsmanSystem"), exports);
 __exportStar(require("./farmSystem"), exports);
 
 __exportStar(require("./farmerSystem"), exports);
-},{"./professionSystem":"systems/professionsSystem/professionSystem.ts","./minesSystem":"systems/professionsSystem/minesSystem.ts","./woodsmanSystem":"systems/professionsSystem/woodsmanSystem.ts","./farmSystem":"systems/professionsSystem/farmSystem.ts","./farmerSystem":"systems/professionsSystem/farmerSystem.ts"}],"systems/index.ts":[function(require,module,exports) {
+},{"./professionSystem":"systems/professionsSystem/professionSystem.ts","./minesSystem":"systems/professionsSystem/minesSystem.ts","./woodsmanSystem":"systems/professionsSystem/woodsmanSystem.ts","./farmSystem":"systems/professionsSystem/farmSystem.ts","./farmerSystem":"systems/professionsSystem/farmerSystem.ts"}],"systems/blockSystem.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.blockSystem = void 0;
+
+var utility_1 = require("../utility");
+
+var properties_1 = require("../properties");
+
+exports.blockSystem = {
+  block: function (pcFormId, formIds) {
+    properties_1.consoleOutput.evalClient(pcFormId, utility_1.genClientFunction(function () {
+      formIds.forEach(function (x) {
+        var form = ctx.sp.Game.getForm(x);
+        var obj = ctx.sp.ObjectReference.from(form);
+        obj.blockActivation(true);
+      });
+    }, 'block objects', {
+      formIds: formIds
+    }));
+  },
+  unblock: function (pcFormId, formIds) {
+    properties_1.consoleOutput.evalClient(pcFormId, utility_1.genClientFunction(function () {
+      formIds.forEach(function (x) {
+        var form = ctx.sp.Game.getForm(x);
+        var obj = ctx.sp.ObjectReference.from(form);
+        obj.blockActivation(false);
+      });
+    }, 'unblock objects', {
+      formIds: formIds
+    }));
+  }
+};
+},{"../utility":"utility/index.ts","../properties":"properties/index.ts"}],"systems/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -2179,7 +2327,9 @@ __exportStar(require("./inventorySystem"), exports);
 __exportStar(require("./spawnSystem"), exports);
 
 __exportStar(require("./professionsSystem"), exports);
-},{"./developerCommands":"systems/developerCommands.ts","./inventorySystem":"systems/inventorySystem.ts","./spawnSystem":"systems/spawnSystem.ts","./professionsSystem":"systems/professionsSystem/index.ts"}],"properties/spawnPoint.ts":[function(require,module,exports) {
+
+__exportStar(require("./blockSystem"), exports);
+},{"./developerCommands":"systems/developerCommands.ts","./inventorySystem":"systems/inventorySystem.ts","./spawnSystem":"systems/spawnSystem.ts","./professionsSystem":"systems/professionsSystem/index.ts","./blockSystem":"systems/blockSystem.ts"}],"properties/spawnPoint.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2336,7 +2486,8 @@ function setActiveProfession() {
       var player_1 = ctx.sp.Game.getPlayer();
 
       if (ctx.value.oldEquipment && !ctx.value.isActive) {
-        ctx.value.oldEquipment.forEach(function (itemId) {
+        var oldEq = ctx.value.oldEquipment.inv.entries;
+        oldEq.forEach(function (itemId) {
           var currentItem = ctx.sp.Game.getForm(itemId.baseId);
 
           if (!player_1.isEquipped(currentItem)) {
@@ -2878,16 +3029,26 @@ var initHitEvent = function () {
       if (!ctx.sp.Actor.from(e.target)) return;
       if (e.source && ctx.sp.Spell.from(e.source)) return;
       var target = ctx.getFormIdInServerFormat(e.target.getFormID());
+      var targetBase = e.target.getBaseObject();
       var agressor = ctx.getFormIdInServerFormat(e.agressor.getFormID());
-      ctx.sendEvent({
+      var keywords = [];
+
+      for (var i = 0; i < targetBase.getNumKeywords(); i++) {
+        keywords.push(targetBase.getNthKeyword(i).getFormID());
+      }
+
+      var result = {
         isPowerAttack: e.isPowerAttack,
         isSneakAttack: e.isSneakAttack,
         isBashAttack: e.isBashAttack,
         isHitBlocked: e.isHitBlocked,
         target: target,
+        targetBaseId: targetBase.getFormID(),
+        targetKeywords: keywords,
         agressor: agressor,
         source: e.source ? e.source.getFormID() : 0
-      });
+      };
+      ctx.sendEvent(result);
     });
   }, '_onHit'));
   utility_1.utils.hook('_onHit', function (pcFormId, eventData) {
@@ -2905,7 +3066,7 @@ var initHitEvent = function () {
     if (!constants_1.PRODUCTION) {
       damageMod = 0;
 
-      if (eventData.agressor === pcFormId) {
+      if (eventData.agressor === pcFormId && eventData.agressor !== eventData.agressor) {
         damageMod = -250;
       }
     }
@@ -2951,17 +3112,35 @@ var utility_1 = require("../utility");
 
 var initHitStatic = function () {
   mp.makeEventSource('_onHitStatic', utility_1.genClientFunction(function () {
-    ctx.sp.on('hit', function (e) {
+    ctx.sp.on('hit', function (event) {
+      var e = event;
       if (ctx.sp.Actor.from(e.target)) return;
-      var target = ctx.getFormIdInServerFormat(e.target.getFormId());
-      var agressor = ctx.getFormIdInServerFormat(e.agressor.getFormId());
-      ctx.sendEvent({
+      var target = ctx.getFormIdInServerFormat(e.target.getFormID());
+      var targetBase = e.target.getBaseObject();
+      var agressor = ctx.getFormIdInServerFormat(e.agressor.getFormID());
+      var keywords = [];
+
+      for (var i = 0; i < targetBase.getNumKeywords(); i++) {
+        keywords.push(targetBase.getNthKeyword(i).getFormID());
+      }
+
+      var result = {
+        isPowerAttack: e.isPowerAttack,
+        isSneakAttack: e.isSneakAttack,
+        isBashAttack: e.isBashAttack,
+        isHitBlocked: e.isHitBlocked,
         target: target,
-        agressor: agressor
-      });
+        targetBaseId: targetBase.getFormID(),
+        targetKeywords: keywords,
+        agressor: agressor,
+        source: e.source ? e.source.getFormID() : 0
+      };
+      ctx.sendEvent(result);
     });
   }, '_onHitStatic', {}));
-  utility_1.utils.hook('_onHitStatic', function (pcFormId, eventData) {});
+  utility_1.utils.hook('_onHitStatic', function (pcFormId, eventData) {
+    utility_1.utils.log('[HIT STATIC]', eventData);
+  });
 };
 
 exports.initHitStatic = initHitStatic;
@@ -3104,7 +3283,6 @@ var initInputF5Event = function () {
     switch (true) {
       case event.name === 'F4':
         utility_1.utils.log('[INPUT] press F4');
-        systems_1.inventorySystem.addItem(pcFormId, 243042, 1);
         break;
 
       case event.name === 'F5':
@@ -3141,20 +3319,26 @@ var utility_1 = require("../utility");
 var initActivateEvent = function () {
   mp.makeEventSource('_onActivate', utility_1.getFunctionText(function () {
     ctx.sp.on('activate', function (event) {
-      try {
-        var e = event;
-        if (e.caster.getFormID() !== 0x14) return;
-        var result = {
-          baseId: e.target.getFormID(),
-          name: e.target.getBaseObject().getName(),
-          caster: e.caster,
-          target: e.target,
-          isCrimeToActivate: e.isCrimeToActivate
-        };
-        ctx.sendEvent(result);
-      } catch (e) {
-        ctx.sp.printConsole('Catch _onActivate', e);
+      var e = event;
+      if (e.caster.getFormID() !== 0x14) return;
+      var target = ctx.getFormIdInServerFormat(e.target.getFormID());
+      var targetBase = e.target.getBaseObject();
+      var caster = ctx.getFormIdInServerFormat(e.caster.getFormID());
+      var keywords = [];
+
+      for (var i = 0; i < targetBase.getNumKeywords(); i++) {
+        keywords.push(targetBase.getNthKeyword(i).getFormID());
       }
+
+      var result = {
+        caster: caster,
+        target: target,
+        targetBaseId: targetBase.getFormID(),
+        targetBaseName: targetBase.getName(),
+        targetKeywords: keywords,
+        isCrimeToActivate: e.isCrimeToActivate
+      };
+      ctx.sendEvent(result);
     });
   }, '_onActivate'));
 };
@@ -3199,6 +3383,224 @@ var initActivateMessageEvent = function () {
 };
 
 exports.initActivateMessageEvent = initActivateMessageEvent;
+},{"../utility":"utility/index.ts"}],"events/onSlowerUpdate.ts":[function(require,module,exports) {
+"use strict";
+
+var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+var __generator = this && this.__generator || function (thisArg, body) {
+  var _ = {
+    label: 0,
+    sent: function () {
+      if (t[0] & 1) throw t[1];
+      return t[1];
+    },
+    trys: [],
+    ops: []
+  },
+      f,
+      y,
+      t,
+      g;
+  return g = {
+    next: verb(0),
+    "throw": verb(1),
+    "return": verb(2)
+  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+    return this;
+  }), g;
+
+  function verb(n) {
+    return function (v) {
+      return step([n, v]);
+    };
+  }
+
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
+
+    while (_) try {
+      if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+      if (y = 0, t) op = [op[0] & 2, t.value];
+
+      switch (op[0]) {
+        case 0:
+        case 1:
+          t = op;
+          break;
+
+        case 4:
+          _.label++;
+          return {
+            value: op[1],
+            done: false
+          };
+
+        case 5:
+          _.label++;
+          y = op[1];
+          op = [0];
+          continue;
+
+        case 7:
+          op = _.ops.pop();
+
+          _.trys.pop();
+
+          continue;
+
+        default:
+          if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+            _ = 0;
+            continue;
+          }
+
+          if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+            _.label = op[1];
+            break;
+          }
+
+          if (op[0] === 6 && _.label < t[1]) {
+            _.label = t[1];
+            t = op;
+            break;
+          }
+
+          if (t && _.label < t[2]) {
+            _.label = t[2];
+
+            _.ops.push(op);
+
+            break;
+          }
+
+          if (t[2]) _.ops.pop();
+
+          _.trys.pop();
+
+          continue;
+      }
+
+      op = body.call(thisArg, _);
+    } catch (e) {
+      op = [6, e];
+      y = 0;
+    } finally {
+      f = t = 0;
+    }
+
+    if (op[0] & 5) throw op[1];
+    return {
+      value: op[0] ? op[1] : void 0,
+      done: true
+    };
+  }
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initSlowerUpdate = void 0;
+
+var utility_1 = require("../utility");
+
+var initSlowerUpdate = function () {
+  mp.makeEventSource('_onUpdate1sec', utility_1.getFunctionText(function () {
+    ctx.sp.on('update', function () {
+      return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+          switch (_a.label) {
+            case 0:
+              if (ctx.state.isWaiting) return [2];
+              ctx.state.isWaiting = true;
+              return [4, ctx.sp.Utility.wait(1)];
+
+            case 1:
+              _a.sent();
+
+              ctx.state.isWaiting = false;
+              ctx.sendEvent();
+              return [2];
+          }
+        });
+      });
+    });
+  }));
+  mp.makeEventSource('_onUpdate2sec', utility_1.getFunctionText(function () {
+    ctx.sp.on('update', function () {
+      return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+          switch (_a.label) {
+            case 0:
+              if (ctx.state.isWaiting) return [2];
+              ctx.state.isWaiting = true;
+              return [4, ctx.sp.Utility.wait(2)];
+
+            case 1:
+              _a.sent();
+
+              ctx.state.isWaiting = false;
+              ctx.sendEvent();
+              return [2];
+          }
+        });
+      });
+    });
+  }));
+  mp.makeEventSource('_onUpdate5sec', utility_1.getFunctionText(function () {
+    ctx.sp.on('update', function () {
+      return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+          switch (_a.label) {
+            case 0:
+              if (ctx.state.isWaiting) return [2];
+              ctx.state.isWaiting = true;
+              return [4, ctx.sp.Utility.wait(5)];
+
+            case 1:
+              _a.sent();
+
+              ctx.state.isWaiting = false;
+              ctx.sendEvent();
+              return [2];
+          }
+        });
+      });
+    });
+  }));
+};
+
+exports.initSlowerUpdate = initSlowerUpdate;
 },{"../utility":"utility/index.ts"}],"events/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -3248,7 +3650,9 @@ __exportStar(require("./onInput"), exports);
 __exportStar(require("./onActivate"), exports);
 
 __exportStar(require("./onActivateMessage"), exports);
-},{"./_":"events/_.ts","./onActorValueFlushRequired":"events/onActorValueFlushRequired.ts","./onAnimationEvent":"events/onAnimationEvent.ts","./onBash":"events/onBash.ts","./onConsoleCommand":"events/onConsoleCommand.ts","./onCurrentCellChange":"events/onCurrentCellChange.ts","./onHit":"events/onHit.ts","./onHitStatic":"events/onHitStatic.ts","./onPowerAttack":"events/onPowerAttack.ts","./onSprintStateChange":"events/onSprintStateChange.ts","./onInput":"events/onInput.ts","./onActivate":"events/onActivate.ts","./onActivateMessage":"events/onActivateMessage.ts"}],"test/msgTest.ts":[function(require,module,exports) {
+
+__exportStar(require("./onSlowerUpdate"), exports);
+},{"./_":"events/_.ts","./onActorValueFlushRequired":"events/onActorValueFlushRequired.ts","./onAnimationEvent":"events/onAnimationEvent.ts","./onBash":"events/onBash.ts","./onConsoleCommand":"events/onConsoleCommand.ts","./onCurrentCellChange":"events/onCurrentCellChange.ts","./onHit":"events/onHit.ts","./onHitStatic":"events/onHitStatic.ts","./onPowerAttack":"events/onPowerAttack.ts","./onSprintStateChange":"events/onSprintStateChange.ts","./onInput":"events/onInput.ts","./onActivate":"events/onActivate.ts","./onActivateMessage":"events/onActivateMessage.ts","./onSlowerUpdate":"events/onSlowerUpdate.ts"}],"test/msgTest.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3269,49 +3673,7 @@ var initTestMsg = function () {
 };
 
 exports.initTestMsg = initTestMsg;
-},{"../utility":"utility/index.ts"}],"test/conainerChanged.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.initTestContainerChangeEvent = void 0;
-
-var utility_1 = require("../utility");
-
-var systems_1 = require("../systems");
-
-var initTestContainerChangeEvent = function () {
-  mp.makeEventSource('_onContainerChange', utility_1.getFunctionText(function () {
-    ctx.sp.on('containerChanged', function (e) {
-      var _a, _b;
-
-      var event = e;
-      var oldId = (_a = event.oldContainer) === null || _a === void 0 ? void 0 : _a.getFormID();
-      var newId = (_b = event.newContainer) === null || _b === void 0 ? void 0 : _b.getFormID();
-      if (oldId !== 0x14 && newId !== 0x14) return;
-      var oldContainer = oldId ? ctx.getFormIdInServerFormat(oldId) : null;
-      var newContainer = newId ? ctx.getFormIdInServerFormat(newId) : null;
-      ctx.sendEvent({
-        oldContainer: oldContainer,
-        newContainer: newContainer,
-        baseId: event.baseObj.getFormID(),
-        count: event.numItems,
-        other: event.baseObj.getName()
-      });
-    });
-  }, '_onContainerChange'));
-  utility_1.utils.hook('_onContainerChange', function (pcFormId, event) {
-    utility_1.utils.log('[Container Change]', event);
-
-    if (event.oldContainer === 0x14) {
-      systems_1.inventorySystem.deleteItem(pcFormId, event.baseId, event.count, true);
-    }
-  });
-};
-
-exports.initTestContainerChangeEvent = initTestContainerChangeEvent;
-},{"../utility":"utility/index.ts","../systems":"systems/index.ts"}],"test/blockContainer.ts":[function(require,module,exports) {
+},{"../utility":"utility/index.ts"}],"test/blockContainer.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3342,7 +3704,83 @@ var initTestBlockContainer = function () {
 };
 
 exports.initTestBlockContainer = initTestBlockContainer;
-},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"index.ts":[function(require,module,exports) {
+},{"../properties":"properties/index.ts","../utility":"utility/index.ts"}],"properties/clientMessage.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initSendMessage = void 0;
+
+var utility_1 = require("../utility");
+
+function sendMessage() {
+  var _a, _b;
+
+  try {
+    if (ctx.value !== ctx.state.message) {
+      ctx.state.message = ctx.value;
+      ctx.sp.printConsole('sendMessage', ctx.value);
+      ctx.sp.printConsole('sendMessage', ctx.state.message);
+
+      if (ctx.value) {
+        var myMessage = ctx.value;
+
+        if (myMessage) {
+          if (myMessage.type === 'add') {
+            var message_1 = 'Добавлен новый предмет.';
+
+            if (myMessage.baseId) {
+              var itemName = ctx.sp.Game.getForm(myMessage.baseId).getName();
+              message_1 = "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D \u043D\u043E\u0432\u044B\u0439 \u043F\u0440\u0435\u0434\u043C\u0435\u0442: " + itemName + ".";
+
+              if (myMessage.count && myMessage.count > 0) {
+                message_1 = "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D \u043D\u043E\u0432\u044B\u0439 \u043F\u0440\u0435\u0434\u043C\u0435\u0442: " + itemName + " +" + myMessage.count + ".";
+              }
+            }
+
+            ctx.sp.Debug.notification(message_1);
+          }
+
+          if (myMessage.type === 'delete') {
+            var message_2 = 'Предмет удален.';
+
+            if (myMessage.baseId) {
+              var itemName = ctx.sp.Game.getForm(myMessage.baseId).getName();
+              message_2 = "\u041F\u0440\u0435\u0434\u043C\u0435\u0442 \u0443\u0434\u0430\u043B\u0435\u043D: " + itemName + ".";
+
+              if (myMessage.count && myMessage.count > 0) {
+                message_2 = "\u041F\u0440\u0435\u0434\u043C\u0435\u0442 \u0443\u0434\u0430\u043B\u0435\u043D: " + itemName + " -" + myMessage.count + ".";
+              }
+            }
+
+            ctx.sp.Debug.notification((_a = myMessage.message) !== null && _a !== void 0 ? _a : 'OK!');
+          }
+
+          if (myMessage.type === 'message') {
+            ctx.sp.Debug.notification((_b = myMessage.message) !== null && _b !== void 0 ? _b : 'OK!');
+          }
+        } else {
+          ctx.sp.Debug.notification(ctx.value);
+        }
+      }
+    }
+  } catch (e) {
+    ctx.sp.printConsole(e);
+  }
+}
+
+var initSendMessage = function () {
+  mp.makeProperty('message', {
+    isVisibleByOwner: true,
+    isVisibleByNeighbors: false,
+    updateOwner: utility_1.getFunctionText(sendMessage, 'sendMessage'),
+    updateNeighbor: ''
+  });
+};
+
+exports.initSendMessage = initSendMessage;
+},{"../utility":"utility/index.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3359,9 +3797,9 @@ var systems_1 = require("./systems");
 
 var msgTest_1 = require("./test/msgTest");
 
-var conainerChanged_1 = require("./test/conainerChanged");
-
 var blockContainer_1 = require("./test/blockContainer");
+
+var clientMessage_1 = require("./properties/clientMessage");
 
 utility_1.initUtils();
 events_1.initHitEvent();
@@ -3382,10 +3820,11 @@ events_1.initHitStatic();
 events_1.initInputF5Event();
 events_1.initActivateEvent();
 properties_1.initAnimation();
+clientMessage_1.initSendMessage();
+events_1.initSlowerUpdate();
 events_1.initActivateMessageEvent();
 blockContainer_1.initTestBlockContainer();
 msgTest_1.initTestMsg();
-conainerChanged_1.initTestContainerChangeEvent();
 systems_1.initFarmSystem();
 properties_1.initActiveProfession();
 systems_1.initMinesSystem();
@@ -3426,4 +3865,4 @@ utility_1.utils.hook('onUiEvent', function (formId, msg) {
       break;
   }
 });
-},{"./utility":"utility/index.ts","./properties":"properties/index.ts","./events":"events/index.ts","./systems":"systems/index.ts","./test/msgTest":"test/msgTest.ts","./test/conainerChanged":"test/conainerChanged.ts","./test/blockContainer":"test/blockContainer.ts"}]},{},["index.ts"], null)
+},{"./utility":"utility/index.ts","./properties":"properties/index.ts","./events":"events/index.ts","./systems":"systems/index.ts","./test/msgTest":"test/msgTest.ts","./test/blockContainer":"test/blockContainer.ts","./properties/clientMessage":"properties/clientMessage.ts"}]},{},["index.ts"], null)

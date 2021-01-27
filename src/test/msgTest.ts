@@ -1,6 +1,4 @@
 import { CTX } from '../platform';
-import { consoleOutput } from '../properties';
-import { messageSystem } from '../systems';
 import { InputEvent } from '../types';
 import { getFunctionText, utils } from '../utility';
 
