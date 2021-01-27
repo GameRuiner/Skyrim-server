@@ -50,21 +50,11 @@ export const initFarmSystem = () => {
 				Object.keys(resources).every((key: string) => {
 					const resourceType: ResourcesTypesProp = key as ResourcesTypesProp;
 					const data = resources[resourceType].find((item) => item.sourceName === event.name);
-					if (data) {
+					const currentProf: ProfessionProp = professionSystem.getFromServer(pcFormId);
+					if (data && currentProf) {
 						switch (data.type) {
 							case 'minerals':
-								const currentProf: ProfessionProp = professionSystem.getFromServer(pcFormId);
 								const duration = 5;
-								// consoleOutput.evalClient(
-								// 	pcFormId,
-								// 	getFunctionText(() => {
-								// 		const ac = ctx.sp.Game.getPlayer();
-								// 		// ac.drawWeapon();
-								// 		// if (ac.isWeaponDrawn()) {
-								// 		// 	ac.sheatheWeapon();
-								// 		// }
-								// 	})
-								// );
 								currentProf.name === 'miner'
 									? farmItem(pcFormId, duration, data.baseId, allAnimation.collector.miner)
 									: mp.set(pcFormId, 'message', 'Вы не шахтер!');
@@ -73,7 +63,8 @@ export const initFarmSystem = () => {
 							default:
 								break;
 						}
-						return;
+					} else {
+						mp.set(pcFormId, 'message', 'У вас нет профессии');
 					}
 				});
 			}
