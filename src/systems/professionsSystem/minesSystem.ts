@@ -14,19 +14,19 @@ const currentProfessionName: ProfessionNamesProp = 'miner';
  * Return true if Actor came to mine location
  * @param name Desc of cell
  */
-const isMine = (cellDesc: string): boolean => {
-	return locations.mines.find((el) => el.worldId === cellDesc) ? true : false;
+const isMine = (cellName: string): boolean => {
+	utils.log('isMine ', cellName);
+	return locations.mines.find((el) => el.worldId === cellName) ? true : false;
 };
 
 export const initMinesSystem = () => {
-	utils.hook('_onCurrentCellChange', (pcFormId: number, event: CellChangeEvent) => {
+	utils.hook('_onCurrentCellChange', (pcFormId: number) => {
 		try {
 			if (isMine(getWorldOrCellDesc(pcFormId))) {
-				utils.log('[MINES]', event);
 				utils.log('[MINES] WorldOrCellDesc', getWorldOrCellDesc(pcFormId));
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
 
-				if (myProfession === null) {
+				if (!myProfession) {
 					professionSystem.set(pcFormId, currentProfessionName);
 				} else {
 					if (!myProfession.isActive) {
@@ -36,7 +36,7 @@ export const initMinesSystem = () => {
 			} else {
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
 				if (myProfession?.name === currentProfessionName) {
-					if (myProfession.isActive) {
+					if (myProfession?.isActive) {
 						professionSystem.delete(pcFormId, currentProfessionName);
 						if (IS_SELL) {
 							setTimeout(() => {

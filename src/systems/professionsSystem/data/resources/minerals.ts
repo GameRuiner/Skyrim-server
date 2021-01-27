@@ -13,7 +13,6 @@ const minerals: ResourceProp[] = [
 		baseId: 0x5acde,
 		name: 'Золотая руда',
 		sourceName: 'Золотая жила',
-
 		price: 10,
 	},
 	{
