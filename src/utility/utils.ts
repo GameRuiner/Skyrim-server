@@ -73,7 +73,6 @@ export const getFunctionText = (func: Function, functionName?: string): string =
 		ctx.sp.printConsole('${m}:${s}:${ms} [ERROR getFunctionText] (${functionName})', err);
 	}
 	`;
-	// ctx.sp.printConsole('${m}:${s}:${ms} [ERROR getFunctionText][ACTOR VALUES] ac.id', ac.getFormID());
 
 	return funcString;
 };
@@ -82,9 +81,6 @@ export const getFunctionText = (func: Function, functionName?: string): string =
  * generate function for client
  * @param func generated function
  * @param args params
- *
- * TODO: Error when use array in param. Example - const pos = 21005.427734375,-7497.9853515625,-3611.7646484375;
- * TODO: ts change variables name, Example - pos change to pos_1. Maybe use regex to find params with name ***_
  */
 export const genClientFunction = (func: Function, functionName?: string, args?: any, log: boolean = false) => {
 	let result = getFunctionText(func, functionName);
@@ -102,6 +98,11 @@ export const genClientFunction = (func: Function, functionName?: string, args?: 
 				break;
 			case 'boolean':
 				result = `const ${name} = ${args[name]};\n` + result;
+				break;
+			case 'object':
+				if (Array.isArray(args[name])) {
+					result = `const ${name} = [${args[name]}];\n` + result;
+				}
 				break;
 		}
 	}
@@ -122,4 +123,33 @@ export const initUtils = () => {
 	for (const eventName of global.knownEvents) {
 		delete mp[eventName];
 	}
+};
+
+/**
+ * Check if point in polygon
+ * @param x x coordinate of point
+ * @param y y coordinate of point
+ * @param xp all x coordinate of polygon
+ * @param yp all y coordinate of polygon
+ */
+let cacheInPoly: { [key: string]: boolean } = {};
+export const inPoly = (x: number, y: number, xp: number[], yp: number[]) => {
+	const index = x.toString() + y.toString() + xp.join('') + yp.join('');
+	if (cacheInPoly[index]) {
+		return cacheInPoly[index];
+	}
+	let npol = xp.length;
+	let j = npol - 1;
+	let c = false;
+	for (let i = 0; i < npol; i++) {
+		if (
+			((yp[i] <= y && y < yp[j]) || (yp[j] <= y && y < yp[i])) &&
+			x > ((xp[j] - xp[i]) * (y - yp[i])) / (yp[j] - yp[i]) + xp[i]
+		) {
+			c = !c;
+		}
+		j = i;
+	}
+	cacheInPoly[index] = c;
+	return c;
 };

@@ -46,10 +46,10 @@ const farmItem = (
 export const initFarmSystem = () => {
 	utils.hook('_onActivate', (pcFormId: number, event: ActivateEventReturn) => {
 		try {
-			if (event?.baseId && event?.name) {
+			if (event?.target && event?.targetBaseName) {
 				Object.keys(resources).every((key: string) => {
 					const resourceType: ResourcesTypesProp = key as ResourcesTypesProp;
-					const data = resources[resourceType].find((item) => item.sourceName === event.name);
+					const data = resources[resourceType].find((item) => item.sourceName === event.targetBaseName);
 					const currentProf: ProfessionProp = professionSystem.getFromServer(pcFormId);
 					if (data && currentProf) {
 						switch (data.type) {

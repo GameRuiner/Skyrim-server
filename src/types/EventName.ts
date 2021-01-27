@@ -28,6 +28,9 @@ type CustomEventName =
 	| '_onMessage'
 	| '_onActivateMessage'
 	| '_onContainerChange'
-	| '_onCellFullyLoaded';
+	| '_onCellFullyLoaded'
+	| '_onUpdate1sec'
+	| '_onUpdate2sec'
+	| '_onUpdate5sec';
 
 export type EventName = SystemEventName | CustomEventName;

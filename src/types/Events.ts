@@ -18,10 +18,11 @@ export interface ActivateEvent {
 	isCrimeToActivate: boolean;
 }
 export interface ActivateEventReturn {
-	baseId: number;
-	name: string;
-	target: ObjectReference;
-	caster: ObjectReference;
+	target: number;
+	targetBaseId?: number;
+	targetKeywords?: number[];
+	targetBaseName?: string;
+	caster: number;
 	isCrimeToActivate: boolean;
 }
 
@@ -41,6 +42,18 @@ export interface ContainerChangedEventResult {
 	baseId: number;
 	count: number;
 	other: any;
+}
+
+export interface HitEventReturn {
+	isPowerAttack: boolean;
+	isSneakAttack: boolean;
+	isBashAttack: boolean;
+	isHitBlocked: boolean;
+	target: number;
+	targetBaseId?: number;
+	targetKeywords?: number[];
+	agressor: number;
+	source: number;
 }
 
 export type message = {

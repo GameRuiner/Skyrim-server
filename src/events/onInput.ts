@@ -38,7 +38,6 @@ export const initInputF5Event = () => {
 		switch (true) {
 			case event.name === 'F4':
 				utils.log('[INPUT] press F4');
-				inventorySystem.addItem(pcFormId, 243042, 1);
 				break;
 			case event.name === 'F5':
 				reinit(pcFormId);
