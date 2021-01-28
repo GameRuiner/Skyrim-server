@@ -70,8 +70,10 @@ export const initFarmerSystem = () => {
 
 		mp.set(pcFormId, 'inFarm', isFarm);
 		if (isFarm) {
+			utils.log('[FARMER] Вы вошли в зону посадки');
 			consoleOutput.printNote(pcFormId, 'Вы вошли в зону посадки');
 		} else {
+			utils.log('[FARMER] Вы покинули зону посадки');
 			consoleOutput.printNote(pcFormId, 'Вы покинули зону посадки');
 		}
 	});
