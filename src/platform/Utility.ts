@@ -1,10 +1,10 @@
+import { Alias } from './Classes';
 import { Form } from './Form';
-import * as skyrimPlatform from './skyrimPlatform';
 
 export interface Utility {
 	from: (form: Form) => Utility;
 	captureFrameRate: (numFrames: number) => string;
-	createAliasArray: (size: number, fill: skyrimPlatform.Alias) => object[];
+	createAliasArray: (size: number, fill: Alias) => object[];
 	createBoolArray: (size: number, fill: boolean) => boolean[];
 	createFloatArray: (size: number, fill: number) => number[];
 	createFormArray: (size: number, fill: Form) => object[];
@@ -29,7 +29,7 @@ export interface Utility {
 	overBudget: (aiBudgetNumber: number) => boolean;
 	randomFloat: (afMin: number, afMax: number) => number;
 	randomInt: (aiMin: number, aiMax: number) => number;
-	resizeAliasArray: (source: object[], size: number, fill: skyrimPlatform.Alias) => object[];
+	resizeAliasArray: (source: object[], size: number, fill: Alias) => object[];
 	resizeBoolArray: (source: boolean[], size: number, fill: boolean) => boolean[];
 	resizeFloatArray: (source: number[], size: number, fill: number) => number[];
 	resizeFormArray: (source: object[], size: number, fill: Form) => object[];

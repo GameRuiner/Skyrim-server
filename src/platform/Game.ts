@@ -1,6 +1,5 @@
-import * as skyrimPlatform from './skyrimPlatform';
-
 import { Actor } from './Actor';
+import { FormList, WordOfPower, ImageSpaceModifier } from './Classes';
 import { Form } from './Form';
 import { ObjectReference } from './ObjectReference';
 
@@ -51,7 +50,7 @@ export interface Game {
 	fastTravel: (akDestination: ObjectReference) => void;
 	findClosestActor: (afX: number, afY: number, afZ: number, afRadius: number) => Actor;
 	findClosestReferenceOfAnyTypeInList: (
-		arBaseObjects: skyrimPlatform.FormList,
+		arBaseObjects: FormList,
 		afX: number,
 		afY: number,
 		afZ: number,
@@ -66,7 +65,7 @@ export interface Game {
 	) => ObjectReference;
 	findRandomActor: (afX: number, afY: number, afZ: number, afRadius: number) => Actor;
 	findRandomReferenceOfAnyTypeInList: (
-		arBaseObjects: skyrimPlatform.FormList,
+		arBaseObjects: FormList,
 		afX: number,
 		afY: number,
 		afZ: number,
@@ -139,7 +138,7 @@ export interface Game {
 	isPlayerSungazing: () => boolean;
 	isPluginInstalled: (name: string) => boolean;
 	isSneakingControlsEnabled: () => boolean;
-	isWordUnlocked: (akWord: skyrimPlatform.WordOfPower) => boolean;
+	isWordUnlocked: (akWord: WordOfPower) => boolean;
 	loadGame: (name: string) => void;
 	modPerkPoints: (perkPoints: number) => void;
 	playBink: (
@@ -184,7 +183,7 @@ export interface Game {
 	setPlayerReportCrime: (abReportCrime: boolean) => void;
 	setPlayersLastRiddenHorse: (horse: Actor) => void;
 	setSittingRotation: (afValue: number) => void;
-	setSunGazeImageSpaceModifier: (apImod: skyrimPlatform.ImageSpaceModifier) => void;
+	setSunGazeImageSpaceModifier: (apImod: ImageSpaceModifier) => void;
 	setTintMaskColor: (color: number, type: number, index: number) => void;
 	setTintMaskTexturePath: (path: string, type: number, index: number) => void;
 	showFirstPersonGeometry: (abShow: boolean) => void;
@@ -193,10 +192,10 @@ export interface Game {
 	showTitleSequenceMenu: () => void;
 	showTrainingMenu: (aTrainer: Actor) => void;
 	startTitleSequence: (asSequenceName: string) => void;
-	teachWord: (akWord: skyrimPlatform.WordOfPower) => void;
+	teachWord: (akWord: WordOfPower) => void;
 	triggerScreenBlood: (aiValue: number) => void;
 	unbindObjectHotkey: (hotkey: number) => void;
-	unlockWord: (akWord: skyrimPlatform.WordOfPower) => void;
+	unlockWord: (akWord: WordOfPower) => void;
 	updateHairColor: () => void;
 	updateThirdPerson: () => void;
 	updateTintMaskColors: () => void;

@@ -1,5 +1,6 @@
+import { LocationRefType } from './Classes';
 import { Form } from './Form';
-import { Keyword, LocationRefType } from './skyrimPlatform';
+import { Keyword } from './Keyword';
 
 export interface Location extends Form {
 	from: (form: Form) => Location;

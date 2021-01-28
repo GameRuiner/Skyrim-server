@@ -1,5 +1,6 @@
 import { Form } from './Form';
 import { ObjectReference } from './ObjectReference';
+import { Quest } from './Quest';
 import * as skyrimPlatform from './skyrimPlatform';
 
 export interface Debug {
@@ -9,7 +10,7 @@ export interface Debug {
 	closeUserLog: (param1: string) => void;
 	dBSendPlayerPosition: () => void;
 	debugChannelNotify: (param1: string, param2: string) => void;
-	dumpAliasData: (param1: skyrimPlatform.Quest) => void;
+	dumpAliasData: (param1: Quest) => void;
 	getConfigName: () => Promise<string>;
 	getPlatformName: () => Promise<string>;
 	getVersionNumber: () => Promise<string>;

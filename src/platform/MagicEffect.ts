@@ -1,6 +1,6 @@
+import { Art, EffectShader, Explosion, ImageSpaceModifier, ImpactDataSet, Light, Perk } from './Classes';
 import { Form } from './Form';
 import { Projectile } from './Projectile';
-import { Art, EffectShader, Explosion, ImageSpaceModifier, ImpactDataSet, Light, Perk } from './skyrimPlatform';
 import { Spell } from './Spell';
 
 export interface MagicEffect extends Form {

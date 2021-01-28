@@ -1,6 +1,6 @@
+import { ActorBase, Faction } from './Classes';
 import { Form } from './Form';
 import { ObjectReference } from './ObjectReference';
-import { ActorBase, Faction } from './skyrimPlatform';
 
 export interface Cell extends Form {
 	from: (form: Form) => Cell;

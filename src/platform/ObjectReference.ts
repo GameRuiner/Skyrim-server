@@ -1,7 +1,25 @@
+import { Key } from 'readline';
 import { Actor } from './Actor';
+import { Cell } from './Cell';
+import {
+	ActorBase,
+	FormList,
+	Scene,
+	Enchantment,
+	Faction,
+	ReferenceAlias,
+	Potion,
+	VoiceType,
+	WorldSpace,
+	LocationRefType,
+	EncounterZone,
+	ImpactDataSet,
+	Topic,
+} from './Classes';
 import { Form } from './Form';
+import { Keyword } from './Keyword';
 import { Location } from './Location';
-import * as skyrimPlatform from './skyrimPlatform';
+import { MotionType } from './MotionType';
 
 export interface ObjectReference extends Form {
 	from: (form: Form) => ObjectReference;
@@ -33,8 +51,8 @@ export interface ObjectReference extends Form {
 	enableNoWait: (abFadeIn: boolean) => void;
 	forceAddRagdollToWorld: () => Promise<void>;
 	forceRemoveRagdollFromWorld: () => Promise<void>;
-	getActorOwner: () => skyrimPlatform.ActorBase;
-	getAllForms: (toFill: skyrimPlatform.FormList) => void;
+	getActorOwner: () => ActorBase;
+	getAllForms: (toFill: FormList) => void;
 	getAngleX: () => number;
 	getAngleY: () => number;
 	getAngleZ: () => number;
@@ -45,31 +63,31 @@ export interface ObjectReference extends Form {
 	getContainerForms: () => object[];
 	getCurrentDestructionStage: () => number;
 	getCurrentLocation: () => Location;
-	getCurrentScene: () => skyrimPlatform.Scene;
+	getCurrentScene: () => Scene;
 	getDisplayName: () => string;
 	getEditorLocation: () => Location;
 	getEnableParent: () => ObjectReference;
-	getEnchantment: () => skyrimPlatform.Enchantment;
-	getFactionOwner: () => skyrimPlatform.Faction;
+	getEnchantment: () => Enchantment;
+	getFactionOwner: () => Faction;
 	getHeadingAngle: (akOther: ObjectReference) => number;
 	getHeight: () => number;
 	getItemCharge: () => number;
 	getItemCount: (akItem: Form) => number;
 	getItemHealthPercent: () => number;
 	getItemMaxCharge: () => number;
-	getKey: () => skyrimPlatform.Key;
+	getKey: () => Key;
 	getLength: () => number;
 	getLinkedRef: (apKeyword: Keyword) => ObjectReference;
 	getLockLevel: () => number;
 	getMass: () => number;
 	getNthForm: (index: number) => Form;
 	getNthLinkedRef: (aiLinkedRef: number) => ObjectReference;
-	getNthReferenceAlias: (n: number) => skyrimPlatform.ReferenceAlias;
+	getNthReferenceAlias: (n: number) => ReferenceAlias;
 	getNumItems: () => number;
 	getNumReferenceAliases: () => number;
 	getOpenState: () => number;
-	getParentCell: () => skyrimPlatform.Cell;
-	getPoison: () => skyrimPlatform.Potion;
+	getParentCell: () => Cell;
+	getPoison: () => Potion;
 	getPositionX: () => number;
 	getPositionY: () => number;
 	getPositionZ: () => number;
@@ -78,12 +96,12 @@ export interface ObjectReference extends Form {
 	getTotalArmorWeight: () => number;
 	getTotalItemWeight: () => number;
 	getTriggerObjectCount: () => number;
-	getVoiceType: () => skyrimPlatform.VoiceType;
+	getVoiceType: () => VoiceType;
 	getWidth: () => number;
-	getWorldSpace: () => skyrimPlatform.WorldSpace;
+	getWorldSpace: () => WorldSpace;
 	hasEffectKeyword: (akKeyword: Keyword) => boolean;
 	hasNode: (asNodeName: string) => boolean;
-	hasRefType: (akRefType: skyrimPlatform.LocationRefType) => boolean;
+	hasRefType: (akRefType: LocationRefType) => boolean;
 	ignoreFriendlyHits: (abIgnore: boolean) => void;
 	interruptCast: () => void;
 	is3DLoaded: () => boolean;
@@ -112,11 +130,7 @@ export interface ObjectReference extends Form {
 	moveToInteractionLocation: (akTarget: ObjectReference) => Promise<void>;
 	moveToMyEditorLocation: () => Promise<void>;
 	moveToNode: (akTarget: ObjectReference, asNodeName: string) => Promise<void>;
-	placeActorAtMe: (
-		akActorToPlace: skyrimPlatform.ActorBase,
-		aiLevelMod: number,
-		akZone: skyrimPlatform.EncounterZone
-	) => Actor;
+	placeActorAtMe: (akActorToPlace: ActorBase, aiLevelMod: number, akZone: EncounterZone) => Actor;
 	placeAtMe: (
 		akFormToPlace: Form,
 		aiCount: number,
@@ -127,7 +141,7 @@ export interface ObjectReference extends Form {
 	playAnimationAndWait: (asAnimation: string, asEventName: string) => Promise<boolean>;
 	playGamebryoAnimation: (asAnimation: string, abStartOver: boolean, afEaseInTime: number) => boolean;
 	playImpactEffect: (
-		akImpactEffect: skyrimPlatform.ImpactDataSet,
+		akImpactEffect: ImpactDataSet,
 		asNodeName: string,
 		afPickDirX: number,
 		afPickDirY: number,
@@ -166,24 +180,24 @@ export interface ObjectReference extends Form {
 	removeItem: (akItemToRemove: Form, aiCount: number, abSilent: boolean, akOtherContainer: ObjectReference) => void;
 	reset: (akTarget: ObjectReference) => Promise<void>;
 	resetInventory: () => void;
-	say: (akTopicToSay: skyrimPlatform.Topic, akActorToSpeakAs: Actor, abSpeakInPlayersHead: boolean) => void;
+	say: (akTopicToSay: Topic, akActorToSpeakAs: Actor, abSpeakInPlayersHead: boolean) => void;
 	sendStealAlarm: (akThief: Actor) => void;
 	setActorCause: (akActor: Actor) => void;
-	setActorOwner: (akActorBase: skyrimPlatform.ActorBase) => void;
+	setActorOwner: (akActorBase: ActorBase) => void;
 	setAngle: (afXAngle: number, afYAngle: number, afZAngle: number) => Promise<void>;
 	setAnimationVariableBool: (arVariableName: string, abNewValue: boolean) => void;
 	setAnimationVariableFloat: (arVariableName: string, afNewValue: number) => void;
 	setAnimationVariableInt: (arVariableName: string, aiNewValue: number) => void;
 	setDestroyed: (abDestroyed: boolean) => void;
 	setDisplayName: (name: string, force: boolean) => boolean;
-	setEnchantment: (source: skyrimPlatform.Enchantment, maxCharge: number) => void;
-	setFactionOwner: (akFaction: skyrimPlatform.Faction) => void;
+	setEnchantment: (source: Enchantment, maxCharge: number) => void;
+	setFactionOwner: (akFaction: Faction) => void;
 	setHarvested: (harvested: boolean) => void;
 	setItemCharge: (charge: number) => void;
 	setItemHealthPercent: (health: number) => void;
 	setItemMaxCharge: (maxCharge: number) => void;
 	setLockLevel: (aiLockLevel: number) => void;
-	setMotionType: (aeMotionType: skyrimPlatform.MotionType, abAllowActivate: boolean) => Promise<void>;
+	setMotionType: (aeMotionType: MotionType, abAllowActivate: boolean) => Promise<void>;
 	setNoFavorAllowed: (abNoFavor: boolean) => void;
 	setOpen: (abOpen: boolean) => void;
 	setPosition: (afX: number, afY: number, afZ: number) => Promise<void>;

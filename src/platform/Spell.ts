@@ -1,32 +1,31 @@
+import { Actor } from './Actor';
+import { EquipSlot, Perk } from './Classes';
 import { Form } from './Form';
-import * as skyrimPlatform from './skyrimPlatform';
+import { MagicEffect } from './MagicEffect';
+import { ObjectReference } from './ObjectReference';
 
 export interface Spell {
 	from: (form: Form) => Spell;
-	cast: (akSource: skyrimPlatform.ObjectReference, akTarget: skyrimPlatform.ObjectReference) => Promise<void>;
+	cast: (akSource: ObjectReference, akTarget: ObjectReference) => Promise<void>;
 	getCastTime: () => number;
 	getCostliestEffectIndex: () => number;
 	getEffectAreas: () => number[];
 	getEffectDurations: () => number[];
 	getEffectMagnitudes: () => number[];
-	getEffectiveMagickaCost: (caster: skyrimPlatform.Actor) => number;
-	getEquipType: () => skyrimPlatform.EquipSlot;
+	getEffectiveMagickaCost: (caster: Actor) => number;
+	getEquipType: () => EquipSlot;
 	getMagicEffects: () => object[];
 	getMagickaCost: () => number;
 	getNthEffectArea: (index: number) => number;
 	getNthEffectDuration: (index: number) => number;
-	getNthEffectMagicEffect: (index: number) => skyrimPlatform.MagicEffect;
+	getNthEffectMagicEffect: (index: number) => MagicEffect;
 	getNthEffectMagnitude: (index: number) => number;
 	getNumEffects: () => number;
-	getPerk: () => skyrimPlatform.Perk;
+	getPerk: () => Perk;
 	isHostile: () => boolean;
 	preload: () => void;
-	remoteCast: (
-		akSource: skyrimPlatform.ObjectReference,
-		akBlameActor: skyrimPlatform.Actor,
-		akTarget: skyrimPlatform.ObjectReference
-	) => Promise<void>;
-	setEquipType: (type: skyrimPlatform.EquipSlot) => void;
+	remoteCast: (akSource: ObjectReference, akBlameActor: Actor, akTarget: ObjectReference) => Promise<void>;
+	setEquipType: (type: EquipSlot) => void;
 	setNthEffectArea: (index: number, value: number) => void;
 	setNthEffectDuration: (index: number, value: number) => void;
 	setNthEffectMagnitude: (index: number, value: number) => void;

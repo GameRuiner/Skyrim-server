@@ -15,7 +15,7 @@ import { Cell } from './Cell';
 import { MagicEffect } from './MagicEffect';
 import { Location } from './Location';
 import { Keyword } from './Keyword';
-import { Browser, ChangeFormNpc, InventoryChangesEntry, InventoryEntry } from './interfaces';
+import { Browser, ChangeFormNpc, InventoryChangesEntry, InventoryEntry } from './Interfaces';
 import { PacketType } from './Types';
 import {
 	ConsoleComand,
@@ -94,7 +94,7 @@ import {
 	WordOfPower,
 	WorldSpace,
 	Key,
-} from './classes';
+} from './Classes';
 import { LocationAlias } from './LocationAlias';
 
 export interface SkyrimPlatform {

@@ -1,7 +1,7 @@
-import * as skyrimPlatform from './skyrimPlatform';
 import { Actor } from './Actor';
 import { ObjectReference } from './ObjectReference';
 import { Keyword } from './Keyword';
+import { TextureSet } from './Classes';
 
 export interface Form {
 	from(form: Form): Form;
@@ -13,7 +13,7 @@ export interface Form {
 	getNumKeywords(): number;
 	getType(): number;
 	getWeight(): number;
-	getWorldModelNthTextureSet(n: number): skyrimPlatform.TextureSet;
+	getWorldModelNthTextureSet(n: number): TextureSet;
 	getWorldModelNumTextureSets(): number;
 	getWorldModelPath(): string;
 	hasKeyword(akKeyword: Keyword): boolean;
@@ -43,7 +43,7 @@ export interface Form {
 	setName(name: string): void;
 	setPlayerKnows(knows: boolean): void;
 	setWeight(weight: number): void;
-	setWorldModelNthTextureSet(nSet: skyrimPlatform.TextureSet, n: number): void;
+	setWorldModelNthTextureSet(nSet: TextureSet, n: number): void;
 	setWorldModelPath(path: string): void;
 	startObjectProfiling(): void;
 	stopObjectProfiling(): void;

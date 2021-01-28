@@ -1,18 +1,18 @@
-import * as skyrimPlatform from './skyrimPlatform';
 import { Form } from './Form';
+import { Alias, GlobalVariable } from './Classes';
 
 export interface Quest extends Form {
 	from: (form: Form) => Quest;
 	completeAllObjectives: () => void;
 	completeQuest: () => void;
 	failAllObjectives: () => void;
-	getAlias: (aiAliasID: number) => skyrimPlatform.Alias;
-	getAliasById: (aliasId: number) => skyrimPlatform.Alias;
-	getAliasByName: (name: string) => skyrimPlatform.Alias;
+	getAlias: (aiAliasID: number) => Alias;
+	getAliasById: (aliasId: number) => Alias;
+	getAliasByName: (name: string) => Alias;
 	getAliases: () => object[];
 	getCurrentStageID: () => number;
 	getID: () => string;
-	getNthAlias: (index: number) => skyrimPlatform.Alias;
+	getNthAlias: (index: number) => Alias;
 	getNumAliases: () => number;
 	getPriority: () => number;
 	isActive: () => boolean;
@@ -33,6 +33,6 @@ export interface Quest extends Form {
 	setObjectiveFailed: (aiObjective: number, abFailed: boolean) => void;
 	start: () => Promise<boolean>;
 	stop: () => void;
-	updateCurrentInstanceGlobal: (aUpdateGlobal: skyrimPlatform.GlobalVariable) => boolean;
+	updateCurrentInstanceGlobal: (aUpdateGlobal: GlobalVariable) => boolean;
 	getQuest: (editorId: string) => Quest;
 }

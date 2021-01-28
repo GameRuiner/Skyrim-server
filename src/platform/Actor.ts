@@ -1,18 +1,35 @@
-import * as skyrimPlatform from './skyrimPlatform';
 import { Form } from './Form';
 import { ObjectReference } from './ObjectReference';
 import { Spell } from './Spell';
+import {
+	Perk,
+	Shout,
+	HeadPart,
+	Faction,
+	Package,
+	Armor,
+	Weapon,
+	ActorBase,
+	Race,
+	AssociationType,
+	Idle,
+	TextureSet,
+	Outfit,
+	FormList,
+} from './Classes';
+import { Keyword } from './Keyword';
+import { MagicEffect } from './MagicEffect';
 
 export interface Actor extends ObjectReference {
 	from: (form: Form) => Actor;
-	addPerk: (akPerk: skyrimPlatform.Perk) => void;
-	addShout: (akShout: skyrimPlatform.Shout) => boolean;
+	addPerk: (akPerk: Perk) => void;
+	addShout: (akShout: Shout) => boolean;
 	addSpell: (akSpell: Spell, abVerbose: boolean) => boolean;
 	allowBleedoutDialogue: (abCanTalk: boolean) => void;
 	allowPCDialogue: (abTalk: boolean) => void;
 	attachAshPile: (akAshPileBase: Form) => void;
 	canFlyHere: () => boolean;
-	changeHeadPart: (hPart: skyrimPlatform.HeadPart) => void;
+	changeHeadPart: (hPart: HeadPart) => void;
 	clearArrested: () => void;
 	clearExpressionOverride: () => void;
 	clearExtraArrows: () => void;
@@ -30,7 +47,7 @@ export interface Actor extends ObjectReference {
 	equipItem: (akItem: Form, abPreventRemoval: boolean, abSilent: boolean) => void;
 	equipItemById: (item: Form, itemId: number, equipSlot: number, preventUnequip: boolean, equipSound: boolean) => void;
 	equipItemEx: (item: Form, equipSlot: number, preventUnequip: boolean, equipSound: boolean) => void;
-	equipShout: (akShout: skyrimPlatform.Shout) => void;
+	equipShout: (akShout: Shout) => void;
 	equipSpell: (akSpell: Spell, aiSource: number) => void;
 	evaluatePackage: () => void;
 	forceActorValue: (asValueName: string, afNewValue: number) => void;
@@ -50,18 +67,18 @@ export interface Actor extends ObjectReference {
 	getBribeAmount: () => number;
 	getCombatState: () => number;
 	getCombatTarget: () => Actor;
-	getCrimeFaction: () => skyrimPlatform.Faction;
-	getCurrentPackage: () => skyrimPlatform.Package;
+	getCrimeFaction: () => Faction;
+	getCurrentPackage: () => Package;
 	getDialogueTarget: () => Actor;
-	getEquippedArmorInSlot: (aiSlot: number) => skyrimPlatform.Armor;
+	getEquippedArmorInSlot: (aiSlot: number) => Armor;
 	getEquippedItemId: (Location: number) => number;
 	getEquippedItemType: (aiHand: number) => number;
 	getEquippedObject: (Location: number) => Form;
-	getEquippedShield: () => skyrimPlatform.Armor;
-	getEquippedShout: () => skyrimPlatform.Shout;
+	getEquippedShield: () => Armor;
+	getEquippedShout: () => Shout;
 	getEquippedSpell: (aiSource: number) => Spell;
-	getEquippedWeapon: (abLeftHand: boolean) => skyrimPlatform.Weapon;
-	getFactionRank: (akFaction: skyrimPlatform.Faction) => number;
+	getEquippedWeapon: (abLeftHand: boolean) => Weapon;
+	getFactionRank: (akFaction: Faction) => number;
 	getFactionReaction: (akOther: Actor) => number;
 	getFactions: (minRank: number, maxRank: number) => object[];
 	getFlyingState: () => number;
@@ -71,13 +88,13 @@ export interface Actor extends ObjectReference {
 	getHighestRelationshipRank: () => number;
 	getKiller: () => Actor;
 	getLevel: () => number;
-	getLeveledActorBase: () => skyrimPlatform.ActorBase;
+	getLeveledActorBase: () => ActorBase;
 	getLightLevel: () => number;
 	getLowestRelationshipRank: () => number;
 	getNoBleedoutRecovery: () => boolean;
 	getNthSpell: (n: number) => Spell;
 	getPlayerControls: () => boolean;
-	getRace: () => skyrimPlatform.Race;
+	getRace: () => Race;
 	getRelationshipRank: (akOther: Actor) => number;
 	getSitState: () => number;
 	getSleepState: () => number;
@@ -86,13 +103,13 @@ export interface Actor extends ObjectReference {
 	getWarmthRating: () => number;
 	getWornForm: (slotMask: number) => Form;
 	getWornItemId: (slotMask: number) => number;
-	hasAssociation: (akAssociation: skyrimPlatform.AssociationType, akOther: Actor) => boolean;
+	hasAssociation: (akAssociation: AssociationType, akOther: Actor) => boolean;
 	hasFamilyRelationship: (akOther: Actor) => boolean;
 	hasLOS: (akOther: ObjectReference) => boolean;
-	hasMagicEffect: (akEffect: skyrimPlatform.MagicEffect) => boolean;
+	hasMagicEffect: (akEffect: MagicEffect) => boolean;
 	hasMagicEffectWithKeyword: (akKeyword: Keyword) => boolean;
 	hasParentRelationship: (akOther: Actor) => boolean;
-	hasPerk: (akPerk: skyrimPlatform.Perk) => boolean;
+	hasPerk: (akPerk: Perk) => boolean;
 	hasSpell: (akForm: Form) => boolean;
 	isAIEnabled: () => boolean;
 	isAlarmed: () => boolean;
@@ -115,7 +132,7 @@ export interface Actor extends ObjectReference {
 	isGuard: () => boolean;
 	isHostileToActor: (akActor: Actor) => boolean;
 	isInCombat: () => boolean;
-	isInFaction: (akFaction: skyrimPlatform.Faction) => boolean;
+	isInFaction: (akFaction: Faction) => boolean;
 	isInKillMove: () => boolean;
 	isIntimidated: () => boolean;
 	isOnMount: () => boolean;
@@ -143,21 +160,21 @@ export interface Actor extends ObjectReference {
 	kill: (akKiller?: Actor | null) => void;
 	killSilent: (akKiller: Actor) => void;
 	modActorValue: (asValueName: string, afAmount: number) => void;
-	modFactionRank: (akFaction: skyrimPlatform.Faction, aiMod: number) => void;
+	modFactionRank: (akFaction: Faction, aiMod: number) => void;
 	moveToPackageLocation: () => Promise<void>;
 	openInventory: (abForceOpen: boolean) => void;
 	pathToReference: (aTarget: ObjectReference, afWalkRunPercent: number) => Promise<boolean>;
-	playIdle: (akIdle: skyrimPlatform.Idle) => boolean;
-	playIdleWithTarget: (akIdle: skyrimPlatform.Idle, akTarget: ObjectReference) => boolean;
+	playIdle: (akIdle: Idle) => boolean;
+	playIdleWithTarget: (akIdle: Idle, akTarget: ObjectReference) => boolean;
 	playSubGraphAnimation: (asEventName: string) => void;
 	queueNiNodeUpdate: () => void;
 	regenerateHead: () => void;
 	removeFromAllFactions: () => void;
-	removeFromFaction: (akFaction: skyrimPlatform.Faction) => void;
-	removePerk: (akPerk: skyrimPlatform.Perk) => void;
-	removeShout: (akShout: skyrimPlatform.Shout) => boolean;
+	removeFromFaction: (akFaction: Faction) => void;
+	removePerk: (akPerk: Perk) => void;
+	removeShout: (akShout: Shout) => boolean;
 	removeSpell: (akSpell: Spell) => boolean;
-	replaceHeadPart: (oPart: skyrimPlatform.HeadPart, newPart: skyrimPlatform.HeadPart) => void;
+	replaceHeadPart: (oPart: HeadPart, newPart: HeadPart) => void;
 	resetAI: () => void;
 	resetExpressionOverrides: () => void;
 	resetHealthAndLimbs: () => void;
@@ -174,15 +191,15 @@ export interface Actor extends ObjectReference {
 	setAlpha: (afTargetAlpha: number, abFade: boolean) => void;
 	setAttackActorOnSight: (abAttackOnSight: boolean) => void;
 	setBribed: (abBribe: boolean) => void;
-	setCrimeFaction: (akFaction: skyrimPlatform.Faction) => void;
+	setCrimeFaction: (akFaction: Faction) => void;
 	setCriticalStage: (aiStage: number) => void;
 	setDoingFavor: (abDoingFavor: boolean) => void;
 	setDontMove: (abDontMove: boolean) => void;
 	setExpressionModifier: (index: number, value: number) => void;
 	setExpressionOverride: (aiMood: number, aiStrength: number) => void;
 	setExpressionPhoneme: (index: number, value: number) => void;
-	setEyeTexture: (akNewTexture: skyrimPlatform.TextureSet) => void;
-	setFactionRank: (akFaction: skyrimPlatform.Faction, aiRank: number) => void;
+	setEyeTexture: (akNewTexture: TextureSet) => void;
+	setFactionRank: (akFaction: Faction, aiRank: number) => void;
 	setForcedLandingMarker: (aMarker: ObjectReference) => void;
 	setGhost: (abIsGhost: boolean) => void;
 	setHeadTracking: (abEnable: boolean) => void;
@@ -190,11 +207,11 @@ export interface Actor extends ObjectReference {
 	setLookAt: (akTarget: ObjectReference, abPathingLookAt: boolean) => void;
 	setNoBleedoutRecovery: (abAllowed: boolean) => void;
 	setNotShowOnStealthMeter: (abNotShow: boolean) => void;
-	setOutfit: (akOutfit: skyrimPlatform.Outfit, abSleepOutfit: boolean) => void;
+	setOutfit: (akOutfit: Outfit, abSleepOutfit: boolean) => void;
 	setPlayerControls: (abControls: boolean) => void;
 	setPlayerResistingArrest: () => void;
 	setPlayerTeammate: (abTeammate: boolean, abCanDoFavor: boolean) => void;
-	setRace: (akRace: skyrimPlatform.Race) => void;
+	setRace: (akRace: Race) => void;
 	setRelationshipRank: (akOther: Actor, aiRank: number) => void;
 	setRestrained: (abRestrained: boolean) => void;
 	setSubGraphFloatVariable: (asVariableName: string, afValue: number) => void;
@@ -205,7 +222,7 @@ export interface Actor extends ObjectReference {
 	showBarterMenu: () => void;
 	showGiftMenu: (
 		abGivingGift: boolean,
-		apFilterList: skyrimPlatform.FormList,
+		apFilterList: FormList,
 		abShowStolenItems: boolean,
 		abUseFavorPoints: boolean
 	) => Promise<number>;
@@ -222,7 +239,7 @@ export interface Actor extends ObjectReference {
 	unequipItem: (akItem: Form, abPreventEquip: boolean, abSilent: boolean) => void;
 	unequipItemEx: (item: Form, equipSlot: number, preventEquip: boolean) => void;
 	unequipItemSlot: (aiSlot: number) => void;
-	unequipShout: (akShout: skyrimPlatform.Shout) => void;
+	unequipShout: (akShout: Shout) => void;
 	unequipSpell: (akSpell: Spell, aiSource: number) => void;
 	updateWeight: (neckDelta: number) => void;
 	willIntimidateSucceed: () => boolean;
