@@ -9,9 +9,9 @@ import { professionSystem } from './professionSystem';
 // Woodsman
 const currentProfessionName = 'woodsman';
 /** object to activate profession */
-const activatorIdToGetProf = [0x9fb04]; // barrel in riverwood
+const activatorIdToGetProf = [0x9fb04, 317265];
 /** object to sell collected item */
-const activatorIdToGetSell = [0x1f228]; // barrel in riverwood
+const activatorIdToGetSell = [0x1f228];
 /** tree id to collect */
 const treeIdsToCollect = [0x12dee];
 /** id of collect item */

@@ -130,18 +130,32 @@ export const inventorySystem = {
 	 * @param formId who should I eqiup the item to
 	 * @param baseId id of item
 	 */
-	eqiupItem: (formId: number, baseId: number) => {
+	eqiupItem: (formId: number, baseId: number, isSilent: boolean = false) => {
 		consoleOutput.evalClient(
 			formId,
 			genClientFunction(
 				() => {
 					const form = ctx.sp.Game.getFormEx(baseId);
-					ctx.sp.Game.getPlayer().equipItem(form, false, false);
+					ctx.sp.Game.getPlayer().equipItem(form, false, true);
 				},
 				'equip item',
 				{ baseId }
 			)
 		);
+
+		if (!isSilent) {
+			consoleOutput.evalClient(
+				formId,
+				genClientFunction(
+					() => {
+						const name = ctx.sp.Game.getFormEx(baseId).getName();
+						ctx.sp.Debug.notification(`${name} - экипировано`);
+					},
+					'notification equip item',
+					{ baseId }
+				)
+			);
+		}
 	},
 
 	/**

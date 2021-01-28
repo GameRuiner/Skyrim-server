@@ -16,9 +16,13 @@ export const blockSystem = {
 			genClientFunction(
 				() => {
 					formIds.forEach((x) => {
+						//const id = ctx.getFormIdInServerFormat(x);
 						const form = ctx.sp.Game.getForm(x);
 						const obj = ctx.sp.ObjectReference.from(form);
-						obj.blockActivation(true);
+						ctx.sp.printConsole(obj.getName());
+						if (obj) {
+							obj.blockActivation(true);
+						}
 					});
 				},
 				'block objects',
