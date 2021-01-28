@@ -1,5 +1,5 @@
 import { consoleOutput, getInventar } from '../../properties';
-import { Equipment, Inventar, MP } from '../../types';
+import { Inventar, MP } from '../../types';
 import { utils } from '../../utility';
 import { inventorySystem } from '../inventorySystem';
 import { resources } from './data';

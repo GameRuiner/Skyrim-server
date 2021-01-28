@@ -1,10 +1,8 @@
 import { utils } from '../../utility';
-import { CellChangeEvent, MP } from '../../types';
 import { professionSystem } from './professionSystem';
 import { getWorldOrCellDesc } from '../../properties';
 import { locations } from './data';
 import type { ProfessionNamesProp, ProfessionProp } from './data';
-declare const mp: MP;
 
 /** if true sell items */
 const IS_SELL = true;
@@ -32,7 +30,7 @@ export const initMinesSystem = () => {
 	utils.hook('_onCurrentCellChange', (pcFormId: number, event: any) => {
 		try {
 			utils.log('Cell change');
-			if (isMine(mp.get(pcFormId, 'worldOrCellDesc'))) {
+			if (isMine(getWorldOrCellDesc(pcFormId))) {
 				utils.log('[MINES]', event.currentCell);
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
 
@@ -41,15 +39,13 @@ export const initMinesSystem = () => {
 				}
 			} else {
 				const myProfession: ProfessionProp = professionSystem.getFromServer(pcFormId);
-				if (myProfession?.name === currentProfessionName) {
-					if (myProfession?.isActive) {
-						professionSystem.delete(pcFormId, currentProfessionName);
-						if (IS_SELL) {
-							setTimeout(() => {
-								professionSystem.sellItems(pcFormId, [{ name: 'Железная руда', price: 10 }]);
-							}, 2000);
-							utils.log('Sell');
-						}
+				if (myProfession?.name === currentProfessionName && myProfession?.isActive) {
+					professionSystem.delete(pcFormId, currentProfessionName);
+					if (IS_SELL) {
+						setTimeout(() => {
+							professionSystem.sellItems(pcFormId, [{ name: 'Железная руда', price: 10 }]);
+						}, 2000);
+						utils.log('Sell');
 					}
 				}
 			}
