@@ -35,8 +35,11 @@ import { initSendMessage } from './properties/clientMessage';
 import { PRODUCTION } from './constants';
 import { initTest } from './test/test';
 
+import { hunting } from './test/hunting';
+
 declare const mp: MP;
 
+hunting();
 // init creates events, properties
 // "utility/utils",
 initUtils();
