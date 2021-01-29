@@ -47,6 +47,6 @@ export const initHitStatic = () => {
 	);
 
 	utils.hook('_onHitStatic', (pcFormId: number, eventData: HitEventReturn) => {
-		utils.log('[HIT STATIC]', eventData);
+		// utils.log('[HIT STATIC]', eventData);
 	});
 };

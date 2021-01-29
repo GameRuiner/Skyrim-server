@@ -75,7 +75,6 @@ export const professionSystem = {
 		// 		trueOldEquip.inv.entries.push(oldItem);
 		// 	}
 		// });
-		utils.log('[PROFESSIONS] oldEquipment', oldEquipment);
 
 		professionSystem.setToServer(formId, {
 			oldEquipment: oldEquipment,

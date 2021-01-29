@@ -1,116 +1,17 @@
 import { MP } from './types';
 
-import { initUtils, utils } from './utility';
+import { utils } from './utility';
 
-import {
-	initActiveProfession,
-	initConsoleOutput,
-	initSpawnPoint,
-	initIsDead,
-	initActorValue,
-	initAnimation,
-} from './properties';
-
-import {
-	initAnimationEvent,
-	initActorValueFlushRequiredEvent,
-	initBashEvent,
-	initConsoleCommandEvent,
-	initHitEvent,
-	initPowerAttacksEvent,
-	initSprintStateChangeEvent,
-	initCurrentCellChangeEvent,
-	initEmptyAnimationEvent,
-	initHitStatic,
-	initInputF5Event,
-	initActivateEvent,
-	initActivateMessageEvent,
-	initSlowerUpdate,
-} from './events';
-
-import { initDevCommands, initMinesSystem, initWoodsmanSystem, initFarmSystem, initFarmerSystem } from './systems';
-import { initTestMsg } from './test/msgTest';
-import { initTestBlockContainer } from './test/blockContainer';
-import { initSendMessage } from './properties/clientMessage';
-import { PRODUCTION } from './constants';
-import { initTest } from './test/test';
-
-import { hunting } from './test/hunting';
+import { initCustom } from './custom';
+import { initCore } from './core';
 
 declare const mp: MP;
 
-hunting();
-// init creates events, properties
-// "utility/utils",
-initUtils();
-// "events/onHit",
-initHitEvent();
+/** core events, don't change it */
+initCore();
 
-// "properties/isDead",
-initIsDead();
-
-// "events/onSprintStateChange",
-initSprintStateChangeEvent();
-
-// "events/onPowerAttack",
-initPowerAttacksEvent();
-
-// "events/onBash",
-initBashEvent();
-
-// "properties/consoleOutput",
-initConsoleOutput();
-
-// "properties/actorValues",
-initActorValue();
-
-// "events/onActorValueFlushRequired",
-initActorValueFlushRequiredEvent();
-
-// "properties/spawnSystem",
-initSpawnPoint();
-
-// "events/onConsoleCommand",
-initConsoleCommandEvent();
-
-// "systems/developerCommands"
-initDevCommands();
-
-// "events/onAnimationEvent"
-initAnimationEvent();
-
-initCurrentCellChangeEvent();
-//initScale();
-initEmptyAnimationEvent();
-initHitStatic();
-initInputF5Event();
-initActivateEvent();
-initAnimation();
-
-initSendMessage();
-initSlowerUpdate();
-
-//message form
-//initMessageIdToShow();
-//initMessageEvent();
-initActivateMessageEvent();
-
-//TEST
-if (!PRODUCTION) {
-	initTestBlockContainer();
-	initTestMsg();
-	initTest();
-	//! DONT WORK CHANGE CONTAINER
-	// initTestContainerChangeEvent();
-}
-
-// farm
-initFarmSystem();
-// profession
-initActiveProfession();
-initMinesSystem();
-initWoodsmanSystem();
-initFarmerSystem();
+/** your custom events? place your code here */
+initCustom();
 
 utils.hook('onInit', (pcFormId: number) => {
 	mp.onReinit(pcFormId);

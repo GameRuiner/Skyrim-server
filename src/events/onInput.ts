@@ -6,7 +6,7 @@ import { getFunctionText, utils } from '../utility';
 declare const mp: MP;
 declare const ctx: CTX;
 
-export const initInputF5Event = () => {
+export const initInputEvent = () => {
 	mp.makeEventSource(
 		'_onInput',
 		getFunctionText(() => {
