@@ -33,6 +33,9 @@ export const initFarmerSystem = () => {
 
 	/** set farmer profession */
 	utils.hook('_onActivateMessage', (pcFormId: number, event: ActivateMessageEventReturn) => {
+		utils.log('[FARMER] event', event);
+		utils.log('[FARMER] event.msgId', event.msgId);
+		utils.log('[FARMER] MESSAGES.farmer?.baseId', MESSAGES.farmer?.baseId);
 		// check if currentprofession message equal msgIF from event
 		if (MESSAGES.farmer?.baseId !== event.msgId) return;
 
@@ -50,8 +53,12 @@ export const initFarmerSystem = () => {
 
 	/** fill bucket with water */
 	utils.hook('_onActivate', (pcFormId: number, event: ActivateEventReturn) => {
+		utils.log('[FARMER] event', event);
+		utils.log('[FARMER] waterBarrelId', waterBarrelId);
 		if (event.targetBaseId === waterBarrelId) {
 			if (inventorySystem.isInInventory(pcFormId, emptyBucket)) {
+				utils.log('[FARMER] emptyBucket', emptyBucket);
+				utils.log('[FARMER] bucketWithWater', bucketWithWater);
 				inventorySystem.deleteItem(pcFormId, emptyBucket, 1);
 				inventorySystem.addItem(pcFormId, bucketWithWater, 1);
 			} else {

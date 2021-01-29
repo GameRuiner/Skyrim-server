@@ -26,7 +26,7 @@ import {
 	initSlowerUpdate,
 } from './events';
 
-import { initDevCommands, initFarmSystem, initMinesSystem, initWoodsmanSystem } from './systems';
+import { initDevCommands, initFarmerSystem, initFarmSystem, initMinesSystem, initWoodsmanSystem } from './systems';
 import { initSendMessage } from './properties/clientMessage';
 
 export const initCore = () => {
@@ -88,5 +88,5 @@ export const initCore = () => {
 	initActiveProfession();
 	initMinesSystem();
 	initWoodsmanSystem();
-	initFarmSystem();
+	initFarmerSystem();
 };
